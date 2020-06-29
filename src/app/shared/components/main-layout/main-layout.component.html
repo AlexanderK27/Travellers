@@ -1,7 +1,21 @@
 <header>
-    <nav></nav>
+    <nav>
+        <ul>
+            <li>
+                <a routerLink="/"><span>Travel Plans</span></a>
+            </li>
+            <li routerLinkActive="active">
+                <a routerLink="/subscriptions">Subscriptions</a>
+            </li>
+            <li routerLinkActive="active">
+                <a routerLink="/saved">Saved</a>
+            </li>
+        </ul>
+        <div>
+            <a routerLink="/authorization">Log in</a>
+        </div>
+    </nav>
 </header>
 <main>
-    Welcome to main page
     <router-outlet></router-outlet>
 </main>

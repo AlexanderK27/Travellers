@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent implements OnInit {
+    isLoggedIn: boolean
 
-  constructor() { }
+    constructor(private auth: AuthService) {
+        this.auth.showProfile$.subscribe(arg => this.isLoggedIn = arg);
+    }
 
-  ngOnInit(): void {
-  }
-
+    ngOnInit(): void {
+    }
 }

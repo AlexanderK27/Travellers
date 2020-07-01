@@ -4,15 +4,18 @@
             <li>
                 <a routerLink="/"><span>Travel Plans</span></a>
             </li>
-            <li routerLinkActive="active">
+            <li *ngIf="isLoggedIn" routerLinkActive="active">
                 <a routerLink="/subscriptions">Subscriptions</a>
             </li>
-            <li routerLinkActive="active">
+            <li *ngIf="isLoggedIn" routerLinkActive="active">
                 <a routerLink="/saved">Saved</a>
             </li>
         </ul>
         <div>
-            <a routerLink="/authentication">Log in</a>
+            <a *ngIf="isLoggedIn; else logIn" routerLink="/profile">Profile</a>
+            <ng-template #logIn>
+                <a routerLink="/authentication">Log in</a>
+            </ng-template>
         </div>
     </nav>
 </header>

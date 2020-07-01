@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from './shared/services/auth.guard';
 import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { SubsPageComponent } from './pages/subs-page/subs-page.component';
@@ -12,13 +13,13 @@ const routes: Routes = [
         path: '', component: MainLayoutComponent, children: [
             { path: '', redirectTo: '/', pathMatch: 'full' },
             { path: '', component: HomePageComponent },
-            { path: 'subscriptions', component: SubsPageComponent },
-            { path: 'saved', component: SavedPageComponent },
+            { path: 'subscriptions', component: SubsPageComponent, canActivate: [AuthGuard] },
+            { path: 'saved', component: SavedPageComponent, canActivate: [AuthGuard] },
             { path: 'plan/:title', component: PlanPageComponent },
-            { path: 'authentication', component: AuthPageComponent },
+            { path: 'authentication', component: AuthPageComponent, canActivate: [AuthGuard] },
             { path: 'profile', loadChildren: () => (
                     import('./user-panel/user-panel.module').then(m => m.UserPanelModule)
-                )
+                ), canActivateChild: [AuthGuard]
             }
         ]
     },

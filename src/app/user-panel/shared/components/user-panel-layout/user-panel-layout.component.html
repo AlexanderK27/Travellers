@@ -2,13 +2,16 @@
     <nav>
         <ul>
             <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                <a routerLink="/profile">Profile</a>
+                <a routerLink="/profile">My page</a>
             </li>
             <li routerLinkActive="active">
                 <a routerLink="/profile/create">Create plan</a>
             </li>
             <li routerLinkActive="active">
                 <a routerLink="/profile/settings">Settings</a>
+            </li>
+            <li>
+                <span (click)="onLogOut()">Log out</span>
             </li>
         </ul>
     </nav>

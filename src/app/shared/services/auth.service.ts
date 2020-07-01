@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators'
-
 import { UserCredentials, FirebaseAuthResponse } from '../interfaces';
 import { environment } from 'src/environments/environment';
 
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
-    constructor(private http: HttpClient) { }
+    showProfile$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
+    constructor(
+        private http: HttpClient
+    ) { }
 
     get token(): string {
         const expDate = new Date(localStorage.getItem('token-exp'))
@@ -17,6 +20,7 @@ export class AuthService {
           this.logout()
           return null
         }
+        this.showProfile$.next(true)
         return localStorage.getItem('token')
     }
 
@@ -57,6 +61,7 @@ export class AuthService {
             localStorage.setItem('token-exp', expDate.toString())
         } else {
             localStorage.clear()
+            this.showProfile$.next(false)
         }
     }
 }

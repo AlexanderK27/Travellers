@@ -13,7 +13,7 @@
             <small *ngIf="form.get('email').errors.required">
                 Field is required
             </small>
-            <small *ngIf="form.get('email').errors.email">
+            <small *ngIf="form.get('email').errors.isEmail">
                 Invalid email
             </small>
         </div>

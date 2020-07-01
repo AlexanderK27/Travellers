@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserCredentials } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { isEmail } from 'src/app/shared/services/input.validators';
 
 @Component({
   selector: 'app-signup-form',
@@ -20,7 +21,7 @@ export class SignupFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = new FormGroup({
-            email: new FormControl('', [Validators.email, Validators.required]),
+            email: new FormControl('', [Validators.required, isEmail]),
             password: new FormControl('', [Validators.required, Validators.minLength(8)])
         })
     }

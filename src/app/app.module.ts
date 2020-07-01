@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +11,8 @@ import { SubsPageComponent } from './pages/subs-page/subs-page.component';
 import { SavedPageComponent } from './pages/saved-page/saved-page.component';
 import { PlanPageComponent } from './pages/plan-page/plan-page.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
+import { LoginFormComponent } from './pages/auth-page/login-form/login-form.component';
+import { SignupFormComponent } from './pages/auth-page/signup-form/signup-form.component';
 
 @NgModule({
     declarations: [
@@ -18,11 +22,16 @@ import { AuthPageComponent } from './pages/auth-page/auth-page.component';
         SubsPageComponent,
         SavedPageComponent,
         PlanPageComponent,
-        AuthPageComponent
+        AuthPageComponent,
+        LoginFormComponent,
+        SignupFormComponent
     ],
     imports: [
         BrowserModule,
-        AppRoutingModule
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule
     ],
     providers: [],
     bootstrap: [AppComponent]

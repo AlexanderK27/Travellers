@@ -1,1 +1,27 @@
-<p>auth-page works!</p>
+<section>
+    <div *ngIf="formType === 'registration'; else login">
+        <app-signup-form ></app-signup-form>
+        <div>
+            <button
+                type="button"
+                [routerLink]="['/authentication']"
+            >
+                Log in
+            </button>
+        </div>
+    </div>
+    <ng-template #login>
+        <div>
+            <app-login-form></app-login-form>
+            <div>
+                <button
+                    type="button"
+                    [routerLink]="['/authentication']"
+                    [queryParams]="{newMember: true}"
+                >
+                    Create new account
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</section>

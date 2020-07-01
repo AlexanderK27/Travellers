@@ -15,7 +15,7 @@ const routes: Routes = [
             { path: 'subscriptions', component: SubsPageComponent },
             { path: 'saved', component: SavedPageComponent },
             { path: 'plan/:title', component: PlanPageComponent },
-            { path: 'authorization', component: AuthPageComponent },
+            { path: 'authentication', component: AuthPageComponent },
             { path: 'profile', loadChildren: () => (
                     import('./user-panel/user-panel.module').then(m => m.UserPanelModule)
                 )

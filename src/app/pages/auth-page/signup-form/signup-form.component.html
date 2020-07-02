@@ -1,19 +1,24 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
     <h2>Registration</h2>
     <div
         class="form-control"
-        [ngClass]="{invalid: form.get('email').touched && form.get('email').invalid}"
+        [ngClass]="{invalid: signUpForm.get('email').touched && signUpForm.get('email').invalid}"
     >
         <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email">
+        <input
+            id="email"
+            type="email"
+            maxlength="30"
+            formControlName="email"
+        >
         <div
-            *ngIf="form.get('email').touched && form.get('email').invalid"
+            *ngIf="signUpForm.get('email').touched && signUpForm.get('email').invalid"
             class="validation"
         >
-            <small *ngIf="form.get('email').errors.required">
+            <small *ngIf="signUpForm.get('email').errors.required">
                 Field is required
             </small>
-            <small *ngIf="form.get('email').errors.isEmail">
+            <small *ngIf="signUpForm.get('email').errors.isEmail">
                 Invalid email
             </small>
         </div>
@@ -21,26 +26,67 @@
 
     <div
         class="form-control"
-        [ngClass]="{invalid: form.get('password').touched && form.get('password').invalid}"
+        [ngClass]="{invalid: signUpForm.get('password').touched && signUpForm.get('password').invalid}"
     >
         <label for="password">Password</label>
-        <input id="password" type="password" formControlName="password">
-        <div
-        *ngIf="form.get('password').touched && form.get('password').invalid"
-        class="validation"
+        <input
+            id="password"
+            type="{{showPasswordValue ? 'text' : 'password'}}"
+            maxlength="30"
+            formControlName="password"
         >
-            <small *ngIf="form.get('password').errors.required">
+        <i (click)="onShowHidePassword('showPasswordValue')">
+            {{showPasswordValue ? 'hide' : 'show'}}
+        </i>
+        <div
+            *ngIf="signUpForm.get('password').touched && signUpForm.get('password').invalid"
+            class="validation"
+        >
+            <small *ngIf="signUpForm.get('password').errors.required">
                 Field is required
             </small>
-            <small *ngIf="form.get('password').errors.minlength">
-                {{onMinLengthError()}}
+            <small *ngIf="signUpForm.get('password').errors.minlength">
+                {{onMinLengthError('password')}}
             </small>
         </div>
+    </div>
+
+    <div
+        class="form-control"
+        [ngClass]="{invalid: signUpForm.get('confirmPass').touched && signUpForm.get('confirmPass').invalid}"
+    >
+        <label for="confirmPass">Repeat password</label>
+        <input
+            id="confirmPass"
+            type="{{showConfirmPassValue ? 'text' : 'password'}}"
+            maxlength="30"
+            formControlName="confirmPass"
+        >
+        <i (click)="onShowHidePassword('showConfirmPassValue')">
+            {{showConfirmPassValue ? 'hide' : 'show'}}
+        </i>
+        <div
+            *ngIf="signUpForm.get('confirmPass').touched && signUpForm.get('confirmPass').invalid"
+            class="validation"
+        >
+            <small *ngIf="signUpForm.get('confirmPass').errors.required">
+                Field is required
+            </small>
+            <small *ngIf="signUpForm.get('confirmPass').errors.minlength">
+                {{onMinLengthError('confirmPass')}}
+            </small>
+        </div>
+    </div>
+
+    <div *ngIf="signUpForm.errors" class="validation">
+        <small *ngIf="signUpForm.errors.mismatch">
+            Passwords do not match
+        </small>
     </div>
 
     <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="form.invalid || submitted"
+        [disabled]="signUpForm.invalid || submitted"
     >Submit</button>
 </form>

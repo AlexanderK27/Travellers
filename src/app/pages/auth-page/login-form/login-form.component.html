@@ -5,7 +5,12 @@
         [ngClass]="{invalid: form.get('email').touched && form.get('email').invalid}"
     >
         <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email">
+        <input
+            id="email"
+            type="email"
+            maxlength="30"
+            formControlName="email"
+        >
         <div
             *ngIf="form.get('email').touched && form.get('email').invalid"
             class="validation"
@@ -24,10 +29,18 @@
         [ngClass]="{invalid: form.get('password').touched && form.get('password').invalid}"
     >
         <label for="password">Password</label>
-        <input id="password" type="password" formControlName="password">
+        <input
+            id="password"
+            type="{{showPassword ? 'text' : 'password'}}"
+            maxlength="30"
+            formControlName="password"
+        >
+        <i (click)="onShowHidePassword()">
+            {{showPassword ? 'hide' : 'show'}}
+        </i>
         <div
-        *ngIf="form.get('password').touched && form.get('password').invalid"
-        class="validation"
+            *ngIf="form.get('password').touched && form.get('password').invalid"
+            class="validation"
         >
             <small *ngIf="form.get('password').errors.required">
                 Field is required

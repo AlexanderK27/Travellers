@@ -30,10 +30,11 @@ export class AuthService {
 
     login(credentials: UserCredentials): Observable<any> {
         credentials.returnSecureToken = true
+        console.log(credentials)
         return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseApiKey}`, credentials)
             .pipe(
                 tap(this.setToken),
-                catchError(this.setError.bind(this))
+                // catchError(this.setError.bind(this))
             )
     }
 
@@ -46,13 +47,13 @@ export class AuthService {
         return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseApiKey}`, credentials)
             .pipe(
                 tap(this.setToken),
-                catchError(this.setError.bind(this))
+                // catchError(this.setError.bind(this))
             )
     }
 
-    private setError(error: HttpErrorResponse) {
-        console.log(error)
-    }
+    // private setError(error: HttpErrorResponse) {
+    //     console.log(error)
+    // }
 
     private setToken(response: FirebaseAuthResponse | null): void {
         if (response) {

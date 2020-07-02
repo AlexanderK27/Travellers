@@ -12,6 +12,7 @@ import { isEmail } from 'src/app/shared/services/input.validators';
 })
 export class LoginFormComponent implements OnInit {
     form: FormGroup
+    showPassword = false
     submitted = false
 
     constructor(
@@ -21,8 +22,8 @@ export class LoginFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = new FormGroup({
-            email: new FormControl('', [Validators.required, isEmail]),
-            password: new FormControl('', [Validators.required, Validators.minLength(8)])
+            email: new FormControl('', [Validators.required, isEmail, Validators.maxLength(30)]),
+            password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(30)])
         })
     }
 
@@ -31,6 +32,10 @@ export class LoginFormComponent implements OnInit {
         const actualLength = this.form.get('password').errors.minlength.actualLength
         return `Password should contain at least ${requiredLength} characters.
             ${requiredLength - actualLength} left`
+    }
+
+    onShowHidePassword() {
+        this.showPassword = !this.showPassword
     }
 
     onSubmit() {

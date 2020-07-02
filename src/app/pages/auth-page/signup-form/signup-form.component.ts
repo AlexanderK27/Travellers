@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserCredentials } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { isEmail } from 'src/app/shared/services/input.validators';
+import { isEmail, doPasswordsMatch } from 'src/app/shared/services/input.validators';
 
 @Component({
   selector: 'app-signup-form',
@@ -11,7 +11,11 @@ import { isEmail } from 'src/app/shared/services/input.validators';
   styleUrls: ['./signup-form.component.scss']
 })
 export class SignupFormComponent implements OnInit {
-    form: FormGroup
+    signUpForm: FormGroup // registers user by email and password
+    profileDataForm: FormGroup // save user's profile data to a realtime database
+
+    showPasswordValue = false
+    showConfirmPassValue = false
     submitted = false
 
     constructor(
@@ -20,33 +24,38 @@ export class SignupFormComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.form = new FormGroup({
-            email: new FormControl('', [Validators.required, isEmail]),
-            password: new FormControl('', [Validators.required, Validators.minLength(8)])
-        })
+        this.signUpForm = new FormGroup({
+            email: new FormControl('', [Validators.required, isEmail, Validators.maxLength(30)]),
+            password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]),
+            confirmPass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(30)])
+        }, [doPasswordsMatch])
     }
 
-    onMinLengthError(): string {
-        const requiredLength = this.form.get('password').errors.minlength.requiredLength
-        const actualLength = this.form.get('password').errors.minlength.actualLength
+    onMinLengthError(controlName: string): string {
+        const requiredLength = this.signUpForm.get(controlName).errors.minlength.requiredLength
+        const actualLength = this.signUpForm.get(controlName).errors.minlength.actualLength
         return `Password should contain at least ${requiredLength} characters.
             ${requiredLength - actualLength} left`
     }
 
+    onShowHidePassword(passwordStateName: 'showPasswordValue' | 'showConfirmPassValue'): boolean {
+        return this[passwordStateName] = !this[passwordStateName]
+    }
+
     onSubmit() {
-        if (this.form.invalid) {
+        if (this.signUpForm.invalid) {
             return
         }
 
         this.submitted = true
 
         const credentials: UserCredentials = {
-            email: this.form.value.email,
-            password: this.form.value.password
+            email: this.signUpForm.value.email,
+            password: this.signUpForm.value.password
         }
 
         this.auth.signup(credentials).subscribe(() => {
-            this.form.reset()
+            this.signUpForm.reset()
             this.router.navigate(['/profile'])
             this.submitted = false
         }, () => {

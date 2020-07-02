@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators'
 import { UserCredentials, FirebaseAuthResponse } from '../interfaces';
 import { environment } from 'src/environments/environment';
+import { AlertService } from './alert.service';
 
 
 @Injectable({providedIn: 'root'})
@@ -11,7 +12,8 @@ export class AuthService {
     showProfile$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+        private alert: AlertService
     ) { }
 
     get token(): string {
@@ -34,7 +36,7 @@ export class AuthService {
         return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseApiKey}`, credentials)
             .pipe(
                 tap(this.setToken),
-                // catchError(this.setError.bind(this))
+                catchError(this.setError.bind(this))
             )
     }
 
@@ -47,13 +49,26 @@ export class AuthService {
         return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseApiKey}`, credentials)
             .pipe(
                 tap(this.setToken),
-                // catchError(this.setError.bind(this))
+                catchError(this.setError.bind(this))
             )
     }
 
-    // private setError(error: HttpErrorResponse) {
-    //     console.log(error)
-    // }
+    private setError(error: HttpErrorResponse) {
+        const { message } = error.error.error
+        switch(message) {
+          case 'INVALID_EMAIL':
+            this.alert.danger('Invalid email')
+            break
+          case 'INVALID_PASSWORD':
+            this.alert.danger('Invalid password')
+            break
+          case 'EMAIL_NOT_FOUND':
+            this.alert.danger('Email not found')
+            break
+        }
+
+        return throwError(error)
+    }
 
     private setToken(response: FirebaseAuthResponse | null): void {
         if (response) {

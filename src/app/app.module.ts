@@ -13,6 +13,7 @@ import { PlanPageComponent } from './pages/plan-page/plan-page.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 import { LoginFormComponent } from './pages/auth-page/login-form/login-form.component';
 import { SignupFormComponent } from './pages/auth-page/signup-form/signup-form.component';
+import { AlertComponent } from './shared/components/alert/alert.component';
 
 @NgModule({
     declarations: [
@@ -24,7 +25,8 @@ import { SignupFormComponent } from './pages/auth-page/signup-form/signup-form.c
         PlanPageComponent,
         AuthPageComponent,
         LoginFormComponent,
-        SignupFormComponent
+        SignupFormComponent,
+        AlertComponent,
     ],
     imports: [
         BrowserModule,

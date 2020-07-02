@@ -1,0 +1,38 @@
+.alert {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    width: 220px;
+    padding: 14px;
+    border-radius: 10px;
+    background-color: #353535;
+    color: #fff;
+    font-size: 14px;
+
+    .indicator {
+        width: 32px;
+        height: 30px;
+        margin-right: 14px;
+        border-radius: 50%;
+    }
+
+    &.success {
+        .indicator {
+            background-color: #23ff53;
+        }
+    }
+
+    &.warning {
+        .indicator {
+            background-color: #def435;
+        }
+    }
+
+    &.danger {
+        .indicator {
+            background-color: #d63131;
+        }
+    }
+}

@@ -6,14 +6,15 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { isEmail, doPasswordsMatch } from 'src/app/shared/services/input.validators';
 
 @Component({
-  selector: 'app-signup-form',
-  templateUrl: './signup-form.component.html',
-  styleUrls: ['./signup-form.component.scss']
+    selector: 'app-signup-form',
+    templateUrl: './signup-form.component.html',
+    styleUrls: ['./signup-form.component.scss']
 })
 export class SignupFormComponent implements OnInit {
-    signUpForm: FormGroup // registers user by email and password
-    profileDataForm: FormGroup // save user's profile data to a realtime database
+    signUpForm: FormGroup // registers a user
+    profileDataForm: FormGroup // saves user's additional profile data
 
+    newUserRegistered = true
     showPasswordValue = false
     showConfirmPassValue = false
     submitted = false
@@ -25,16 +26,21 @@ export class SignupFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.signUpForm = new FormGroup({
+            username: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9._]*'), Validators.maxLength(30)]),
             email: new FormControl('', [Validators.required, isEmail, Validators.maxLength(30)]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]),
             confirmPass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(30)])
         }, [doPasswordsMatch])
+        this.profileDataForm = new FormGroup({
+            name: new FormControl('', [Validators.maxLength(30)]),
+            surname: new FormControl('', [Validators.maxLength(30)])
+        })
     }
 
     onMinLengthError(controlName: string): string {
         const requiredLength = this.signUpForm.get(controlName).errors.minlength.requiredLength
         const actualLength = this.signUpForm.get(controlName).errors.minlength.actualLength
-        return `Password should contain at least ${requiredLength} characters.
+        return `Password must contain at least ${requiredLength} characters.
             ${requiredLength - actualLength} left`
     }
 
@@ -42,7 +48,15 @@ export class SignupFormComponent implements OnInit {
         return this[passwordStateName] = !this[passwordStateName]
     }
 
-    onSubmit() {
+    onSkipProfileData() {
+        this.router.navigate(['/profile'])
+    }
+
+    onSubmitProfileData() {
+        this.router.navigate(['/profile'])
+    }
+
+    onSubmitSigningUp() {
         if (this.signUpForm.invalid) {
             return
         }
@@ -56,8 +70,8 @@ export class SignupFormComponent implements OnInit {
 
         this.auth.signup(credentials).subscribe(() => {
             this.signUpForm.reset()
-            this.router.navigate(['/profile'])
             this.submitted = false
+            this.newUserRegistered = true
         }, () => {
             this.submitted = false
         })

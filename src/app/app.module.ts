@@ -14,6 +14,8 @@ import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 import { LoginFormComponent } from './pages/auth-page/login-form/login-form.component';
 import { SignupFormComponent } from './pages/auth-page/signup-form/signup-form.component';
 import { AlertComponent } from './shared/components/alert/alert.component';
+import { ImgCropperComponent } from './shared/components/img-cropper/img-cropper.component';
+import { ImgPickerComponent } from './shared/components/img-picker/img-picker.component';
 
 @NgModule({
     declarations: [
@@ -27,6 +29,8 @@ import { AlertComponent } from './shared/components/alert/alert.component';
         LoginFormComponent,
         SignupFormComponent,
         AlertComponent,
+        ImgCropperComponent,
+        ImgPickerComponent,
     ],
     imports: [
         BrowserModule,

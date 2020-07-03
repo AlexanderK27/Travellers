@@ -1,0 +1,24 @@
+<app-img-cropper *ngIf="showCropper; else userImage"></app-img-cropper>
+<ng-template #userImage>
+    <div *ngIf="showNewImage; else defaultImage" class="user-image">
+        <img [src]="croppedImageSrc" alt="Your image">
+    </div>
+    <ng-template #defaultImage>
+        <div class="user-image">
+            <img [src]="defaultImageSrc" alt="Default image">
+        </div>
+    </ng-template>
+</ng-template>
+<input
+    type="file"
+    accept="image/jpeg,image/png"
+    (change)="uploadFile($event)"
+    class="file-input"
+    #fileInput
+>
+<button type="button" [disabled]="!showCropper && !showNewImage" (click)="onResetAvatar()">
+    Back to default
+</button>
+<button type="button" (click)="fileInput.click()">
+    Set a profile picture
+</button>

@@ -1,5 +1,34 @@
-<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+<form
+    *ngIf="!newUserRegistered; else addProfileData"
+    [formGroup]="signUpForm"
+    (ngSubmit)="onSubmitSigningUp()"
+>
     <h2>Registration</h2>
+    <div
+        class="form-control"
+        [ngClass]="{invalid: signUpForm.get('username').touched && signUpForm.get('username').invalid}"
+    >
+        <label for="username">Username</label>
+        <input
+            id="username"
+            type="text"
+            maxlength="30"
+            autocomplete="off"
+            formControlName="username"
+        >
+        <div
+            *ngIf="signUpForm.get('username').touched && signUpForm.get('username').invalid"
+            class="validation"
+        >
+            <small *ngIf="signUpForm.get('username').errors.required">
+                Field is required
+            </small>
+            <small *ngIf="signUpForm.get('username').errors.pattern.actualValue">
+                Username must contain only latin letters, numbers, periods, and underscores
+            </small>
+        </div>
+    </div>
+
     <div
         class="form-control"
         [ngClass]="{invalid: signUpForm.get('email').touched && signUpForm.get('email').invalid}"
@@ -86,7 +115,42 @@
 
     <button
         type="submit"
-        class="btn btn-primary"
         [disabled]="signUpForm.invalid || submitted"
     >Submit</button>
 </form>
+<ng-template #addProfileData>
+    <form [formGroup]="profileDataForm">
+        <app-img-picker></app-img-picker>
+        <div class="form-control">
+            <label for="name">First name</label>
+            <input
+                id="name"
+                type="text"
+                maxlength="30"
+                autocomplete="off"
+                formControlName="name"
+            >
+        </div>
+        <div class="form-control">
+            <label for="surname">Last name (surname)</label>
+            <input
+                id="surname"
+                type="text"
+                maxlength="30"
+                autocomplete="off"
+                formControlName="surname"
+            >
+        </div>
+        <div class="buttons">
+            <button
+                type="button"
+                (click)="onSkipProfileData()"
+            >Skip</button>
+            <button
+                type="button"
+                [disabled]="submitted"
+                (click)="onSubmitProfileData()"
+            >Save</button>
+        </div>
+    </form>
+</ng-template>

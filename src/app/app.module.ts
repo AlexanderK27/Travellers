@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Provider } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +16,13 @@ import { SignupFormComponent } from './pages/auth-page/signup-form/signup-form.c
 import { AlertComponent } from './shared/components/alert/alert.component';
 import { ImgCropperComponent } from './shared/components/img-cropper/img-cropper.component';
 import { ImgPickerComponent } from './shared/components/img-picker/img-picker.component';
+import { AuthInterceptor } from './shared/services/auth.interceptor';
+
+const INTERCEPTOR_PROVIDER: Provider = {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+}
 
 @NgModule({
     declarations: [
@@ -39,7 +46,7 @@ import { ImgPickerComponent } from './shared/components/img-picker/img-picker.co
         ReactiveFormsModule,
         HttpClientModule
     ],
-    providers: [],
+    providers: [INTERCEPTOR_PROVIDER],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

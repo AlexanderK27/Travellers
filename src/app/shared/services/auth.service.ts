@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators'
-import { UserCredentials, FirebaseAuthResponse } from '../interfaces';
+import { UserCredentials, FirebaseAuthResponse, UserData } from '../interfaces';
 import { environment } from 'src/environments/environment';
 import { AlertService } from './alert.service';
-
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -26,13 +25,16 @@ export class AuthService {
         return localStorage.getItem('token')
     }
 
+    createUser(userData: UserData): Observable<any> {
+        return this.http.put(`${environment.firebaseDbUrl}/users.json`, {[userData.userId]: userData})
+    }
+
     isAuthenticated(): boolean {
         return !!this.token
     }
 
     login(credentials: UserCredentials): Observable<any> {
         credentials.returnSecureToken = true
-        console.log(credentials)
         return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseApiKey}`, credentials)
             .pipe(
                 tap(this.setToken),

@@ -12,7 +12,7 @@
         <input
             id="username"
             type="text"
-            maxlength="30"
+            maxlength="20"
             autocomplete="off"
             formControlName="username"
         >
@@ -119,38 +119,54 @@
     >Submit</button>
 </form>
 <ng-template #addProfileData>
-    <form [formGroup]="profileDataForm">
+    <div>
         <app-img-picker></app-img-picker>
-        <div class="form-control">
-            <label for="name">First name</label>
-            <input
-                id="name"
-                type="text"
-                maxlength="30"
-                autocomplete="off"
-                formControlName="name"
-            >
-        </div>
-        <div class="form-control">
-            <label for="surname">Last name (surname)</label>
-            <input
-                id="surname"
-                type="text"
-                maxlength="30"
-                autocomplete="off"
-                formControlName="surname"
-            >
-        </div>
-        <div class="buttons">
-            <button
-                type="button"
-                (click)="onSkipProfileData()"
-            >Skip</button>
-            <button
-                type="button"
-                [disabled]="submitted"
-                (click)="onSubmitProfileData()"
-            >Save</button>
-        </div>
-    </form>
+        <form [formGroup]="profileDataForm">
+            <p>This information will be open for everyone</p>
+            <div class="form-control">
+                <label for="name">Name</label>
+                <input
+                    id="name"
+                    type="text"
+                    maxlength="30"
+                    autocomplete="off"
+                    formControlName="name"
+                >
+            </div>
+            <div class="form-control">
+                <label for="website">Website</label>
+                <input
+                    id="website"
+                    type="text"
+                    maxlength="30"
+                    autocomplete="off"
+                    formControlName="website"
+                >
+            </div>
+            <div class="form-control">
+                <label for="bio">Short bio</label>
+                <input
+                    id="bio"
+                    type="text"
+                    maxlength="70"
+                    autocomplete="off"
+                    formControlName="bio"
+                >
+                <small>
+                    {{profileDataForm.get('bio')}}
+                </small>
+            </div>
+            <div class="buttons">
+                <button
+                    type="button"
+                    (click)="onSkipProfileData()"
+                >Skip</button>
+                <button
+                    type="button"
+                    [disabled]="profileDataForm.invalid || submitted"
+                    (click)="onSubmitProfileData()"
+                >Save</button>
+            </div>
+        </form>
+    </div>
 </ng-template>

@@ -22,6 +22,10 @@ export class UserService {
         })
     }
 
+    fetchUser(userId: string): Observable<any> {
+        return this.http.get(`${environment.firebaseDbUrl}/users/${userId}.json`)
+    }
+
     updateProfile(profileData: ProfileData): Observable<any> {
         return this.http.patch(`${environment.firebaseDbUrl}/users/${this.user.userId}.json`, profileData)
     }

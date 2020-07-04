@@ -3,6 +3,7 @@ import { ImageSource } from './types'
 export interface FirebaseAuthResponse {
     idToken: string
     expiresIn: string
+    localId: string
 }
 
 export interface ProfileData {
@@ -21,5 +22,8 @@ export interface UserCredentials {
 export interface UserData {
     userId: string
     username: string
-    profileData?: ProfileData
+    name?: string
+    website?: string
+    bio?: string
+    avatar?: ImageSource
 }

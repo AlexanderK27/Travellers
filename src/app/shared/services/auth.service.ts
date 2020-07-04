@@ -26,7 +26,7 @@ export class AuthService {
     }
 
     createUser(userData: UserData): Observable<any> {
-        return this.http.put(`${environment.firebaseDbUrl}/users.json`, {[userData.userId]: userData})
+        return this.http.patch(`${environment.firebaseDbUrl}/users/${userData.userId}.json`, userData)
     }
 
     isAuthenticated(): boolean {
@@ -77,6 +77,7 @@ export class AuthService {
             const expDate = new Date(+response.expiresIn * 1000 + new Date().getTime())
             localStorage.setItem('token', response.idToken)
             localStorage.setItem('token-exp', expDate.toString())
+            localStorage.setItem('userId', response.localId)
         } else {
             localStorage.clear()
             this.showProfile$.next(false)

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserCredentials } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { isEmail } from 'src/app/shared/services/input.validators';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-login-form',
@@ -17,6 +18,7 @@ export class LoginFormComponent implements OnInit {
 
     constructor(
         private auth: AuthService,
+        private userService: UserService,
         private router: Router,
     ) {}
 
@@ -50,10 +52,15 @@ export class LoginFormComponent implements OnInit {
             password: this.form.value.password
         }
 
-        this.auth.login(credentials).subscribe(() => {
-            this.form.reset()
-            this.router.navigate(['/profile'])
-            this.submitted = false
+        this.auth.login(credentials).subscribe(response => {
+            this.userService.fetchUser(response.localId).subscribe(user => {
+                this.userService.userData$.next(user)
+                this.form.reset()
+                this.router.navigate(['/profile'])
+                this.submitted = false
+            }, (e) => {
+                console.log(e)
+            })
         }, () => {
             this.submitted = false
         })

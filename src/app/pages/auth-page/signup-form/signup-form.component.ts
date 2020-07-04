@@ -87,8 +87,8 @@ export class SignupFormComponent implements OnInit, OnDestroy {
         }
 
         this.user.updateProfile(updatedProfile).subscribe(() => {
-            this.userData.profileData = updatedProfile
-            this.user.userData$.next(this.userData)
+            const updatedUserData = { ...this.userData, ...updatedProfile }
+            this.user.userData$.next(updatedUserData)
             this.alert.success('Profile updated')
             this.profileDataForm.reset()
             console.log('All user data', this.userData)

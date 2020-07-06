@@ -2,7 +2,7 @@ $cardWidth: 300px;
 
 .card {
     width: $cardWidth;
-    margin-bottom: 30px;
+    margin: 15px;
     border: 1px solid #999;
 }
 
@@ -26,4 +26,12 @@ p {
     display: flex;
     justify-content: space-between;
     padding: 4px 8px;
+}
+
+.buttons {
+    display: flex;
+
+    button {
+        flex-grow: 1;
+    }
 }

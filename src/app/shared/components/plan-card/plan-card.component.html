@@ -3,8 +3,10 @@
         <span>{{plan.author}}</span>
         <i>link</i>
     </div>
-    <img [src]="plan.poster" alt="Plan poster">
-    <p>{{plan.title}}</p>
+    <a [routerLink]="['/plan', plan.link]">
+        <img [src]="plan.poster" alt="Plan poster" >
+        <p>{{plan.title}}</p>
+    </a>
     <div *ngIf="meta" class="meta">
         <i>O {{meta.likes}}</i>
         <i>O {{meta.dislikes}}</i>
@@ -12,8 +14,8 @@
         <i>{{meta.saved}}</i>
     </div>
     <div *ngIf="isAuthor" class="buttons">
-        <button>Publish</button>
-        <button>Edit</button>
-        <button>Delete</button>
+        <button (click)="onPublish()">Publish</button>
+        <button (click)="onEdit()">Edit</button>
+        <button (click)="onDelete()">Delete</button>
     </div>
 </div>

@@ -1,1 +1,18 @@
-<p>plan-page works!</p>
+<section *ngIf="publication">
+    <header>
+        <div class="author">
+            <span>{{publication.author}}</span>
+        </div>
+        <div class="dates">
+            <small>Created: {{publication.created | date:'MMMM d, y - H:mm:ss'}}</small>
+            <small *ngIf="publication.modified">Modified: {{publication.modified | date:'MMMM d, y - H:mm:ss'}}</small>
+        </div>
+    </header>
+    <hr>
+    <body>
+        <article>
+            <h1>{{publication.title}}</h1>
+            <quill-view-html [content]="publication.text"></quill-view-html>
+        </article>
+    </body>
+</section>

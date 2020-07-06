@@ -8,17 +8,28 @@ import { PlanCard } from '../../interfaces';
 })
 export class PlanCardComponent implements OnInit {
     @Input() plan: PlanCard
+    @Input() isAuthor = false
     meta = {
         likes: 0,
         dislikes: 0,
         comments: 0,
         saved: false
     }
-    isAuthor = false
 
     constructor() { }
 
     ngOnInit(): void {
     }
 
+    onEdit() {
+
+    }
+
+    onDelete() {
+
+    }
+
+    onPublish() {
+
+    }
 }

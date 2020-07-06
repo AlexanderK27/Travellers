@@ -28,6 +28,10 @@
         </div>
     </div>
 </div>
-<div class="publications">
-
+<div class="publications" *ngIf="publications.length">
+    <app-plan-card
+        *ngFor="let post of publications"
+        [plan]="post"
+        [isAuthor]="true"
+    ></app-plan-card>
 </div>

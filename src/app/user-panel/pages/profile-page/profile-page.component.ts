@@ -12,23 +12,22 @@ import { PublicationService } from 'src/app/shared/services/publication.service'
 export class ProfilePageComponent implements OnInit {
     user: UserData
     userSub: Subscription
-    publications: Array<Publication>
+    publications: Array<Publication> = []
 
     constructor(
         private userService: UserService,
         private pubService: PublicationService
     ) {
-        // this.userSub = this.userService.userData$.subscribe(user => {
-        //     this.user = user
-        // })
-    }
-
-    ngOnInit(): void {
         this.userSub = this.userService.userData$.subscribe(user => {
             this.user = user
         })
-        this.pubService.getMyPublications(this.user.userId).subscribe(pubs => {
-            console.log(pubs)
+    }
+
+    ngOnInit(): void {
+        this.pubService.getMyPublications().subscribe(pubs => {
+            const posts: Array<Publication> = Object.values(pubs)
+            const links = Object.keys(pubs)
+            this.publications = posts.map((post, idx) => ({...post, link: links[idx]}))
         })
     }
 

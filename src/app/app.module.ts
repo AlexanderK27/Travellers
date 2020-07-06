@@ -1,9 +1,9 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Provider } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
+import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
 import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
@@ -42,9 +42,8 @@ const INTERCEPTOR_PROVIDER: Provider = {
     imports: [
         BrowserModule,
         AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        HttpClientModule
+        HttpClientModule,
+        SharedModule
     ],
     providers: [INTERCEPTOR_PROVIDER],
     bootstrap: [AppComponent]

@@ -1,0 +1,29 @@
+$cardWidth: 300px;
+
+.card {
+    width: $cardWidth;
+    margin-bottom: 30px;
+    border: 1px solid #999;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+img {
+    width: 100%;
+    max-height: $cardWidth;
+}
+
+p {
+    margin: 10px;
+    font-weight: bold;
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+}

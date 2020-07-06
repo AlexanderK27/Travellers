@@ -7,6 +7,7 @@ import { CreatePageComponent } from './pages/create-page/create-page.component';
 import { EditPageComponent } from './pages/edit-page/edit-page.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { SettingsPageComponent } from './pages/settings-page/settings-page.compo
     ],
     imports: [
         CommonModule,
-        UserPanelRoutingModule
+        UserPanelRoutingModule,
+        SharedModule
     ]
 })
 export class UserPanelModule {}

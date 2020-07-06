@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="header">
+        <span>{{plan.author}}</span>
+        <i>link</i>
+    </div>
+    <img [src]="plan.poster" alt="Plan poster">
+    <p>{{plan.title}}</p>
+    <div *ngIf="meta" class="meta">
+        <i>O {{meta.likes}}</i>
+        <i>O {{meta.dislikes}}</i>
+        <i>O {{meta.comments}}</i>
+        <i>{{meta.saved}}</i>
+    </div>
+    <div *ngIf="isAuthor" class="buttons">
+        <button>Publish</button>
+        <button>Edit</button>
+        <button>Delete</button>
+    </div>
+</div>

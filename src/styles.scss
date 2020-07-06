@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.snow.css";
 
 * {
     box-sizing: border-box;
@@ -20,4 +22,20 @@ a {
 
 ul {
     list-style: none;
+}
+
+.file-input {
+    display: none;
+}
+
+.form-control {
+    label, input {
+        display: block;
+    }
+}
+
+.quill {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PlanCard } from '../../interfaces';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-plan-card',
@@ -16,13 +17,15 @@ export class PlanCardComponent implements OnInit {
         saved: false
     }
 
-    constructor() { }
+    constructor(
+        private router: Router
+    ) { }
 
     ngOnInit(): void {
     }
 
     onEdit() {
-
+        this.router.navigate(['/profile', 'edit', this.plan.link])
     }
 
     onDelete() {

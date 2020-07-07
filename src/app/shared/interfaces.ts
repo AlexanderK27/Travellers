@@ -1,8 +1,15 @@
 import { ImageSource } from './types'
 
+export interface PubAllowedChanges {
+    modified: Date
+    poster: ImageSource
+    text: string
+    title: string
+}
+
 export interface FirebaseAuthResponse {
-    idToken: string
     expiresIn: string
+    idToken: string
     localId: string
 }
 
@@ -11,33 +18,35 @@ export interface PlanCard {
     authorId: string
     poster: ImageSource
     title: string
+
+    comments?: number
+    dislikes?: number
     link?: string
     likes?: number
-    dislikes?: number
-    comments?: number
     saved?: boolean
 }
 
 export interface ProfileData {
+    avatar: ImageSource
+    bio: string
     name: string
     website: string
-    bio: string
-    avatar: ImageSource
 }
 
 export interface Publication {
-    published: boolean
-    created: Date
-    modified?: Date
-    authorId: string
     author: string
+    authorId: string
+    created: Date
     poster: ImageSource
-    title: string
+    published: boolean
     text: string
-    link?: string
-    likes?: number
-    dislikes?: number
+    title: string
+
     comments?: number
+    dislikes?: number
+    likes?: number
+    link?: string
+    modified?: Date
     saved?: boolean
 }
 
@@ -50,8 +59,9 @@ export interface UserCredentials {
 export interface UserData {
     userId: string
     username: string
+
+    avatar?: ImageSource
+    bio?: string
     name?: string
     website?: string
-    bio?: string
-    avatar?: ImageSource
 }

@@ -1,1 +1,59 @@
-<p>edit-page works!</p>
+<div class="form-wrapper">
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="view">
+            <app-plan-card
+                [plan]="planView"
+            ></app-plan-card>
+            <div
+                class="form-control"
+                [ngClass]="{invalid: form.get('title').touched && form.get('title').invalid}"
+            >
+                <label for="title">Title:</label>
+                <input
+                    id="title"
+                    type="text"
+                    formControlName="title"
+                    maxlength="100"
+                    (input)="setPlanViewTitle()"
+                >
+                <div
+                    *ngIf="form.get('title').touched && form.get('title').invalid"
+                    class="validation"
+                >
+                    <small *ngIf="form.get('title').errors.required">
+                        Field is required
+                    </small>
+                </div>
+            </div>
+            <div>
+                <input
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    (change)="uploadFile($event)"
+                    class="file-input"
+                    #fileInput
+                >
+                <button type="button" (click)="fileInput.click()">
+                    Upload front picture
+                </button>
+            </div>
+        </div>
+        <div class="form-control quill">
+            <quill-editor
+                [styles]="quillStyle"
+                [modules]="quillConfig"
+                formControlName="text"
+                placeholder="Write your trip plan here"
+            ></quill-editor>
+        </div>
+        <div class="buttons">
+            <button
+                type="submit"
+                [disabled]="form.invalid || submitted"
+                (submit)="onSubmit()"
+            >
+                Save changes
+            </button>
+        </div>
+    </form>
+</div>

@@ -33,5 +33,6 @@
         *ngFor="let post of publications"
         [plan]="post"
         [isAuthor]="true"
+        (deletePub)="onDeletePublication($event)"
     ></app-plan-card>
 </div>

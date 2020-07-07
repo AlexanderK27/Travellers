@@ -25,6 +25,14 @@ export class PublicationService {
         return this.http.post(`${this.urlToPublications}.json`, publication)
     }
 
+    deletePublication(authorId: string, pubId: string): Observable<any> {
+        if (authorId !== this.user.userId) {
+            this.alert.danger('Operation not allowed. You are not the author of this article.')
+            return
+        }
+        return this.http.delete(`${this.urlToPublications}/${pubId}.json`)
+    }
+
     getMyPublications(): Observable<any> {
         return this.http.get(`${this.urlToPublications}.json?orderBy="authorId"&equalTo="${this.user.userId}"`)
     }

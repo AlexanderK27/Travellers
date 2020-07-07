@@ -1,10 +1,9 @@
 import { ImageSource } from './types'
 
-export interface PubAllowedChanges {
-    modified: Date
-    poster: ImageSource
+export interface Confirmation {
+    callback: Function
+    confirmButtonTitle: string
     text: string
-    title: string
 }
 
 export interface FirebaseAuthResponse {
@@ -31,6 +30,13 @@ export interface ProfileData {
     bio: string
     name: string
     website: string
+}
+
+export interface PubAllowedChanges {
+    modified: Date
+    poster: ImageSource
+    text: string
+    title: string
 }
 
 export interface Publication {

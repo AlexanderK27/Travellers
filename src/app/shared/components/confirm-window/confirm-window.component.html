@@ -1,0 +1,10 @@
+<div class="backdrop" (click)="onCancel()">
+    <div class="window">
+        <i (click)="onCancel()">Close</i>
+        <p>{{settings.text}}</p>
+        <div class="buttons">
+            <button (click)="onCancel()">Cancel</button>
+            <button (click)="onConfirm()">{{settings.confirmButtonTitle}}</button>
+        </div>
+    </div>
+</div>

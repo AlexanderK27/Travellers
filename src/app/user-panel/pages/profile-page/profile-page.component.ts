@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/shared/services/user.service';
 import { Subscription } from 'rxjs';
-import { UserData, ProfileData, Publication } from 'src/app/shared/interfaces';
+import { UserData, Publication } from 'src/app/shared/interfaces';
 import { PublicationService } from 'src/app/shared/services/publication.service';
+import { Event } from '@angular/router';
 
 @Component({
     selector: 'app-profile-page',
@@ -31,4 +32,7 @@ export class ProfilePageComponent implements OnInit {
         })
     }
 
+    onDeletePublication(id: string) {
+        this.publications = this.publications.filter(pub => pub.link !== id)
+    }
 }

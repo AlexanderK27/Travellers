@@ -3,10 +3,14 @@
         <span>{{plan.author}}</span>
         <i>link</i>
     </div>
-    <a [routerLink]="['/plan', plan.link]">
-        <img [src]="plan.poster" alt="Plan poster" >
+    <a *ngIf="plan.link; else withoutLink" [routerLink]="['/plan', plan.link]">
+        <img [src]="plan.poster || '../../../../assets/avatar.jpg'" alt="Plan poster" >
         <p>{{plan.title}}</p>
     </a>
+    <ng-template #withoutLink>
+        <img [src]="plan.poster || '../../../../assets/avatar.jpg'" alt="Plan poster" >
+        <p>{{plan.title}}</p>
+    </ng-template>
     <div *ngIf="meta" class="meta">
         <i>O {{meta.likes}}</i>
         <i>O {{meta.dislikes}}</i>
@@ -19,3 +23,8 @@
         <button (click)="onDelete()">Delete</button>
     </div>
 </div>
+<app-confirm-window
+    *ngIf="window"
+    [settings]="window"
+    (closeWindow)="onCloseWindow($event)"
+></app-confirm-window>

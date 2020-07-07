@@ -22,6 +22,7 @@ export interface PlanCard {
     dislikes?: number
     link?: string
     likes?: number
+    published?: boolean
     saved?: boolean
 }
 
@@ -68,6 +69,12 @@ export interface UserData {
 
     avatar?: ImageSource
     bio?: string
+    disliked?: Array<string>
+    liked?: Array<string>
     name?: string
+    publications?: number
+    saved?: Array<string>
+    subscribed?: Array<string>
+    subscribers?: number
     website?: string
 }

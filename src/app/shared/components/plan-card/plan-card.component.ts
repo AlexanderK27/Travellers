@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PlanCard, Confirmation } from '../../interfaces';
+import { PlanCard, Confirmation, UserData } from '../../interfaces';
 import { Router } from '@angular/router';
 import { PublicationService } from '../../services/publication.service';
 import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-plan-card',
@@ -13,19 +15,25 @@ export class PlanCardComponent implements OnInit {
     @Input() plan: PlanCard
     @Input() isAuthor = false
     @Output() deletePub: EventEmitter<string> = new EventEmitter<string>()
-    meta = {
-        likes: 0,
-        dislikes: 0,
-        comments: 0,
-        saved: false
-    }
+    user: UserData
     window: Confirmation = null
 
     constructor(
         private alert: AlertService,
+        private auth: AuthService,
+        private userService: UserService,
         private pubService: PublicationService,
         private router: Router
-    ) { }
+    ) {
+        this.userService.userData$.subscribe(user => {
+            this.user = {
+                ...user,
+                disliked: user.disliked || [],
+                liked: user.liked || [],
+                saved: user.saved || []
+            }
+        })
+    }
 
     ngOnInit(): void {
     }
@@ -57,7 +65,44 @@ export class PlanCardComponent implements OnInit {
         }
     }
 
-    onPublish() {
+    onDislike() {
+        if(this.auth.isAuthenticated()) {
+            this.pubService.dislikePublication(this.plan.link)
+        } else {
+            this.alert.warning('Please authorize')
+        }
+    }
 
+    onLike() {
+        if(this.auth.isAuthenticated()) {
+            this.pubService.likePublication(this.plan.link)
+        } else {
+            this.alert.warning('Please authorize')
+        }
+    }
+
+    onOpenComments() {
+        this.router.navigate(['/plan', this.plan.link], {
+            fragment: '#comments'
+        })
+    }
+
+    onPublish(state: boolean) {
+        this.pubService.publishPublication(this.plan.link, state).subscribe(() => {
+            this.plan.published = state
+            if (state) {
+                this.alert.success('Your publication is open for everyone now')
+            } else [
+                this.alert.success('Your publication has been hidden from search engine')
+            ]
+        })
+    }
+
+    onSave() {
+        if(this.auth.isAuthenticated()) {
+            this.pubService.savePublication(this.plan.link)
+        } else {
+            this.alert.warning('Please authorize')
+        }
     }
 }

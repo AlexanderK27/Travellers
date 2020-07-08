@@ -29,10 +29,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.pubService.getMyPublications().subscribe(pubs => {
-            const posts: Array<Publication> = Object.values(pubs)
-            const links = Object.keys(pubs)
-            const publications = posts.map((post, idx) => ({...post, link: links[idx]}))
-            this.pubService.publications$.next(publications)
+            this.pubService.publications$.next(Object.values(pubs))
         })
     }
 

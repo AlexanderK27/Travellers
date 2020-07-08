@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Publication, UserData, PubAllowedChanges } from '../interfaces';
 import { UserService } from './user.service';
 import { AlertService } from './alert.service';
+import { mergeMap } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class PublicationService {
@@ -23,7 +24,10 @@ export class PublicationService {
     }
 
     createPublication(publication: Publication): Observable<any> {
-        return this.http.post(`${this.urlToPublications}.json`, publication)
+        return this.http.post<{name: string}>(`${this.urlToPublications}.json`, publication)
+            .pipe(
+                mergeMap(({name}) => this.http.patch(`${this.urlToPublications}/${name}.json`, {link: name}))
+            )
     }
 
     deletePublication(authorId: string, pubId: string): Observable<any> {
@@ -68,6 +72,19 @@ export class PublicationService {
         return this.http.get(`${this.urlToPublications}/${id}.json`)
     }
 
+    getSavedPublications() {
+        const requests = []
+        if (this.user.saved && this.user.saved.length) {
+            const saved = [...this.user.saved]
+            for (let ids of saved) {
+                requests.push(this.getPublication(ids))
+            }
+            forkJoin(requests).subscribe((pubs: Publication[]) => this.publications$.next(pubs))
+        } else {
+            this.publications$.next([])
+        }
+    }
+
     likePublication(pubId: string): void {
         let likes = 0
         let liked = [].concat(this.user.liked || [])
@@ -98,11 +115,15 @@ export class PublicationService {
         return this.http.patch(`${this.urlToPublications}/${pubId}.json`, {published: state})
     }
 
-    savePublication(pubId: string): void {
+    savePublication(pubId: string, savedPage: boolean): void {
         let saved = [].concat(this.user.saved || [])
         !saved.includes(pubId) ? saved.unshift(pubId) : saved = saved.filter(id => id !== pubId)
-
         this.userService.userData$.next({ ...this.user, saved })
+
+        if (savedPage) {
+            const savedPubs = this.pubs.filter(pub => pub.link !== pubId)
+            this.publications$.next(savedPubs)
+        }
 
         this.http.patch(`${environment.firebaseDbUrl}users/${this.user.userId}.json`, {saved}).subscribe(() => {})
     }

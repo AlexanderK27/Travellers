@@ -1,1 +1,12 @@
-<p>saved-page works!</p>
+<section *ngIf="loading; else ready" class="center">
+    <app-loader></app-loader>
+</section>
+<ng-template #ready>
+    <section>
+        <app-plan-card
+            *ngFor="let post of publications"
+            [plan]="post"
+            [savedPage]="true"
+        ></app-plan-card>
+    </section>
+</ng-template>

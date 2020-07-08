@@ -14,6 +14,7 @@ import { UserService } from '../../services/user.service';
 export class PlanCardComponent implements OnInit {
     @Input() plan: PlanCard
     @Input() isAuthor = false
+    @Input() savedPage = false
     @Output() deletePub: EventEmitter<string> = new EventEmitter<string>()
     user: UserData
     window: Confirmation = null
@@ -100,7 +101,7 @@ export class PlanCardComponent implements OnInit {
 
     onSave() {
         if(this.auth.isAuthenticated()) {
-            this.pubService.savePublication(this.plan.link)
+            this.pubService.savePublication(this.plan.link, this.savedPage)
         } else {
             this.alert.warning('Please authorize')
         }

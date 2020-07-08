@@ -5,9 +5,14 @@ import { QuillModule } from 'ngx-quill';
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
 import { RouterModule } from '@angular/router';
 import { ConfirmWindowComponent } from './components/confirm-window/confirm-window.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
-    declarations: [PlanCardComponent, ConfirmWindowComponent],
+    declarations: [
+        PlanCardComponent,
+        ConfirmWindowComponent,
+        LoaderComponent
+    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -19,7 +24,8 @@ import { ConfirmWindowComponent } from './components/confirm-window/confirm-wind
         FormsModule,
         ReactiveFormsModule,
         QuillModule,
-        PlanCardComponent
+        PlanCardComponent,
+        LoaderComponent
     ]
 })
 export class SharedModule { }

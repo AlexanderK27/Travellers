@@ -1,12 +1,7 @@
-<div class="profile-data">
-    <div *ngIf="user.avatar; else defaultAvatar" class="image-wrapper">
-        <img [src]="user.avatar" alt="User avatar">
+<div *ngIf="user" class="profile-data">
+    <div class="image-wrapper">
+        <img [src]="user.avatar || '../../../../assets/avatar.jpg'" alt="Your avatar">
     </div>
-    <ng-template #defaultAvatar>
-        <div class="image-wrapper">
-            <img src="../../../../assets/avatar.jpg" alt="User avatar">
-        </div>
-    </ng-template>
     <div class="information">
         <h4>{{user.username}}</h4>
         <p *ngIf="user.name">{{user.name}}</p>
@@ -14,15 +9,15 @@
         <p *ngIf="user.bio">{{user.bio}}</p>
         <div class="statistics">
             <div class="block">
-                <strong>4</strong>
+                <strong>{{user.publications || 0}}</strong>
                 <span>publications</span>
             </div>
             <div class="block">
-                <strong>53</strong>
+                <strong>{{user.subscribers || 0}}</strong>
                 <span>subscribers</span>
             </div>
             <div class="block">
-                <strong>57</strong>
+                <strong>{{user.subscriptions ? user.subscriptions.length : 0}}</strong>
                 <span>subscribtions</span>
             </div>
         </div>

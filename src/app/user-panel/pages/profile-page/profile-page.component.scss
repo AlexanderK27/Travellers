@@ -22,14 +22,24 @@
 
 .block {
     display: inline-block;
-    width: 50px;
+    width: 70px;
     margin: 4px;
     padding: 4px;
-    overflow: hidden;
     text-align: center;
+    transition: 0.2s;
+    cursor: default;
+
+    &:hover {
+        width: 90px;
+
+        span { overflow: visible;}
+    }
 
     span {
         display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 }
 

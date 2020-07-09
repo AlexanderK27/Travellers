@@ -26,7 +26,10 @@ export class PublicationService {
     createPublication(publication: Publication): Observable<any> {
         return this.http.post<{name: string}>(`${this.urlToPublications}.json`, publication)
             .pipe(
-                mergeMap(({name}) => this.http.patch(`${this.urlToPublications}/${name}.json`, {link: name}))
+                mergeMap(({name}) => this.http.patch(`${this.urlToPublications}/${name}.json`, {link: name})),
+                mergeMap(() => this.http.patch(`${environment.firebaseDbUrl}users/${this.user.userId}.json`, {
+                    publications: (this.user.publications || 0) + 1
+                }))
             )
     }
 

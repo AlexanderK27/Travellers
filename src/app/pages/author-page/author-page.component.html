@@ -9,7 +9,7 @@
         <p *ngIf="author.bio">{{author.bio}}</p>
         <div class="statistics">
             <div class="block">
-                <strong>4</strong>
+                <strong>{{author.publications || 0}}</strong>
                 <span>publications</span>
             </div>
             <div class="block">

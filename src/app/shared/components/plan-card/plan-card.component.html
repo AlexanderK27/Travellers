@@ -1,9 +1,9 @@
 <div *ngIf="plan.link; else demo" class="card">
     <div class="header">
-        <span>{{plan.author}}</span>
+        <span [routerLink]="['/author', plan.author]">{{plan.author}}</span>
         <i>link</i>
     </div>
-    <a  [routerLink]="['/plan', plan.link]">
+    <a [routerLink]="['/plan', plan.link]">
         <img [src]="plan.poster || '../../../../assets/avatar.jpg'" alt="Plan poster">
         <p>{{plan.title}}</p>
     </a>

@@ -1,0 +1,50 @@
+<div class="profile-data" *ngIf="author">
+    <div class="image-wrapper">
+        <img [src]="author.avatar || '../../../../assets/avatar.jpg'" alt="Avatar">
+    </div>
+    <div class="information">
+        <h4>{{author.username}}</h4>
+        <p *ngIf="author.name">{{author.name}}</p>
+        <p *ngIf="author.website">{{author.website}}</p>
+        <p *ngIf="author.bio">{{author.bio}}</p>
+        <div class="statistics">
+            <div class="block">
+                <strong>4</strong>
+                <span>publications</span>
+            </div>
+            <div class="block">
+                <strong>{{author.subscribers || 0}}</strong>
+                <span>subscribers</span>
+            </div>
+            <div class="block">
+                <strong>{{author.subscriptions ? author.subscriptions.length : 0}}</strong>
+                <span>subscribtions</span>
+            </div>
+        </div>
+        <div *ngIf="author.userId !== user.userId">
+            <button
+                *ngIf="!user.subscriptions || !user.subscriptions.includes(author.username); else unsub"
+                type="button"
+                [disabled]="btnPressed"
+                (click)="onSubscribe(true)"
+            >
+                Subscribe
+            </button>
+            <ng-template #unsub>
+                <button
+                    type="button"
+                    [disabled]="btnPressed"
+                    (click)="onSubscribe(false)"
+                >
+                    Unsubscribe
+                </button>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<div class="publications" *ngIf="publications.length">
+    <app-plan-card
+        *ngFor="let post of publications"
+        [plan]="post"
+    ></app-plan-card>
+</div>

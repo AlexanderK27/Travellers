@@ -17,6 +17,7 @@ import { AlertComponent } from './shared/components/alert/alert.component';
 import { ImgCropperComponent } from './shared/components/img-cropper/img-cropper.component';
 import { ImgPickerComponent } from './shared/components/img-picker/img-picker.component';
 import { AuthInterceptor } from './shared/services/auth.interceptor';
+import { AuthorPageComponent } from './pages/author-page/author-page.component';
 
 const INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -38,6 +39,7 @@ const INTERCEPTOR_PROVIDER: Provider = {
         AlertComponent,
         ImgCropperComponent,
         ImgPickerComponent,
+        AuthorPageComponent,
     ],
     imports: [
         BrowserModule,

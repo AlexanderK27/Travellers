@@ -74,7 +74,7 @@ export interface UserData {
     name?: string
     publications?: number
     saved?: Array<string>
-    subscribed?: Array<string>
     subscribers?: number
+    subscriptions?: Array<string>
     website?: string
 }

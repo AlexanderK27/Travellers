@@ -1,1 +1,6 @@
-<p>home-page works!</p>
+<section *ngIf="publications">
+    <app-plan-card
+        *ngFor="let post of publications"
+        [plan]="post"
+    ></app-plan-card>
+</section>

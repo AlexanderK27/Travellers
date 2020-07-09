@@ -64,6 +64,10 @@ export class PublicationService {
         })
     }
 
+    getAuthorPublications(username: string): Observable<any> {
+        return this.http.get(`${this.urlToPublications}.json?orderBy="author"&equalTo="${username}"`)
+    }
+
     getMyPublications(): Observable<any> {
         return this.http.get(`${this.urlToPublications}.json?orderBy="authorId"&equalTo="${this.user.userId}"`)
     }
@@ -83,6 +87,10 @@ export class PublicationService {
         } else {
             this.publications$.next([])
         }
+    }
+
+    getTopPublications() {
+        return this.http.get(`${this.urlToPublications}.json?orderBy="likes"&limitToLast=12`)
     }
 
     likePublication(pubId: string): void {

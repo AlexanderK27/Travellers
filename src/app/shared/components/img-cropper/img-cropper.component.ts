@@ -12,6 +12,7 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy {
     @ViewChild('originalImage') imageElement: ElementRef;
     avatarSub: Subscription
     croppedImageSource = ''
+    minCroppedImageSource = ''
     originalImageSource: string | ArrayBuffer
 
     private cropper: Cropper
@@ -40,6 +41,7 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy {
 
     onSubmitAvatar() {
         this.avatarService.croppedAvatar$.next(this.croppedImageSource)
+        this.avatarService.minCroppedAvatar$.next(this.minCroppedImageSource)
         this.cropper.destroy()
     }
 
@@ -49,8 +51,10 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy {
             scalable: false,
             aspectRatio: 1,
             crop: () => {
-                const canvas = this.cropper.getCroppedCanvas()
+                const canvas = this.cropper.getCroppedCanvas({width: 420, height: 420})
                 this.croppedImageSource = canvas.toDataURL('image/jpeg')
+                const minCanvas = this.cropper.getCroppedCanvas({width: 36, height: 36})
+                this.minCroppedImageSource = minCanvas.toDataURL('image/jpeg')
             }
         })
     }

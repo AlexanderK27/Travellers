@@ -6,6 +6,7 @@ import { ImageSource } from '../types'
 export class AvatarService {
     avatar$: BehaviorSubject<ImageSource> = new BehaviorSubject<ImageSource>('')
     croppedAvatar$: BehaviorSubject<ImageSource> = new BehaviorSubject<ImageSource>('')
+    minCroppedAvatar$: BehaviorSubject<ImageSource> = new BehaviorSubject<ImageSource>('')
 
     constructor() {}
 }

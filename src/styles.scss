@@ -32,6 +32,10 @@ ul {
     height: 100%;
 }
 
+.cropper-crop-box, .cropper-view-box {
+    border-radius: 50%;
+}
+
 .file-input {
     display: none;
 }

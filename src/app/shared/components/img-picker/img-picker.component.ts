@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AvatarService } from '../../services/avatar.service';
+import { ImageSource } from '../../types';
 
 @Component({
     selector: 'app-img-picker',
@@ -10,7 +11,7 @@ import { AvatarService } from '../../services/avatar.service';
 })
 export class ImgPickerComponent implements OnDestroy {
     croppedAvatarSub: Subscription
-    croppedImageSrc: string | ArrayBuffer
+    croppedImageSrc: ImageSource
     defaultImageSrc = '../../../../assets/avatar.jpg'
     selectedFile = null
     showCropper = false
@@ -56,6 +57,7 @@ export class ImgPickerComponent implements OnDestroy {
         this.selectedFile = null
         this.avatarService.avatar$.next('')
         this.avatarService.croppedAvatar$.next('')
+        this.avatarService.minCroppedAvatar$.next('')
     }
 
     ngOnDestroy() {

@@ -48,6 +48,7 @@ export class EditPageComponent implements OnInit {
                 this.planView = {
                     author: publication.author,
                     authorId: publication.authorId,
+                    authorAv: publication.authorAv,
                     poster: publication.poster || '../../../../assets/avatar.jpg',
                     title: publication.title
                 }

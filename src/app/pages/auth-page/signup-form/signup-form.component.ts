@@ -20,6 +20,8 @@ export class SignupFormComponent implements OnInit, OnDestroy {
     profileDataForm: FormGroup // saves user's additional profile data
 
     avatarSub: Subscription
+    minAvatarSub: Subscription
+    minNewAvatar: ImageSource = ''
     newAvatar: ImageSource = ''
     newUserRegistered = false
     showPasswordValue = false
@@ -37,6 +39,9 @@ export class SignupFormComponent implements OnInit, OnDestroy {
     ) {
         this.avatarSub = this.avatar.croppedAvatar$.subscribe(image => {
             if (image) this.newAvatar = image
+        })
+        this.minAvatarSub = this.avatar.minCroppedAvatar$.subscribe(image => {
+            if (image) this.minNewAvatar = image
         })
         this.userSub = this.user.userData$.subscribe(data => {
             this.userData = data
@@ -83,7 +88,8 @@ export class SignupFormComponent implements OnInit, OnDestroy {
             name: this.profileDataForm.value.name,
             website: this.profileDataForm.value.website,
             bio: this.profileDataForm.value.bio,
-            avatar: this.newAvatar
+            avatar: this.newAvatar,
+            minAvatar: this.minNewAvatar
         }
 
         this.user.updateProfile(updatedProfile).subscribe(() => {
@@ -135,6 +141,7 @@ export class SignupFormComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.avatarSub.unsubscribe()
+        this.minAvatarSub.unsubscribe()
         this.userSub.unsubscribe()
     }
 }

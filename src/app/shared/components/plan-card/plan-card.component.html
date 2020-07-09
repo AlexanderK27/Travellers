@@ -1,6 +1,11 @@
 <div *ngIf="plan.link; else demo" class="card">
     <div class="header">
-        <span [routerLink]="['/author', plan.author]">{{plan.author}}</span>
+        <div [routerLink]="['/author', plan.author]">
+            <div class="image-wrapper">
+                <img [src]="plan.authorAv || '../../../../assets/avatar.jpg'" alt="Author's avatar">
+            </div>
+            <span>{{plan.author}}</span>
+        </div>
         <i>link</i>
     </div>
     <a [routerLink]="['/plan', plan.link]">
@@ -25,7 +30,12 @@
 <ng-template #demo>
     <div class="card">
         <div class="header">
-            <span>{{plan.author}}</span>
+            <div>
+                <div class="image-wrapper">
+                    <img [src]="plan.authorAv || '../../../../assets/avatar.jpg'" alt="Author's avatar">
+                </div>
+                <span>{{plan.author}}</span>
+            </div>
             <i>link</i>
         </div>
         <img [src]="plan.poster || '../../../../assets/avatar.jpg'" alt="Plan poster">

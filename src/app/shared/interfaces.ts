@@ -15,6 +15,7 @@ export interface FirebaseAuthResponse {
 export interface PlanCard {
     author: string
     authorId: string
+    authorAv: ImageSource
     poster: ImageSource
     title: string
 
@@ -43,6 +44,7 @@ export interface PubAllowedChanges {
 export interface Publication {
     author: string
     authorId: string
+    authorAv: ImageSource
     created: Date
     poster: ImageSource
     published: boolean
@@ -71,6 +73,7 @@ export interface UserData {
     bio?: string
     disliked?: Array<string>
     liked?: Array<string>
+    minAvatar?: ImageSource
     name?: string
     publications?: number
     saved?: Array<string>

@@ -32,6 +32,7 @@ export class CreatePageComponent implements OnInit {
     planView: PlanCard = {
         author: this.userService.user.username,
         authorId: this.userService.user.userId,
+        authorAv: this.userService.user.minAvatar,
         poster: '../../../../assets/avatar.jpg',
         title: 'Week in France'
     }
@@ -69,11 +70,15 @@ export class CreatePageComponent implements OnInit {
         }
 
         this.publications.createPublication(publication).subscribe(resp => {
-            console.log(resp)
+            this.userService.userData$.next({
+                ...this.userService.user,
+                publications: this.userService.user.publications + 1
+            })
             this.form.reset()
             this.planView = {
                 author: this.userService.user.username,
                 authorId: this.userService.user.userId,
+                authorAv: this.userService.user.minAvatar,
                 poster: '../../../../assets/avatar.jpg',
                 title: 'Week in France'
             }

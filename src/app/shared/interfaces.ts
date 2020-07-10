@@ -1,5 +1,15 @@
 import { ImageSource } from './types'
 
+export interface Comment {
+    created: Date
+    username: string
+    userAv: ImageSource
+    text: string
+
+    answers?: Comment[]
+    id?: string
+}
+
 export interface Confirmation {
     callback: Function
     confirmButtonTitle: string

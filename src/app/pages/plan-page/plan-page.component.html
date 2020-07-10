@@ -15,7 +15,44 @@
             <quill-view-html [content]="publication.text"></quill-view-html>
         </article>
         <div id="comments">
-
+            <button
+                *ngIf="showGetCommentsBtn; else commentsBlock"
+                type="button"
+                [disabled]="submitted"
+                (click)="fetchComments()"
+            >Load comments {{publication.comments || null}}</button>
+            <ng-template #commentsBlock>
+                <div *ngIf="auth.isAuthenticated(); else notAuthed" class="comment-form">
+                    <textarea [(ngModel)]="commentText" (input)="autoResize($event)"></textarea>
+                    <div class="buttons">
+                        <button
+                            type="button"
+                            [disabled]="!commentText || submitted"
+                            (click)="cancelCommenting()"
+                        >Cancel</button>
+                        <button
+                            type="submit"
+                            [disabled]="!commentText || submitted"
+                            (click)="saveComment()"
+                        >Submit</button>
+                    </div>
+                </div>
+                <ng-template #notAuthed>
+                    <div class="not-authorized">
+                        <p>Only authorized users can comment</p>
+                    </div>
+                </ng-template>
+                <div *ngIf="comments.length; else noComments" class="comments">
+                    <app-comment
+                        *ngFor="let comment of comments"
+                        [comment]="comment"
+                        (onAddAnswer)="saveAnswer($event)"
+                    ></app-comment>
+                </div>
+                <ng-template #noComments>
+                    <p>There are no comments yet</p>
+                </ng-template>
+            </ng-template>
         </div>
     </body>
 </section>

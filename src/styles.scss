@@ -24,6 +24,22 @@ ul {
     list-style: none;
 }
 
+textarea {
+    resize: none;
+    padding: 0 12px;
+    border: none;
+    border-bottom: 1px solid #555;
+    background-color: #fefefe;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    line-height: 1.2;
+    outline: none;
+
+    &:focus {
+        background-color: #eee;
+    }
+}
+
 .center {
     display: flex;
     justify-content: center;

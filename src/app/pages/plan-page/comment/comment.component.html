@@ -1,0 +1,48 @@
+<div class="comment">
+    <div class="image-wrapper">
+        <img [src]="comment.userAv || '../../../assets/avatar.jpg'" alt="Avatar">
+    </div>
+    <div class="content">
+        <p>
+            <span>{{comment.username}}</span>
+            <small>{{comment.created | date:'MMMM d, y - H:mm'}}</small>
+        </p>
+        <p class="text">{{comment.text}}</p>
+        <strong
+            *ngIf="comment.answers"
+            (click)="showHideAnswers()"
+        >
+            {{showAnswers ? 'hide comments' : 'comments ' + comment.answers.length}}
+        </strong>
+        <button type="button" (click)="showHideAnswerForm()">Answer</button>
+    </div>
+    <div *ngIf="showForm" class="comment-form">
+        <textarea [(ngModel)]="answerText" (input)="autoResize($event)"></textarea>
+        <div class="buttons">
+            <button
+                type="button"
+                [disabled]="!answerText || submitted"
+                (click)="cancelAnswering()"
+            >Cancel</button>
+            <button
+                type="submit"
+                [disabled]="!answerText || submitted"
+                (click)="submitAnswer()"
+            >Submit</button>
+        </div>
+    </div>
+    <div *ngIf="showAnswers">
+        <div *ngFor="let answer of comment.answers" class="comment">
+            <div class="image-wrapper">
+                <img [src]="answer.userAv || '../../../assets/avatar.jpg'" alt="Avatar">
+            </div>
+            <div class="content">
+                <p>
+                    <span>{{answer.username}}</span>
+                    <small>{{answer.created | date:'MMMM d, y - H:mm'}}</small>
+                </p>
+                <p class="text">{{answer.text}}</p>
+            </div>
+        </div>
+    </div>
+</div>

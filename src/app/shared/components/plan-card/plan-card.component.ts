@@ -84,7 +84,7 @@ export class PlanCardComponent implements OnInit {
 
     onOpenComments() {
         this.router.navigate(['/plan', this.plan.link], {
-            fragment: '#comments'
+            fragment: 'comments'
         })
     }
 

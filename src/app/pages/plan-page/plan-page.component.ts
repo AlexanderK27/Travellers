@@ -39,6 +39,10 @@ export class PlanPageComponent implements OnInit {
         })
     }
 
+    addEmoji({ emoji }) {
+        this.commentText = this.commentText + emoji.native
+    }
+
     autoResize(event) {
         event.target.style.height = "0px"
         event.target.style.height = (event.target.scrollHeight + 16) + "px"

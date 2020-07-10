@@ -1,6 +1,7 @@
 import { NgModule, Provider } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -47,7 +48,8 @@ const INTERCEPTOR_PROVIDER: Provider = {
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
-        SharedModule
+        SharedModule,
+        PickerModule
     ],
     providers: [INTERCEPTOR_PROVIDER],
     bootstrap: [AppComponent]

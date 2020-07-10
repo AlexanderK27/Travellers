@@ -24,6 +24,16 @@
             <ng-template #commentsBlock>
                 <div *ngIf="auth.isAuthenticated(); else notAuthed" class="comment-form">
                     <textarea [(ngModel)]="commentText" (input)="autoResize($event)"></textarea>
+                    <emoji-mart
+                        color="#880000"
+                        emoji=""
+                        [emojiSize]="16"
+                        [enableSearch]="false"
+                        [isNative]="true"
+                        [perLine]="8"
+                        [showPreview]="false"
+                        (emojiSelect)="addEmoji($event)"
+                    ></emoji-mart>
                     <div class="buttons">
                         <button
                             type="button"

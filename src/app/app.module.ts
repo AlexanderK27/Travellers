@@ -15,8 +15,6 @@ import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 import { LoginFormComponent } from './pages/auth-page/login-form/login-form.component';
 import { SignupFormComponent } from './pages/auth-page/signup-form/signup-form.component';
 import { AlertComponent } from './shared/components/alert/alert.component';
-import { ImgCropperComponent } from './shared/components/img-cropper/img-cropper.component';
-import { ImgPickerComponent } from './shared/components/img-picker/img-picker.component';
 import { AuthInterceptor } from './shared/services/auth.interceptor';
 import { AuthorPageComponent } from './pages/author-page/author-page.component';
 import { CommentComponent } from './pages/plan-page/comment/comment.component';
@@ -39,8 +37,6 @@ const INTERCEPTOR_PROVIDER: Provider = {
         LoginFormComponent,
         SignupFormComponent,
         AlertComponent,
-        ImgCropperComponent,
-        ImgPickerComponent,
         AuthorPageComponent,
         CommentComponent,
     ],

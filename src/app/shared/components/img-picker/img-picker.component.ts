@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AvatarService } from '../../services/avatar.service';
@@ -10,9 +10,9 @@ import { ImageSource } from '../../types';
     styleUrls: ['./img-picker.component.scss']
 })
 export class ImgPickerComponent implements OnDestroy {
+    @Input('src') defaultImageSrc: ImageSource = '../../../../assets/avatar.jpg'
     croppedAvatarSub: Subscription
     croppedImageSrc: ImageSource
-    defaultImageSrc = '../../../../assets/avatar.jpg'
     selectedFile = null
     showCropper = false
     showNewImage = false

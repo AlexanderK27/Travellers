@@ -41,6 +41,18 @@ export class PublicationService {
         return this.http.delete(`${this.urlToPublications}/${pubId}.json`)
     }
 
+    deletePublications(): Observable<any> {
+        const deleteRequests = []
+        return this.getMyPublications().pipe(
+            mergeMap((posts: Object) => {
+                for (let id of Object.keys(posts)) {
+                    deleteRequests.push(this.http.delete(`${this.urlToPublications}/${id}.json`))
+                }
+                return forkJoin(deleteRequests)
+            })
+        )
+    }
+
     dislikePublication(pubId: string): void {
         let dislikes = 0
         let disliked = [].concat(this.user.disliked || [])

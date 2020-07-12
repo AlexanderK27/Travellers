@@ -1,0 +1,26 @@
+.settings {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+.section {
+    display: flex;
+    width: 100%;
+}
+
+.block {
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+
+    p {
+        font-size: 0.9rem;
+    }
+}
+
+.bio {
+    padding: 0;
+    background: #fff;
+    border: 1px solid #000;
+}

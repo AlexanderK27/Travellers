@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
-import { UserData, ProfileData } from '../interfaces';
+import { UserData } from '../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { mergeMap } from 'rxjs/operators';
@@ -10,17 +10,16 @@ export class UserService {
     urlToUsers = `${environment.firebaseDbUrl}users`
     user: UserData
     userSub: Subscription
-    userData$: BehaviorSubject<UserData> = new BehaviorSubject<UserData>({
-        userId: '',
-        username: ''
-    })
+    userData$: BehaviorSubject<UserData> = new BehaviorSubject<UserData>(null)
 
-    constructor(
-        private http: HttpClient
-    ) {
+    constructor(private http: HttpClient) {
         this.userSub = this.userData$.subscribe(user => {
             this.user = user
         })
+    }
+
+    deleteUser(): Observable<any> {
+        return this.http.delete(`${this.urlToUsers}/${this.user.userId}.json`)
     }
 
     fetchUser(userId: string): Observable<any> {
@@ -50,7 +49,7 @@ export class UserService {
         )
     }
 
-    updateProfile(profileData: ProfileData): Observable<any> {
-        return this.http.patch(`${this.urlToUsers}/${this.user.userId}.json`, profileData)
+    updateProfile(updates: Object): Observable<any> {
+        return this.http.patch(`${this.urlToUsers}/${this.user.userId}.json`, updates)
     }
 }

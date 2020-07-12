@@ -1,1 +1,180 @@
-<p>settings-page works!</p>
+<div *ngIf="user" class="settings">
+    <h2>Manage your profile</h2>
+    <div class="section">
+        <div class="block">
+            <h4>Update avatar</h4>
+            <p>This picture will appear on all your publications and comments</p>
+            <button
+                type="submit"
+                [disabled]="!newAvatar || !minNewAvatar || submitted"
+                (click)="saveAvatar()"
+            >Save new avatar</button>
+        </div>
+        <div class="block">
+            <app-img-picker
+                [src]="user.avatar || '../../../../assets/avatar.jpg'"
+            ></app-img-picker>
+        </div>
+    </div>
+    <div class="section">
+        <div class="block">
+            <h4>Write about yourself</h4>
+            <p>Let people find out who you are, what you do and how to contact with you</p>
+            <button
+                type="submit"
+                [disabled]="!profileDataChanged || profileDataForm.invalid || submitted"
+                (click)="saveProfileData()"
+            >Save changes</button>
+        </div>
+        <form [formGroup]="profileDataForm" class="block">
+            <div class="form-control">
+                <label for="name">Name</label>
+                <input
+                    id="name"
+                    type="text"
+                    maxlength="30"
+                    autocomplete="off"
+                    formControlName="name"
+                >
+            </div>
+            <div class="form-control">
+                <label for="website">Website</label>
+                <input
+                    id="website"
+                    type="text"
+                    maxlength="30"
+                    autocomplete="off"
+                    formControlName="website"
+                >
+            </div>
+            <div class="form-control">
+                <label for="bio">Short bio</label>
+                <textarea
+                    id="bio"
+                    class="bio"
+                    maxlength="70"
+                    autocomplete="off"
+                    formControlName="bio"
+                >{{profileDataForm.get('bio').value}}</textarea>
+                <small>
+                    {{70 - profileDataForm.get('bio').value.length}}
+                </small>
+            </div>
+        </form>
+    </div>
+    <div class="section">
+        <div class="block">
+            <h4>Change email</h4>
+            <p>This email is not public, you will use it to log in</p>
+            <button
+                type="submit"
+                [disabled]="emailForm.invalid || submitted"
+                (click)="saveEmail()"
+            >Save new email</button>
+        </div>
+        <form [formGroup]="emailForm" class="block">
+            <div
+                class="form-control"
+                [ngClass]="{invalid: emailForm.get('email').touched && emailForm.get('email').invalid}"
+            >
+                <label for="email">Email</label>
+                <input
+                    id="email"
+                    type="email"
+                    maxlength="30"
+                    formControlName="email"
+                >
+                <div
+                    *ngIf="emailForm.get('email').touched && emailForm.get('email').invalid"
+                    class="validation"
+                >
+                    <small *ngIf="emailForm.get('email').errors.required">
+                        Field is required
+                    </small>
+                    <small *ngIf="emailForm.get('email').errors.isEmail">
+                        Invalid email
+                    </small>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="section">
+        <div class="block">
+            <h4>Change password</h4>
+            <p>Use special charecters, digits and uppercase letter to make your password stronger</p>
+            <button
+                type="submit"
+                [disabled]="passwordForm.invalid || submitted"
+                (click)="savePassword()"
+            >Save new password</button>
+        </div>
+        <form [formGroup]="passwordForm" class="block">
+            <div
+                class="form-control"
+                [ngClass]="{invalid: passwordForm.get('password').touched && passwordForm.get('password').invalid}"
+            >
+                <label for="password">Old password</label>
+                <input
+                    id="password"
+                    type="{{showPassword ? 'text' : 'password'}}"
+                    maxlength="30"
+                    formControlName="password"
+                >
+                <i (click)="onShowHidePassword('showPassword')">
+                    {{showPassword ? 'hide' : 'show'}}
+                </i>
+                <div
+                    *ngIf="passwordForm.get('password').touched && passwordForm.get('password').invalid"
+                    class="validation"
+                >
+                    <small *ngIf="passwordForm.get('oldPassword').errors.required">
+                        Field is required
+                    </small>
+                    <small *ngIf="passwordForm.get('password').errors.minlength">
+                        {{onMinLengthError('password')}}
+                    </small>
+                </div>
+            </div>
+            <div
+                class="form-control"
+                [ngClass]="{invalid: passwordForm.get('confirmPass').touched && passwordForm.get('confirmPass').invalid}"
+            >
+                <label for="confirmPass">New password</label>
+                <input
+                    id="confirmPass"
+                    type="{{showConfirmPassword ? 'text' : 'password'}}"
+                    maxlength="30"
+                    formControlName="confirmPass"
+                >
+                <i (click)="onShowHidePassword('showConfirmPassword')">
+                    {{showConfirmPassword ? 'hide' : 'show'}}
+                </i>
+                <div
+                    *ngIf="passwordForm.get('confirmPass').touched && passwordForm.get('confirmPass').invalid"
+                    class="validation"
+                >
+                    <small *ngIf="passwordForm.get('confirmPass').errors.required">
+                        Field is required
+                    </small>
+                    <small *ngIf="passwordForm.get('confirmPass').errors.minlength">
+                        {{onMinLengthError('confirmPass')}}
+                    </small>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="section">
+        <div class="block">
+            <h4>Delete account</h4>
+            <p>After pressing this button, your account and all your publications will be deleted</p>
+        </div>
+        <div class="block">
+            <button type="button" (click)="deleteAccount()">Delete account</button>
+        </div>
+    </div>
+</div>
+<app-confirm-window
+    *ngIf="deleteWindow"
+    [settings]="deleteWindow"
+    (closeWindow)="closeDeleteWindow()"
+></app-confirm-window>

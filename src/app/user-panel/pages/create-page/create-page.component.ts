@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { PlanCard } from 'src/app/shared/interfaces';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { PlanCard, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
@@ -11,7 +13,21 @@ import { PublicationService } from 'src/app/shared/services/publication.service'
     styleUrls: ['./create-page.component.scss']
 })
 export class CreatePageComponent implements OnInit {
+    filterValues: Filters = {
+        amountCities: '',
+        amountCountries: '',
+        budget: '',
+        city: '',
+        continent: '',
+        country: '',
+        duration: '',
+        people: ''
+    }
     form: FormGroup
+    planView: PlanCard = null
+    selectedFile = null
+    submitted = false
+    userSub: Subscription
     quillConfig = {
         toolbar: [
             ['bold', 'italic', 'underline', 'strike'],
@@ -25,26 +41,27 @@ export class CreatePageComponent implements OnInit {
             ['link', 'image']
         ]
     }
-    quillStyle = {
-        minHeight: '300px',
-        fontSize: '1rem'
-    }
-    planView: PlanCard = {
-        author: this.userService.user.username,
-        authorId: this.userService.user.userId,
-        authorAv: this.userService.user.minAvatar,
-        poster: '../../../../assets/avatar.jpg',
-        title: 'Week in France'
-    }
-    submitted = false
+    quillStyle = {minHeight: '300px'}
 
     constructor(
         private alert: AlertService,
         private publications: PublicationService,
+        private router: Router,
         private userService: UserService
     ) {}
 
     ngOnInit(): void {
+        this.userSub = this.userService.userData$.subscribe(user => {
+            if (user) {
+                this.planView = {
+                    author: this.userService.user.username,
+                    authorId: this.userService.user.userId,
+                    authorAv: this.userService.user.minAvatar,
+                    poster: '../../../../assets/avatar.jpg',
+                    title: 'Week in France'
+                }
+            }
+        })
         this.form = new FormGroup({
             title: new FormControl('Week in France', [Validators.required, Validators.maxLength(150)]),
             text: new FormControl('', [Validators.required])
@@ -61,6 +78,10 @@ export class CreatePageComponent implements OnInit {
         const publication = {
             published: false,
             created: new Date(),
+            filters: {
+                ...this.filterValues,
+                city: !this.filterValues.city ? '' : this.filterValues.city.trim().toLowerCase()
+            },
             ...this.planView,
             text: this.form.value.text
         }
@@ -69,32 +90,24 @@ export class CreatePageComponent implements OnInit {
             publication.poster = ''
         }
 
-        this.publications.createPublication(publication).subscribe(resp => {
+        this.publications.createPublication(publication).subscribe(() => {
             this.userService.userData$.next({
                 ...this.userService.user,
                 publications: this.userService.user.publications + 1
             })
-            this.form.reset()
-            this.planView = {
-                author: this.userService.user.username,
-                authorId: this.userService.user.userId,
-                authorAv: this.userService.user.minAvatar,
-                poster: '../../../../assets/avatar.jpg',
-                title: 'Week in France'
-            }
             this.alert.success('Your publication has been saved')
+            this.router.navigate(['/profile'])
+            this.submitted = false
         }, (e) => {
-            console.log(e)
-        }, () => {
+            this.alert.warning(`Unknown error: ${e}`)
             this.submitted = false
         })
     }
 
-    setPlanViewTitle() {
-        this.planView.title = this.form.value.title
-    }
+    setFilterValues(values: Filters) {this.filterValues = {...values}}
 
-    selectedFile = null
+    setPlanViewTitle() {this.planView.title = this.form.value.title}
+
     uploadFile(event) {
         this.selectedFile = event.target.files[0]
 

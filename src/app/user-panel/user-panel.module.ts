@@ -8,6 +8,7 @@ import { EditPageComponent } from './pages/edit-page/edit-page.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SharedModule } from '../shared/shared.module';
+import { FiltersComponent } from './shared/components/filters/filters.component';
 
 @NgModule({
     declarations: [
@@ -15,7 +16,8 @@ import { SharedModule } from '../shared/shared.module';
         CreatePageComponent,
         EditPageComponent,
         ProfilePageComponent,
-        SettingsPageComponent
+        SettingsPageComponent,
+        FiltersComponent
     ],
     imports: [
         CommonModule,

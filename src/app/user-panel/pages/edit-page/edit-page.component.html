@@ -46,6 +46,10 @@
                 placeholder="Write your trip plan here"
             ></quill-editor>
         </div>
+        <app-filters
+            [values]="filterValues"
+            (onSelect)="setFilterValues($event)"
+        ></app-filters>
         <div class="buttons">
             <button
                 type="submit"

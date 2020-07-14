@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PlanCard, Confirmation, UserData } from '../../interfaces';
+import { PlanCard, Confirmation } from '../../interfaces';
 import { Router } from '@angular/router';
 import { PublicationService } from '../../services/publication.service';
 import { AlertService } from '../../services/alert.service';
@@ -16,7 +16,11 @@ export class PlanCardComponent implements OnInit {
     @Input() isAuthor = false
     @Input() savedPage = false
     @Output() deletePub: EventEmitter<string> = new EventEmitter<string>()
-    user: UserData
+    user = {
+        disliked: [],
+        liked: [],
+        saved: []
+    }
     window: Confirmation = null
 
     constructor(
@@ -27,11 +31,12 @@ export class PlanCardComponent implements OnInit {
         private router: Router
     ) {
         this.userService.userData$.subscribe(user => {
-            this.user = {
-                ...user,
-                disliked: user.disliked || [],
-                liked: user.liked || [],
-                saved: user.saved || []
+            if (user) {
+                this.user = {
+                    disliked: user.disliked || [],
+                    liked: user.liked || [],
+                    saved: user.saved || []
+                }
             }
         })
     }

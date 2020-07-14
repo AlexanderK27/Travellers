@@ -32,7 +32,10 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
             this.publications = pubs
         })
         this.userSub = this.userService.userData$.subscribe(user => {
-            this.user = user
+            user ? this.user = user : this.user = {
+                userId: '',
+                username: ''
+            }
         })
     }
 

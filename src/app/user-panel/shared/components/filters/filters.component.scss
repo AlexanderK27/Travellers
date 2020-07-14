@@ -1,0 +1,41 @@
+form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+p {
+    font-size: 0.9rem;
+}
+
+.filter {
+    width: 200px;
+    padding: 16px;
+
+    label, input, select {
+        display: block;
+        width: 100%;
+    }
+
+    select, input {
+        padding: 14px;
+        border-radius: 10px;
+        border: 2px solid #000;
+        background-color: #fff;
+    }
+
+    select, option, input {
+        font-size: 1rem;
+    }
+
+    &.selected {
+        select, input {
+            border-color: #59abea;
+            background-color: #a4d6fc;
+        }
+    }
+}
+
+#city {
+    text-transform: capitalize;
+}

@@ -1,6 +1,9 @@
 <section *ngIf="publication">
     <header>
-        <div class="author">
+        <div [routerLink]="['/author', publication.author]">
+            <div class="image-wrapper">
+                <img [src]="publication.authorAv || '../../../../assets/avatar.jpg'" alt="Author's avatar">
+            </div>
             <span>{{publication.author}}</span>
         </div>
         <div class="dates">
@@ -13,6 +16,31 @@
         <article>
             <h1>{{publication.title}}</h1>
             <quill-view-html [content]="publication.text"></quill-view-html>
+            <div class="categories">
+                <p *ngIf="publication.filters.continent">
+                    {{publication.filters.continent}}
+                </p>
+                <p *ngIf="publication.filters.country">
+                    {{publication.filters.country}}
+                </p>
+                <p *ngIf="publication.filters.city" id='city'>
+                    {{publication.filters.city}}
+                </p>
+                <p *ngIf="publication.filters.duration">
+                    {{publication.filters.duration}}
+                    {{publication.filters.duration === '1' ? ' day' : ' days'}}
+                </p>
+                <p *ngIf="publication.filters.people">
+                    {{publication.filters.people}}
+                    {{publication.filters.people === '1' ? ' person' : ' people'}}
+                </p>
+                <p *ngIf="publication.filters.budget">
+                    {{publication.filters.budget.split('').includes('+')
+                        ? 'Over ' + publication.filters.budget
+                        : 'Up to ' + publication.filters.budget
+                    }}$ per person
+                </p>
+            </div>
         </article>
         <div id="comments">
             <button

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { PlanCard, Publication } from 'src/app/shared/interfaces';
+import { switchMap } from 'rxjs/operators';
+import { PlanCard, Publication, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-edit-page',
@@ -12,6 +12,7 @@ import { switchMap } from 'rxjs/operators';
     styleUrls: ['./edit-page.component.scss']
 })
 export class EditPageComponent implements OnInit {
+    filterValues: Filters
     form: FormGroup
     planView: PlanCard
     pubId: string
@@ -52,6 +53,16 @@ export class EditPageComponent implements OnInit {
                     poster: publication.poster || '../../../../assets/avatar.jpg',
                     title: publication.title
                 }
+                this.filterValues = {
+                    amountCities: publication.filters.amountCities,
+                    amountCountries: publication.filters.amountCountries,
+                    budget: publication.filters.budget,
+                    city: publication.filters.city,
+                    continent: publication.filters.continent,
+                    country: publication.filters.country,
+                    duration: publication.filters.duration,
+                    people: publication.filters.people
+                }
                 this.form = new FormGroup({
                     title: new FormControl(publication.title, [Validators.required, Validators.maxLength(100)]),
                     text: new FormControl(publication.text, [Validators.required])
@@ -70,7 +81,11 @@ export class EditPageComponent implements OnInit {
             modified: new Date(),
             poster: this.planView.poster,
             title: this.planView.title,
-            text: this.form.value.text
+            text: this.form.value.text,
+            filters: {
+                ...this.filterValues,
+                city: !this.filterValues.city ? '' : this.filterValues.city.trim().toLowerCase()
+            }
         }
 
         if (modifications.poster === '../../../../assets/avatar.jpg') {
@@ -78,20 +93,18 @@ export class EditPageComponent implements OnInit {
         }
 
         this.publications.updatePublication(modifications, this.planView.authorId, this.pubId)
-            .subscribe(resp => {
-                console.log(resp)
+            .subscribe(() => {
                 this.alert.success('Changes have been saved')
-            }, (e) => {
-                console.log(e)
-            }, () => {
                 this.submitted = false
-            }
-        )
+            }, (e) => {
+                this.alert.warning(`Unknown error: ${e}`)
+                this.submitted = false
+            })
     }
 
-    setPlanViewTitle() {
-        this.planView.title = this.form.value.title
-    }
+    setFilterValues(values: Filters) {this.filterValues = {...values}}
+
+    setPlanViewTitle() {this.planView.title = this.form.value.title}
 
     uploadFile(event) {
         this.selectedFile = event.target.files[0]

@@ -1,17 +1,4 @@
-<div class="form-wrapper">
-    <!--
-        Название плана
-        Картинка плана
-        Выбор страны+
-        Выбор города+
-        Выбор языка
-        Выбор длительности
-        Дата создания
-        Дата последнего изменения
-        Автор
-        Текст
-        (лайки, дизлайки, комментарии)
-     -->
+<div *ngIf="planView" class="form-wrapper">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="view">
             <app-plan-card
@@ -59,6 +46,10 @@
                 placeholder="Write your trip plan here"
             ></quill-editor>
         </div>
+        <app-filters
+            [values]="filterValues"
+            (onSelect)="setFilterValues($event)"
+        ></app-filters>
         <div class="buttons">
             <button
                 type="submit"

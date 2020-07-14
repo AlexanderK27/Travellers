@@ -25,6 +25,9 @@ export class PlanPageComponent implements OnInit {
         private route: ActivatedRoute
     ) { }
 
+    // get publication
+    // check fragment if user came by pressing 'comment' icon
+    // if so - get and display comments
     ngOnInit(): void {
         this.route.params.pipe(
             mergeMap((params: Params) => this.pubService.getPublication(params.title)),

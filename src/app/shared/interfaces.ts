@@ -16,6 +16,17 @@ export interface Confirmation {
     text: string
 }
 
+export interface Filters {
+    amountCountries: string,
+    amountCities: string,
+    budget: string
+    city: string,
+    continent: string
+    country: string,
+    duration: string,
+    people: string
+}
+
 export interface FirebaseAuthResponse {
     expiresIn: string
     idToken: string
@@ -56,6 +67,7 @@ export interface Publication {
     authorId: string
     authorAv: ImageSource
     created: Date
+    filters: Filters
     poster: ImageSource
     published: boolean
     text: string

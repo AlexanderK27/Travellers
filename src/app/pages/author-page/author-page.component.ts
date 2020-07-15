@@ -39,6 +39,7 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
         })
     }
 
+    // get author and then his/her publications
     ngOnInit(): void {
         this.pubService.publications$.next([])
         this.route.params.pipe(
@@ -46,9 +47,13 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
             mergeMap((response: {key: UserData}) => {
                 const author = Object.values(response)[0]
                 this.author = author
-                return this.pubService.getAuthorPublications(author.username)
+                return this.pubService.getPublications('author', author.username)
             })
-        ).subscribe(pubs => this.pubService.publications$.next(Object.values(pubs)))
+        ).subscribe((pubs: {key: Publication}) => {
+            this.pubService.publications$.next(
+                Object.values(pubs).filter(p => p.published === true)
+            )
+        })
     }
 
     onSubscribe(state: boolean) {

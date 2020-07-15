@@ -79,16 +79,16 @@ export class PublicationService {
         })
     }
 
-    getAuthorPublications(username: string): Observable<any> {
-        return this.http.get(`${this.urlToPublications}.json?orderBy="author"&equalTo="${username}"`)
-    }
-
     getMyPublications(): Observable<any> {
         return this.http.get(`${this.urlToPublications}.json?orderBy="authorId"&equalTo="${this.user.userId}"`)
     }
 
     getPublication(id: string): Observable<any> {
         return this.http.get(`${this.urlToPublications}/${id}.json`)
+    }
+
+    getPublications(filterBy: string, equalTo: string): Observable<any> {
+        return this.http.get(`${this.urlToPublications}.json?orderBy="${filterBy}"&equalTo="${equalTo}"`)
     }
 
     getSavedPublications() {

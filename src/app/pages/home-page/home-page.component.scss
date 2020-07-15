@@ -1,7 +1,37 @@
+.search {
+    display: flex;
+    justify-content: center;
+    width: 600px;
+    margin: 15px auto 45px;
+
+    select, input, button {
+        padding: 6px;
+        border-radius: 0;
+        border: 1px solid #999;
+        font-size: 0.9rem;
+    }
+
+    .category {
+        width: 33%;
+        border-right: none;
+    }
+
+    .value {
+        width: 54%;
+        border-right: none;
+        border-left: none;
+    }
+
+    button {
+        width: 13%;
+        background-color: #fff;
+    }
+}
+
 section {
     display: flex;
     flex-wrap: wrap;
-    width: 94%;
+    width: 100%;
     max-width: 1320px;
     min-height: 90vh;
     margin: auto;

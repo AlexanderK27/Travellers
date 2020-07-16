@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, forkJoin } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Publication, UserData, PubAllowedChanges } from '../interfaces';
 import { UserService } from './user.service';
@@ -9,7 +9,7 @@ import { mergeMap } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class PublicationService {
-    publications$: BehaviorSubject<Array<Publication>> = new BehaviorSubject<Array<Publication>>([])
+    publications$: Subject<Array<Publication>> = new Subject<Array<Publication>>()
     pubs: Array<Publication>
     urlToPublications = `${environment.firebaseDbUrl}publications`
     user: UserData
@@ -91,11 +91,26 @@ export class PublicationService {
         return this.http.get(`${this.urlToPublications}.json?orderBy="${filterBy}"&equalTo="${equalTo}"`)
     }
 
+    getPublicationsFromSubs() {
+        const requests = []
+        if (this.user.subscriptions && this.user.subscriptions.length) {
+            for (let username of this.user.subscriptions) {
+                requests.push(this.getPublications('author', username))
+            }
+            forkJoin(requests).subscribe((response: {key: Publication[]}[]) => {
+                let publications = []
+                response.forEach(obj => publications.push(...Object.values(obj)))
+                this.publications$.next(publications.filter(p => p.published === true))
+            })
+        } else {
+            this.publications$.next([])
+        }
+    }
+
     getSavedPublications() {
         const requests = []
         if (this.user.saved && this.user.saved.length) {
-            const saved = [...this.user.saved]
-            for (let ids of saved) {
+            for (let ids of this.user.saved) {
                 requests.push(this.getPublication(ids))
             }
             forkJoin(requests).subscribe((pubs: Publication[]) => this.publications$.next(pubs))

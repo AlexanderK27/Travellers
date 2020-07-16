@@ -1,1 +1,58 @@
-<p>subs-page works!</p>
+<section>
+    <h2>Your subscriptions</h2>
+    <div *ngIf="publications.today.length">
+        <div>
+            <p>Today</p>
+        </div>
+        <div class="publications">
+            <app-plan-card
+                *ngFor="let publication of publications.today"
+                [plan]="publication"
+            ></app-plan-card>
+        </div>
+    </div>
+    <div *ngIf="publications.yesterday.length">
+        <div>
+            <p>Yesterday</p>
+        </div>
+        <div class="publications">
+            <app-plan-card
+                *ngFor="let publication of publications.yesterday"
+                [plan]="publication"
+            ></app-plan-card>
+        </div>
+    </div>
+    <div *ngIf="publications.week.length">
+        <div>
+            <p>This week</p>
+        </div>
+        <div class="publications">
+            <app-plan-card
+                *ngFor="let publication of publications.week"
+                [plan]="publication"
+            ></app-plan-card>
+        </div>
+    </div>
+    <div *ngIf="publications.month.length">
+        <div>
+            <p>This month</p>
+        </div>
+        <div class="publications">
+            <app-plan-card
+                *ngFor="let publication of publications.month"
+                [plan]="publication"
+            ></app-plan-card>
+        </div>
+    </div>
+    <div *ngIf="publications.earlier.length">
+        <div>
+            <p>Earlier</p>
+        </div>
+        <div class="publications">
+            <app-plan-card
+                *ngFor="let publication of publications.earlier"
+                [plan]="publication"
+            ></app-plan-card>
+        </div>
+    </div>
+</section>

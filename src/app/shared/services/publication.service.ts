@@ -61,20 +61,26 @@ export class PublicationService {
 
     dislikePublication(pubId: string): void {
         let dislikes = 0
-        let disliked = [].concat(this.user.disliked || [])
+        let disliked = [].concat(this.user.disliked || []) // get an ids array of publications user dislked
+        let liked = [].concat(this.user.liked || []) // same with liked
 
+        // get most recent amount of dislikes pubilcation has
         this.http.get(`${this.urlToPublications}/${pubId}/dislikes.json`).subscribe(value => {
             dislikes = +value
 
             if (!disliked.includes(pubId)) {
                 ++dislikes
                 disliked.unshift(pubId)
+
+                if (liked.includes(pubId)) { // cancel like if it was
+                    this.likePublication(pubId)
+                }
             } else {
                 --dislikes
                 disliked = disliked.filter(id => id !== pubId)
             }
 
-            this.userService.userData$.next({ ...this.user, disliked })
+            this.userService.userData$.next({ ...this.user, disliked }) // update data in services
             this.pubs.forEach(pub => {
                 if (pub.link === pubId) pub.dislikes = dislikes
             })
@@ -125,6 +131,7 @@ export class PublicationService {
     likePublication(pubId: string): void {
         let likes = 0
         let liked = [].concat(this.user.liked || [])
+        let disliked = [].concat(this.user.disliked || [])
 
         this.http.get(`${this.urlToPublications}/${pubId}/likes.json`).subscribe(value => {
             likes = +value
@@ -132,6 +139,10 @@ export class PublicationService {
             if (!liked.includes(pubId)) {
                 ++likes
                 liked.unshift(pubId)
+
+                if (disliked.includes(pubId)) { // cancel dislike if it was
+                    this.dislikePublication(pubId)
+                }
             } else {
                 --likes
                 liked = liked.filter(id => id !== pubId)

@@ -106,9 +106,13 @@
     </select>
     <button type="submit" [disabled]="form.invalid || submitted">O.</button>
 </form>
-<section *ngIf="publications">
-    <app-plan-card
-        *ngFor="let post of publications"
-        [plan]="post"
-    ></app-plan-card>
+<section>
+    <app-loader *ngIf="loading; else ready"></app-loader>
+    <ng-template #ready>
+        <app-plan-card
+            *ngFor="let post of publications"
+            [plan]="post"
+        ></app-plan-card>
+    </ng-template>
 </section>
+

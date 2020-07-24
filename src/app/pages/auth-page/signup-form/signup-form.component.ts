@@ -9,6 +9,7 @@ import { isEmail, doPasswordsMatch } from 'src/app/shared/services/input.validat
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { ImageSource } from 'src/app/shared/types'
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-signup-form',
@@ -36,7 +37,9 @@ export class SignupFormComponent implements OnInit, OnDestroy {
         private avatar: AvatarService,
         private user: UserService,
         private router: Router
-    ) {
+    ) {}
+
+    ngOnInit(): void {
         this.avatarSub = this.avatar.croppedAvatar$.subscribe(image => {
             if (image) this.newAvatar = image
         })
@@ -46,9 +49,6 @@ export class SignupFormComponent implements OnInit, OnDestroy {
         this.userSub = this.user.userData$.subscribe(data => {
             this.userData = data
         })
-    }
-
-    ngOnInit(): void {
         this.signUpForm = new FormGroup({
             username: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9._]*'), Validators.maxLength(20)]),
             email: new FormControl('', [Validators.required, isEmail, Validators.maxLength(30)]),
@@ -92,15 +92,17 @@ export class SignupFormComponent implements OnInit, OnDestroy {
             minAvatar: this.minNewAvatar
         }
 
-        this.user.updateProfile(updatedProfile).subscribe(() => {
+        this.user.updateProfile(updatedProfile).pipe(
+            mergeMap(() => this.avatar.saveMinAvatar(this.userData.username, updatedProfile.minAvatar))
+        ).subscribe(() => {
             const updatedUserData = { ...this.userData, ...updatedProfile }
             this.user.userData$.next(updatedUserData)
+            this.avatar.addAvatarsToAvStream([{
+                username: this.userData.username,
+                avatar: updatedProfile.minAvatar
+            }])
             this.alert.success('Profile updated')
-            this.profileDataForm.reset()
-            console.log('All user data', this.userData)
             this.router.navigate(['/profile'])
-        }, (e) => {
-            console.log(e)
         }, () => {
             this.submitted = false
         })
@@ -118,7 +120,7 @@ export class SignupFormComponent implements OnInit, OnDestroy {
             password: this.signUpForm.value.password
         }
 
-        this.auth.signup(credentials).subscribe((response) => {
+        this.auth.signup(credentials).subscribe(response => {
             const userData: UserData = {
                 userId: response.localId,
                 username: this.signUpForm.value.username
@@ -130,10 +132,7 @@ export class SignupFormComponent implements OnInit, OnDestroy {
                 this.signUpForm.reset()
                 this.submitted = false
                 this.newUserRegistered = true
-            }, (e) => {
-                console.log(e)
             })
-
         }, () => {
             this.submitted = false
         })

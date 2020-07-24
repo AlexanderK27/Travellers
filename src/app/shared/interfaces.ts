@@ -3,10 +3,10 @@ import { ImageSource } from './types'
 export interface Comment {
     created: Date
     username: string
-    userAv: ImageSource
     text: string
 
     answers?: Comment[]
+    userAv?: ImageSource
     id?: string
 }
 
@@ -31,6 +31,11 @@ export interface FirebaseAuthResponse {
     expiresIn: string
     idToken: string
     localId: string
+}
+
+export interface MiniatureAvatar {
+    username: string
+    avatar: ImageSource
 }
 
 export interface PlanCard {

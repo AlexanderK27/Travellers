@@ -1,4 +1,4 @@
-<section *ngIf="publication">
+<section *ngIf="!loading; else notReady">
     <header>
         <div [routerLink]="['/author', publication.author]">
             <div class="image-wrapper">
@@ -94,3 +94,8 @@
         </div>
     </body>
 </section>
+<ng-template #notReady>
+    <section>
+        <app-loader></app-loader>
+    </section>
+</ng-template>

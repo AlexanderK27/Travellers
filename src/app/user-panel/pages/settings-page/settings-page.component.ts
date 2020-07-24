@@ -42,16 +42,15 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
         private pubService: PublicationService,
         private router: Router,
         private userService: UserService
-    ) {
+    ) {}
+
+    ngOnInit(): void {
         this.avatarSub = this.avatar.croppedAvatar$.subscribe(image => {
             if (image) this.newAvatar = image
         })
         this.minAvatarSub = this.avatar.minCroppedAvatar$.subscribe(image => {
             if (image) this.minNewAvatar = image
         })
-    }
-
-    ngOnInit(): void {
         this.userSub = this.userService.userData$.subscribe(user => {
             if (user) {
                 this.user = user
@@ -131,11 +130,11 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
             minAvatar: this.minNewAvatar
         }
 
-        this.userService.updateProfile(avatar).subscribe(() => {
-            this.userService.userData$.next({
-                ...this.user,
-                ...avatar
-            })
+        this.userService.updateProfile(avatar).pipe(
+            mergeMap(() => this.avatar.saveMinAvatar(this.user.username, avatar.minAvatar))
+        ).subscribe(() => {
+            this.userService.userData$.next({...this.user, ...avatar})
+            this.avatar.usersAvatars$.next([{username: this.user.username, avatar: avatar.minAvatar}])
             this.showAlert()
         }, () => {
             this.showAlert('', 'Something went wrong')

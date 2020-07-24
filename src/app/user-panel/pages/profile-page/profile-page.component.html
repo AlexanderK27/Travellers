@@ -1,33 +1,37 @@
-<div *ngIf="user" class="profile-data">
-    <div class="image-wrapper">
-        <img [src]="user.avatar || '../../../../assets/avatar.jpg'" alt="Your avatar">
-    </div>
-    <div class="information">
-        <h4>{{user.username}}</h4>
-        <p *ngIf="user.name">{{user.name}}</p>
-        <p *ngIf="user.website">{{user.website}}</p>
-        <p *ngIf="user.bio">{{user.bio}}</p>
-        <div class="statistics">
-            <div class="block">
-                <strong>{{user.publications || 0}}</strong>
-                <span>publications</span>
-            </div>
-            <div class="block">
-                <strong>{{user.subscribers || 0}}</strong>
-                <span>subscribers</span>
-            </div>
-            <div class="block">
-                <strong>{{user.subscriptions ? user.subscriptions.length : 0}}</strong>
-                <span>subscribtions</span>
+<app-loader *ngIf="loading; else content"></app-loader>
+
+<ng-template #content>
+    <div class="profile-data">
+        <div class="image-wrapper">
+            <img [src]="user.avatar || '../../../../assets/avatar.jpg'" alt="Your avatar">
+        </div>
+        <div class="information">
+            <h4>{{user.username}}</h4>
+            <p *ngIf="user.name">{{user.name}}</p>
+            <p *ngIf="user.website">{{user.website}}</p>
+            <p *ngIf="user.bio">{{user.bio}}</p>
+            <div class="statistics">
+                <div class="block">
+                    <strong>{{user.publications || 0}}</strong>
+                    <span>publications</span>
+                </div>
+                <div class="block">
+                    <strong>{{user.subscribers || 0}}</strong>
+                    <span>subscribers</span>
+                </div>
+                <div class="block">
+                    <strong>{{user.subscriptions ? user.subscriptions.length : 0}}</strong>
+                    <span>subscribtions</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="publications" *ngIf="publications.length">
-    <app-plan-card
-        *ngFor="let post of publications"
-        [plan]="post"
-        [isAuthor]="true"
-        (deletePub)="onDeletePublication($event)"
-    ></app-plan-card>
-</div>
+    <div class="publications" *ngIf="publications.length">
+        <app-plan-card
+            *ngFor="let post of publications"
+            [plan]="post"
+            [isAuthor]="true"
+            (deletePub)="onDeletePublication($event)"
+        ></app-plan-card>
+    </div>
+</ng-template>

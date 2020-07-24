@@ -1,4 +1,4 @@
-<div class="form-wrapper">
+<div *ngIf="!loading; else notReady" class="form-wrapper">
     <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="view">
             <app-plan-card
@@ -61,3 +61,6 @@
         </div>
     </form>
 </div>
+<ng-template #notReady>
+    <app-loader></app-loader>
+</ng-template>

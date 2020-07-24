@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { PlanCard, Publication, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
+import { AvatarService } from 'src/app/shared/services/avatar.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-edit-page',
     templateUrl: './edit-page.component.html',
     styleUrls: ['./edit-page.component.scss']
 })
-export class EditPageComponent implements OnInit {
+export class EditPageComponent implements OnInit, OnDestroy {
+    aSub: Subscription
     filterValues: Filters
     form: FormGroup
+    loading = true
     planView: PlanCard
     pubId: string
     selectedFile = null
@@ -34,6 +38,7 @@ export class EditPageComponent implements OnInit {
     quillStyle = {minHeight: '300px'}
 
     constructor(
+        private avatarService: AvatarService,
         private alert: AlertService,
         private route: ActivatedRoute,
         private publications: PublicationService
@@ -45,29 +50,32 @@ export class EditPageComponent implements OnInit {
                 this.pubId = params.id
                 return this.publications.getPublication(params.id)
             })
-          ).subscribe((publication: Publication) => {
+        ).subscribe((publication: Publication) => {
+            this.form = new FormGroup({
+                title: new FormControl(publication.title, [Validators.required, Validators.maxLength(100)]),
+                text: new FormControl(publication.text, [Validators.required])
+            })
+            this.filterValues = {
+                amountCities: publication.filters.amountCities,
+                amountCountries: publication.filters.amountCountries,
+                budget: publication.filters.budget,
+                city: publication.filters.city,
+                continent: publication.filters.continent,
+                country: publication.filters.country,
+                duration: publication.filters.duration,
+                people: publication.filters.people
+            }
+            this.aSub = this.avatarService.getMinAvatars([publication.author]).subscribe(avatar => {
                 this.planView = {
                     author: publication.author,
                     authorId: publication.authorId,
-                    authorAv: publication.authorAv,
-                    poster: publication.poster || '../../../../assets/avatar.jpg',
+                    authorAv: avatar[0].avatar,
+                    poster: publication.poster,
                     title: publication.title
                 }
-                this.filterValues = {
-                    amountCities: publication.filters.amountCities,
-                    amountCountries: publication.filters.amountCountries,
-                    budget: publication.filters.budget,
-                    city: publication.filters.city,
-                    continent: publication.filters.continent,
-                    country: publication.filters.country,
-                    duration: publication.filters.duration,
-                    people: publication.filters.people
-                }
-                this.form = new FormGroup({
-                    title: new FormControl(publication.title, [Validators.required, Validators.maxLength(100)]),
-                    text: new FormControl(publication.text, [Validators.required])
-                })
-          })
+                this.loading = false
+            })
+        })
     }
 
     onSubmit() {
@@ -122,5 +130,9 @@ export class EditPageComponent implements OnInit {
         reader.onload = () => {
             this.planView.poster = reader.result
         }
+    }
+
+    ngOnDestroy(): void {
+        this.aSub.unsubscribe()
     }
 }

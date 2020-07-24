@@ -24,7 +24,6 @@ export class CommentService {
         const comment: Comment = {
             created: new Date(),
             username: this.user.username,
-            userAv: this.user.minAvatar,
             text
         }
 

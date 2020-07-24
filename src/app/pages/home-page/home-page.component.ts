@@ -1,30 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
-import { Publication } from 'src/app/shared/interfaces';
+import { Publication, MiniatureAvatar } from 'src/app/shared/interfaces';
 import { countries } from 'src/app/shared/db'
+import { Subscription } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-home-page',
     templateUrl: './home-page.component.html',
     styleUrls: ['./home-page.component.scss']
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, OnDestroy {
+    avatars: MiniatureAvatar[]
+    aSub: Subscription
     countries = countries
     form: FormGroup
+    loading = true
     publications: Array<Publication>
+    pubSub: Subscription
     searchType = 'author'
     submitted = false
 
     constructor(
+        private avatarService: AvatarService,
         private pubService: PublicationService
-    ) {
-        this.pubService.publications$.subscribe(publications => {
-            this.publications = publications
-        })
-    }
+    ) {}
 
     ngOnInit(): void {
+        this.pubSub = this.pubService.publications$.subscribe(p => this.publications = p)
+
+        this.pubService.getTopPublications().subscribe(publications => {
+                const pubs = Object.values(publications).filter(p => p.published === true)
+                const usernames = pubs.map(publication => publication.author)
+
+                this.aSub = this.avatarService.getMinAvatars(usernames).subscribe(avatars => {
+                    pubs.forEach(publication => {
+                        publication.authorAv = avatars.find(a => a.username === publication.author).avatar
+                    })
+
+                    this.pubService.publications$.next(pubs.sort((a, b) => {
+                        return (b.likes ? b.likes : 0) - (a.likes ? a.likes : 0)
+                    }))
+                    this.loading = false
+                })
+        })
+
         this.form = new FormGroup({
             'category': new FormControl('author'),
             'amountCountries': new FormControl(''),
@@ -38,18 +60,7 @@ export class HomePageComponent implements OnInit {
             'people': new FormControl('')
         })
 
-        this.form.controls['category'].valueChanges.subscribe(value => {
-            this.searchType = value
-        })
-
-        this.pubService.publications$.next([])
-        this.pubService.getTopPublications().subscribe(publications => {
-            this.pubService.publications$.next(
-                Object.values(publications)
-                    .filter(p => p.published === true)
-                    .sort((a, b) => a.likes > b.likes ? -1 : 1)
-            )
-        })
+        this.form.controls['category'].valueChanges.subscribe(value => this.searchType = value)
     }
 
     search() {
@@ -76,5 +87,10 @@ export class HomePageComponent implements OnInit {
                 this.submitted = false
             }
         )
+    }
+
+    ngOnDestroy() {
+        this.aSub.unsubscribe()
+        this.pubSub.unsubscribe()
     }
 }

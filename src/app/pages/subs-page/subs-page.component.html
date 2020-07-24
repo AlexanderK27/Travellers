@@ -1,4 +1,4 @@
-<section>
+<section *ngIf="!loading; else notReady">
     <h2>Your subscriptions</h2>
     <div *ngIf="publications.today.length">
         <div>
@@ -56,3 +56,8 @@
         </div>
     </div>
 </section>
+<ng-template #notReady>
+    <section>
+        <app-loader></app-loader>
+    </section>
+</ng-template>

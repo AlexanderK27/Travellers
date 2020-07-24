@@ -4,6 +4,7 @@ import { UserData } from '../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { mergeMap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 @Injectable({providedIn: 'root'})
 export class UserService {
@@ -12,10 +13,20 @@ export class UserService {
     userSub: Subscription
     userData$: BehaviorSubject<UserData> = new BehaviorSubject<UserData>(null)
 
-    constructor(private http: HttpClient) {
-        this.userSub = this.userData$.subscribe(user => {
-            this.user = user
-        })
+    constructor(private auth: AuthService, private http: HttpClient) {
+        const userId = localStorage.getItem('userId')
+
+        if (userId) {
+            if (this.auth.isAuthenticated()) {
+                this.fetchUser(userId).subscribe(user => {
+                    user ? this.userData$.next(user) : this.auth.logout()
+                })
+            }
+        } else {
+            this.auth.logout()
+        }
+
+        this.userSub = this.userData$.subscribe(user => this.user = user)
     }
 
     deleteUser(): Observable<any> {

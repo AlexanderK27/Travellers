@@ -3,6 +3,7 @@ import { PlanCard } from 'src/app/shared/interfaces';
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { Subscription } from 'rxjs';
+import { AvatarService } from 'src/app/shared/services/avatar.service';
 
 interface publicationsSortedByDate {
     today: Array<PlanCard>
@@ -18,6 +19,8 @@ interface publicationsSortedByDate {
     styleUrls: ['./subs-page.component.scss']
 })
 export class SubsPageComponent implements OnInit, OnDestroy {
+    aSub: Subscription
+    loading = true
     publications: publicationsSortedByDate = {
         today: [],
         yesterday: [],
@@ -29,16 +32,12 @@ export class SubsPageComponent implements OnInit, OnDestroy {
     uSub: Subscription
 
     constructor(
+        private avatarService: AvatarService,
         private pubService: PublicationService,
         private userService: UserService
     ) {}
 
     ngOnInit(): void {
-        this.uSub = this.userService.userData$.subscribe(user => {
-            if (user) {
-                this.pubService.getPublicationsFromSubs()
-            }
-        })
         this.pSub = this.pubService.publications$.subscribe(publications => {
             if (!publications.length) {
                 return
@@ -60,7 +59,7 @@ export class SubsPageComponent implements OnInit, OnDestroy {
                     pSorted[4].unshift(p)
                 }
             }
-            
+
             this.publications = {
                 today: [...pSorted[0]],
                 yesterday: [...pSorted[1]],
@@ -69,9 +68,31 @@ export class SubsPageComponent implements OnInit, OnDestroy {
                 earlier: [...pSorted[4]]
             }
         })
+        this.uSub = this.userService.userData$.subscribe(user => {
+            if (user) {
+                if (user.subscriptions && user.subscriptions.length) {
+                    this.pubService.getPublicationsFromSubs(user.subscriptions).subscribe(publications => {
+                        const usernames = publications.map(p => p.author)
+
+                        this.aSub = this.avatarService.getMinAvatars(usernames).subscribe(avatars => {
+                            publications.forEach(pub => {
+                                pub.authorAv = avatars.find(a => a.username === pub.author).avatar
+                            })
+
+                            this.pubService.publications$.next(publications)
+                            this.loading = false
+                        })
+                    })
+                } else {
+                    this.pubService.publications$.next([])
+                    this.loading = false
+                }
+            }
+        })
     }
 
     ngOnDestroy(): void {
+        if (this.aSub) this.aSub.unsubscribe()
         this.pSub.unsubscribe()
         this.uSub.unsubscribe()
     }

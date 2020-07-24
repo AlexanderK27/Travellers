@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, forkJoin } from 'rxjs';
+import { Observable, Subject, forkJoin, EMPTY } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Publication, UserData, PubAllowedChanges } from '../interfaces';
 import { UserService } from './user.service';
@@ -45,10 +45,16 @@ export class PublicationService {
         const deleteRequests = []
         return this.getPublications("authorId", this.user.userId).pipe(
             mergeMap((posts: Object) => {
-                for (let id of Object.keys(posts)) {
-                    deleteRequests.push(this.http.delete(`${this.urlToPublications}/${id}.json`))
+                const ids = Object.keys(posts)
+
+                if (ids.length) {
+                    for (let id of ids) {
+                        deleteRequests.push(this.http.delete(`${this.urlToPublications}/${id}.json`))
+                    }
+                    return forkJoin(deleteRequests)
+                } else {
+                    return new Observable(sub => sub.next())
                 }
-                return forkJoin(deleteRequests)
             })
         )
     }

@@ -91,12 +91,13 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
             text: 'Are you sure you want to delete account?\nThere is no way back.\nAll your publications will be deleted!',
             callback: () => {
                 this.auth.deleteAccount().subscribe(() => {
-                    this.pubService.deletePublications().pipe(
+                    const dSub = this.pubService.deletePublications().pipe(
                         mergeMap(() => this.userService.deleteUser())
                     ).subscribe(() => {
                         this.alert.success('Your account has been deleted')
                         this.auth.logout()
                         this.router.navigate(['/authentication'])
+                        dSub.unsubscribe()
                     })
                 })
             }

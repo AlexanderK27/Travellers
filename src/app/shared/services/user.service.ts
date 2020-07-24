@@ -3,11 +3,12 @@ import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { UserData } from '../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable({providedIn: 'root'})
 export class UserService {
+    urlToNames = `${environment.firebaseDbUrl}names`
     urlToUsers = `${environment.firebaseDbUrl}users`
     user: UserData
     userSub: Subscription
@@ -39,6 +40,14 @@ export class UserService {
 
     getAuthor(username: string): Observable<any> {
         return this.http.get(`${this.urlToUsers}.json?orderBy="username"&equalTo="${username}"`)
+    }
+
+    getUsername(username: string): Observable<string> {
+        return this.http.get<string>(`${this.urlToNames}.json?orderBy="username"&equalTo="${username}"`)
+    }
+
+    saveUsername(username: string): Observable<any> {
+        return this.http.post(`${this.urlToNames}.json`, {username})
     }
 
     subscribeOnAuthor(subscribe: boolean, aUsername: string, authorId: string): Observable<any> {

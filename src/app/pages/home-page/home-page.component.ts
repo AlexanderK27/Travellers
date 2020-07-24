@@ -5,7 +5,6 @@ import { PublicationService } from 'src/app/shared/services/publication.service'
 import { Publication, MiniatureAvatar } from 'src/app/shared/interfaces';
 import { countries } from 'src/app/shared/db'
 import { Subscription } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-home-page',

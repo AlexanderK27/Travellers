@@ -18,6 +18,7 @@ import { AlertComponent } from './shared/components/alert/alert.component';
 import { AuthInterceptor } from './shared/services/auth.interceptor';
 import { AuthorPageComponent } from './pages/author-page/author-page.component';
 import { CommentComponent } from './pages/plan-page/comment/comment.component';
+import { CardListComponent } from './pages/home-page/card-list/card-list.component';
 
 const INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -39,6 +40,7 @@ const INTERCEPTOR_PROVIDER: Provider = {
         AlertComponent,
         AuthorPageComponent,
         CommentComponent,
+        CardListComponent,
     ],
     imports: [
         BrowserModule,

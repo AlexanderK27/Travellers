@@ -32,6 +32,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
         this.pubService.getTopPublications().subscribe(publications => {
                 const pubs = Object.values(publications).filter(p => p.published === true)
+
                 const usernames = pubs.map(publication => publication.author)
 
                 this.aSub = this.avatarService.getMinAvatars(usernames).subscribe(avatars => {
@@ -76,16 +77,22 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
         this.pubService.getPublications(filterBy, equalTo)
             .subscribe((publications: {key: Publication}) => {
-                this.pubService.publications$.next(
-                    Object.values(publications)
-                        .filter(p => p.published === true)
-                        .sort((a, b) => a.likes > b.likes ? -1 : 1)
-                )
-                this.submitted = false
-            }, () => {
-                this.submitted = false
-            }
-        )
+                const pubs = Object.values(publications).filter(p => p.published === true)
+                const usernames = pubs.map(publication => publication.author)
+
+                const avatarSub = this.avatarService.getMinAvatars(usernames).subscribe(avatars => {
+                    pubs.forEach(publication => {
+                        publication.authorAv = avatars.find(a => a.username === publication.author).avatar
+                    })
+
+                    this.pubService.publications$.next(pubs.sort((a, b) => {
+                        return (b.likes ? b.likes : 0) - (a.likes ? a.likes : 0)
+                    }))
+
+                    this.submitted = false
+                    avatarSub.unsubscribe()
+                })
+        })
     }
 
     ngOnDestroy() {

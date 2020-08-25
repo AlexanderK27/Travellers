@@ -1,0 +1,36 @@
+<section #componentContainer>
+    <h2>Most popular</h2>
+    <div #cardListBlock class="card-list">
+        <app-plan-card *ngFor="let post of posts" [plan]="post"></app-plan-card>
+    </div>
+    <button
+        type="button"
+        class="control arrow-left"
+        (click)="scrollCardList(true)"
+    >
+        <i class="material-icons md-48">
+            <!-- <i class="material-icons-rounded"> -->
+            navigate_before
+        </i>
+    </button>
+    <button
+        type="button"
+        class="control arrow-right"
+        (click)="scrollCardList()"
+    >
+        <i class="material-icons md-48">
+            navigate_next
+        </i>
+    </button>
+    <button
+        type="button"
+        class="scroll-resetter"
+        [class.active]="displayScrollBtn$ | async"
+        (click)="scrollToBeginning()"
+    >
+        <i class="material-icons md-18">
+            keyboard_backspace
+        </i>
+        <span> back to the beginning</span>
+    </button>
+</section>

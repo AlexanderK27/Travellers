@@ -1,0 +1,168 @@
+@import "./variables.scss";
+
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.snow.css";
+@import "~@ctrl/ngx-emoji-mart/picker";
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: $font_primary;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+a {
+    cursor: pointer;
+    color: #000;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $font_secondary;
+}
+
+ul {
+    list-style: none;
+}
+
+input,
+textarea {
+    padding: 6px 12px;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    font-family: $font_primary;
+    font-size: 1rem;
+    line-height: 1.2;
+    outline: none;
+
+    &:focus {
+        border-color: #000;
+    }
+}
+
+textarea {
+    min-height: 80px;
+    max-height: 120px;
+    resize: vertical;
+}
+
+.btn {
+    padding: 4px 10px;
+    border: 1px solid $color_gray_d;
+    background-color: transparent;
+    letter-spacing: 1px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: $color_gray_d;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &.danger {
+        color: $color_danger;
+        border-color: $color_danger;
+    }
+    &.secondary {
+        color: $color_secondary;
+        border-color: $color_secondary;
+    }
+    &.success {
+        color: $color_success;
+        border-color: $color_success;
+    }
+    &.warning {
+        color: $color_warning;
+        border-color: $color_warning;
+    }
+
+    &:hover,
+    &:disabled {
+        opacity: 0.7;
+    }
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.cropper-crop-box,
+.cropper-view-box {
+    border-radius: 50%;
+}
+
+.file-input {
+    display: none;
+}
+
+.form-control {
+    input,
+    label,
+    textarea {
+        display: block;
+        width: 100%;
+    }
+
+    &.invalid {
+        label,
+        small {
+            color: $color_danger;
+        }
+        input {
+            border-color: $color_danger;
+        }
+    }
+
+    &.password {
+        position: relative;
+
+        input {
+            padding-right: 32px;
+        }
+
+        i {
+            position: absolute;
+            top: 32px;
+            right: 4px;
+            z-index: 1;
+        }
+    }
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    max-width: 240px;
+    max-height: 240px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.quill {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+.ql-editor {
+    font-size: 1rem;
+    font-family: $font_primary;
+}

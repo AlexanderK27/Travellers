@@ -1,0 +1,91 @@
+@import "../../../../styles/variables.scss";
+
+section {
+    position: relative;
+    width: 100%;
+    max-width: 1320px;
+    margin: auto;
+}
+
+.card-list {
+    display: flex;
+    overflow: auto;
+}
+
+.control {
+    position: absolute;
+    top: 36%;
+    width: 36px;
+    height: 72px;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    outline: none;
+    scroll-behavior: smooth;
+
+    &.arrow-left {
+        left: 0px;
+        border-radius: 0 36px 36px 0;
+        box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+
+        &:hover {
+            box-shadow: 4px 0px 8px hsla(0, 0%, 0%, 0.4);
+        }
+    }
+
+    &.arrow-right {
+        right: 0px;
+        border-radius: 36px 0 0 36px;
+        box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
+
+        &:hover {
+            box-shadow: -4px 0px 8px hsla(0, 0%, 0%, 0.4);
+        }
+    }
+
+    i {
+        display: block;
+        margin: auto;
+        font-size: 42px;
+    }
+}
+
+.scroll-resetter {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    top: 4px;
+    right: 12px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 16px;
+    font-family: $font_secondary;
+    font-weight: bold;
+    background-color: #fff;
+    box-shadow: 0px 0px 6px hsla(0, 0%, 0%, 0.2);
+    cursor: pointer;
+    transition: box-shadow, opacity 0.2s;
+    outline: none;
+
+    &.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &:hover {
+        box-shadow: 0px 0px 12px hsla(0, 0%, 0%, 0.4);
+    }
+
+    &:focus {
+        color: $color_tertiary;
+        box-shadow: 0px 0px 6px $color_tertiary;
+    }
+
+    i {
+        margin-right: 6px;
+        font-size: 18px;
+    }
+}

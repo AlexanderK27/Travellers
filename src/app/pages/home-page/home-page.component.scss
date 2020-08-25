@@ -1,10 +1,17 @@
+.tools {
+    width: 100%;
+    padding: 15px 15px 45px;
+    background-color: #f2f200;
+}
 .search {
     display: flex;
     justify-content: center;
     width: 600px;
     margin: 15px auto 45px;
 
-    select, input, button {
+    select,
+    input,
+    button {
         padding: 6px;
         border-radius: 0;
         border: 1px solid #999;
@@ -26,13 +33,4 @@
         width: 13%;
         background-color: #fff;
     }
-}
-
-section {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1320px;
-    min-height: 90vh;
-    margin: auto;
 }

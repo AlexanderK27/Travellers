@@ -1,0 +1,38 @@
+<form (ngSubmit)="submitForm()">
+    <div class="form-field">
+        <app-select
+            [options]="searchSelects.category"
+            (onSelect)="setSearchCategory($event)"
+        ></app-select>
+    </div>
+    <div class="form-field">
+        <app-select
+            *ngIf="searchSelects[searchCategory]"
+            [options]="searchSelects[searchCategory]"
+            (onSelect)="setSeachValue($event)"
+        ></app-select>
+        <input
+            *ngIf="searchCategory === 'author'"
+            name="author"
+            type="text"
+            maxlength="20"
+            autocomplete="off"
+            [(ngModel)]="authorInput"
+            #author="ngModel"
+        />
+        <input
+            *ngIf="searchCategory === 'city'"
+            name="city"
+            type="text"
+            maxlength="30"
+            autocomplete="off"
+            [(ngModel)]="cityInput"
+            #city="ngModel"
+        />
+    </div>
+    <div class="form-button">
+        <button type="submit" [disabled]="submitted">
+            <i class="material-icons material-icons-round md-36">search</i>
+        </button>
+    </div>
+</form>

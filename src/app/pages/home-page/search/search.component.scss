@@ -1,0 +1,37 @@
+@import "../../../../styles/variables.scss";
+
+$height: 46px;
+
+form {
+    display: flex;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-field {
+    flex: 1;
+    margin: 10px;
+}
+
+input {
+    width: 100%;
+    height: $height;
+    padding: 0 1rem 1rem;
+    border: none;
+    border-bottom: 2px solid #000;
+    background-color: transparent !important;
+    font-family: $font_secondary;
+    font-size: 18px;
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+
+    i {
+        font-size: 36px;
+    }
+}

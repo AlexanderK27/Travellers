@@ -1,0 +1,17 @@
+<div class="select" [class.opened]="isOpened">
+    <div class="select-backdrop" (click)="closeSelect()"></div>
+    <div class="select-input" (click)="openSelect()">
+        <span>{{ selectedOption.title }}</span>
+        <i class="material-icons md-18">keyboard_arrow_down</i>
+    </div>
+    <ul class="select-options">
+        <li
+            *ngFor="let option of options.options"
+            class="select-option"
+            [class.active]="option.value === selectedOption.value"
+            (click)="selectItem(option)"
+        >
+            {{ option.title }}
+        </li>
+    </ul>
+</div>

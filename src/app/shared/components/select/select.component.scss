@@ -1,0 +1,86 @@
+@import "../../../../styles/variables.scss";
+
+.select {
+    $height: 46px;
+
+    position: relative;
+    width: 100%;
+    height: $height;
+    padding: 0 1rem;
+    border-bottom: 2px solid #000;
+    background-color: transparent;
+    font-family: $font_secondary;
+
+    &-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: transparent;
+        z-index: 23;
+    }
+
+    &-input {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 24;
+
+        i,
+        span {
+            font-size: 18px;
+        }
+
+        i {
+            transition: 0.2s;
+        }
+    }
+
+    &-options {
+        display: none;
+        position: absolute;
+        top: $height;
+        left: 0;
+        right: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: rgba($color: $color_primary, $alpha: 0.5);
+        box-shadow: 0px 4px 6px hsla(0, 0%, 0%, 0.2);
+        z-index: 24;
+    }
+
+    &-option {
+        width: 100%;
+        height: $height;
+        line-height: $height - 2px;
+        padding: 0 1rem;
+        border-bottom: 1px solid #000;
+        background-color: transparent;
+        cursor: pointer;
+
+        &:hover,
+        &.active {
+            background: rgba($color: $color_tertiary, $alpha: 0.7);
+        }
+    }
+
+    &.opened {
+        border-bottom: none;
+
+        .select-backdrop {
+            display: block;
+        }
+
+        .select-input i {
+            transform: rotate(180deg);
+        }
+
+        .select-options {
+            display: block;
+        }
+    }
+}

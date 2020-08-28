@@ -9,6 +9,7 @@ import { ImgCropperComponent } from './components/img-cropper/img-cropper.compon
 import { ImgPickerComponent } from './components/img-picker/img-picker.component';
 import { ConfirmWindowComponent } from './components/confirm-window/confirm-window.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { SelectComponent } from './components/select/select.component';
 
 @NgModule({
     declarations: [
@@ -16,14 +17,15 @@ import { LoaderComponent } from './components/loader/loader.component';
         ImgCropperComponent,
         ImgPickerComponent,
         ConfirmWindowComponent,
-        LoaderComponent
+        LoaderComponent,
+        SelectComponent,
     ],
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-        QuillModule.forRoot()
+        QuillModule.forRoot(),
     ],
     exports: [
         FormsModule,
@@ -33,7 +35,8 @@ import { LoaderComponent } from './components/loader/loader.component';
         ImgCropperComponent,
         ImgPickerComponent,
         ConfirmWindowComponent,
-        LoaderComponent
-    ]
+        LoaderComponent,
+        SelectComponent,
+    ],
 })
-export class SharedModule { }
+export class SharedModule {}

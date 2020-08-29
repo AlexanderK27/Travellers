@@ -1,7 +1,13 @@
 .tools {
     width: 100%;
-    padding: 15px 15px 45px;
+    padding: 35px 15px 55px;
     background-color: #f2f200;
+
+    h1 {
+        margin-bottom: 45px;
+        text-align: center;
+        font-size: 1.8rem;
+    }
 }
 .search {
     display: flex;

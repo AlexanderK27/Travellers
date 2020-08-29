@@ -1,12 +1,10 @@
-<div class="tools">
+<section class="tools">
+    <h1>Find ideas. Discover places. Share experience.</h1>
     <app-search (OnSearch)="search($event)"></app-search>
-</div>
-<section class="center" *ngIf="loading; else content">
-    <app-loader></app-loader>
 </section>
-<ng-template #content>
-    <app-card-list [posts]="publications"></app-card-list>
-    <app-card-list [posts]="publications"></app-card-list>
-    <app-card-list [posts]="publications"></app-card-list>
-    <app-card-list [posts]="publications"></app-card-list>
-</ng-template>
+<app-card-list
+    *ngFor="let category of categories"
+    [heading]="category.heading"
+    [posts]="category.publications"
+    [ready]="category.ready"
+></app-card-list>

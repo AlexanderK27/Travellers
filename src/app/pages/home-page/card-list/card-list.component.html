@@ -1,15 +1,29 @@
 <section #componentContainer>
-    <h2>Most popular</h2>
-    <div #cardListBlock class="card-list">
-        <app-plan-card *ngFor="let post of posts" [plan]="post"></app-plan-card>
+    <h2 class="heading">{{ heading }}</h2>
+    <div
+        #cardListBlock
+        class="card-list"
+        [class.center]="!ready || !posts.length"
+    >
+        <app-loader *ngIf="!ready; else cards"></app-loader>
+
+        <ng-template #cards>
+            <app-plan-card
+                *ngFor="let post of posts"
+                [plan]="post"
+            ></app-plan-card>
+
+            <p *ngIf="!posts.length">
+                No publication found for these parameters
+            </p>
+        </ng-template>
     </div>
     <button
         type="button"
         class="control arrow-left"
         (click)="scrollCardList(true)"
     >
-        <i class="material-icons md-48">
-            <!-- <i class="material-icons-rounded"> -->
+        <i class="material-icons material-icons-round md-48">
             navigate_before
         </i>
     </button>
@@ -18,9 +32,7 @@
         class="control arrow-right"
         (click)="scrollCardList()"
     >
-        <i class="material-icons md-48">
-            navigate_next
-        </i>
+        <i class="material-icons material-icons-round md-48"> navigate_next </i>
     </button>
     <button
         type="button"
@@ -28,9 +40,7 @@
         [class.active]="displayScrollBtn$ | async"
         (click)="scrollToBeginning()"
     >
-        <i class="material-icons md-18">
-            keyboard_backspace
-        </i>
+        <i class="material-icons md-18"> keyboard_backspace </i>
         <span> back to the beginning</span>
     </button>
 </section>

@@ -3,7 +3,8 @@ import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { SearchQueryParams } from './search/search.component';
 import { Publication, MiniatureAvatar } from 'src/app/shared/interfaces';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 interface PublicationList {
     params?: SearchQueryParams;
@@ -54,11 +55,7 @@ const categories: PublicationList[] = [
 export class HomePageComponent implements OnInit, OnDestroy {
     avatars: MiniatureAvatar[];
     aSub: Subscription;
-    loading = true;
-    publications: Array<Publication>;
-    pubSub: Subscription;
-
-    pppublications: PublicationList[] = [...categories];
+    categories: PublicationList[] = [...categories];
 
     constructor(
         private avatarService: AvatarService,
@@ -66,49 +63,79 @@ export class HomePageComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.pubSub = this.pubService.publications$.subscribe(
-            (p) => (this.publications = p)
-        );
-
-        this.pubService.getTopPublications().subscribe((publications) => {
-            const pubs = Object.values(publications).filter(
-                (p) => p.published === true
+        let requests = [];
+        for (const category of this.categories) {
+            requests.push(
+                this.pubService.getPublications(
+                    category.params.filterBy,
+                    category.params.equalTo
+                )
             );
+        }
 
-            const usernames = pubs.map((publication) => publication.author);
-
-            this.aSub = this.avatarService
-                .getMinAvatars(usernames)
-                .subscribe((avatars) => {
-                    pubs.forEach((publication) => {
-                        publication.authorAv = avatars.find(
-                            (a) => a.username === publication.author
-                        ).avatar;
-                    });
-
-                    this.pubService.publications$.next(
-                        pubs.sort((a, b) => {
-                            return (
-                                (b.likes ? b.likes : 0) -
-                                (a.likes ? a.likes : 0)
-                            );
-                        })
+        forkJoin<{ key: Publication }>(requests)
+            .pipe(
+                map((pubsList) => {
+                    return pubsList.map((obj) =>
+                        Object.values(obj).filter((p) => p.published)
                     );
-                    this.loading = false;
+                })
+            )
+            .subscribe((pubsListArray: Publication[][]) => {
+                pubsListArray.forEach((pubsList, idx) => {
+                    // get usernames of publications' authors
+                    const usernames = pubsList.map(
+                        (publication) => publication.author
+                    );
+
+                    // fetch small avatars
+                    this.aSub = this.avatarService
+                        .getMinAvatars(usernames)
+                        .pipe(take(1))
+                        .subscribe((avatars) => {
+                            // insert avatar to each publication object
+                            pubsList.forEach((publication) => {
+                                publication.authorAv = avatars.find(
+                                    (a) => a.username === publication.author
+                                ).avatar;
+                            });
+
+                            // pass publications to categories
+                            this.categories[idx].publications = [...pubsList];
+                            this.categories[idx].ready = true;
+                        });
                 });
-        });
+            });
     }
 
-    search({ filterBy, equalTo }) {
+    search([queryParams, callback]) {
+        const { equalTo, filterBy } = queryParams;
+        const searchCategoryHeading = 'Search results';
+        const emptySearchCategory = {
+            heading: `Please wait...`,
+            publications: [],
+            ready: false,
+        };
+
+        if (this.categories[0].heading === searchCategoryHeading) {
+            this.categories[0] = { ...emptySearchCategory };
+        } else {
+            this.categories.unshift({ ...emptySearchCategory });
+        }
+
         this.pubService
             .getPublications(filterBy, equalTo)
             .subscribe((publications: { key: Publication }) => {
-                const pubs = Object.values(publications).filter(
-                    (p) => p.published === true
-                );
+                const pubs = Object.values(publications)
+                    .filter((p) => p.published === true)
+                    .sort((a, b) => {
+                        return (
+                            (b.likes ? b.likes : 0) - (a.likes ? a.likes : 0)
+                        );
+                    });
                 const usernames = pubs.map((publication) => publication.author);
 
-                const avatarSub = this.avatarService
+                this.aSub = this.avatarService
                     .getMinAvatars(usernames)
                     .subscribe((avatars) => {
                         pubs.forEach((publication) => {
@@ -117,22 +144,19 @@ export class HomePageComponent implements OnInit, OnDestroy {
                             ).avatar;
                         });
 
-                        this.pubService.publications$.next(
-                            pubs.sort((a, b) => {
-                                return (
-                                    (b.likes ? b.likes : 0) -
-                                    (a.likes ? a.likes : 0)
-                                );
-                            })
-                        );
+                        this.categories[0] = {
+                            ...this.categories[0],
+                            heading: searchCategoryHeading,
+                            publications: [...pubs],
+                            ready: true,
+                        };
 
-                        avatarSub.unsubscribe();
+                        callback();
                     });
             });
     }
 
     ngOnDestroy() {
-        this.aSub.unsubscribe();
-        this.pubSub.unsubscribe();
+        if (this.aSub) this.aSub.unsubscribe();
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { countries, searchSelects } from 'src/app/shared/db';
+import { searchSelects } from 'src/app/shared/db';
 
 export interface SearchQueryParams {
     equalTo: string;
@@ -12,13 +12,12 @@ export interface SearchQueryParams {
     styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
-    @Output() OnSearch: EventEmitter<SearchQueryParams> = new EventEmitter<
-        SearchQueryParams
-    >();
+    @Output() OnSearch: EventEmitter<
+        [SearchQueryParams, Function]
+    > = new EventEmitter<[SearchQueryParams, Function]>();
 
     authorInput = '';
     cityInput = '';
-    countries = countries;
     searchSelects = searchSelects;
     searchCategory: string;
     searchValue: string;
@@ -41,7 +40,13 @@ export class SearchComponent implements OnInit {
         this.searchCategory = option;
     }
 
+    setSubmittedFalse() {
+        this.submitted = false;
+    }
+
     submitForm() {
+        this.submitted = true;
+
         const queryData = {
             filterBy: this.searchCategory,
             equalTo: this.searchValue,
@@ -57,6 +62,6 @@ export class SearchComponent implements OnInit {
             queryData.equalTo = this.cityInput.toLowerCase();
         }
 
-        this.OnSearch.emit(queryData);
+        this.OnSearch.emit([queryData, this.setSubmittedFalse.bind(this)]);
     }
 }

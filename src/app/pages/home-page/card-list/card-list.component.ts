@@ -7,7 +7,7 @@ import {
     ElementRef,
 } from '@angular/core';
 import { PlanCard } from 'src/app/shared/interfaces';
-import { interval, Subscription, fromEvent, Observable } from 'rxjs';
+import { interval, fromEvent, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -16,7 +16,9 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./card-list.component.scss'],
 })
 export class CardListComponent implements AfterViewInit, OnDestroy {
+    @Input() heading: string;
     @Input() posts: PlanCard[];
+    @Input() ready: boolean;
     @ViewChild('cardListBlock') listRef: ElementRef;
 
     displayScrollBtn$: Observable<boolean>;

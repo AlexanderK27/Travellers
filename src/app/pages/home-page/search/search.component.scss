@@ -34,4 +34,12 @@ button {
     i {
         font-size: 36px;
     }
+
+    &:disabled {
+        cursor: not-allowed;
+
+        i {
+            color: $color_danger;
+        }
+    }
 }

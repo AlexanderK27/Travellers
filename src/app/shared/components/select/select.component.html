@@ -5,8 +5,15 @@
         <i class="material-icons md-18">keyboard_arrow_down</i>
     </div>
     <ul class="select-options">
+        <li *ngIf="options.options.length > 15">
+            <input
+                type="text"
+                class="select-option-input"
+                [(ngModel)]="searchInputValue"
+            />
+        </li>
         <li
-            *ngFor="let option of options.options"
+            *ngFor="let option of options.options | filter: searchInputValue"
             class="select-option"
             [class.active]="option.value === selectedOption.value"
             (click)="selectItem(option)"

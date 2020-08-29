@@ -218,7 +218,6 @@ export class SelectOptions {
 
 const amountCountries = new SelectOptions(
     [
-        { value: '', title: 'Does not metter' },
         { value: '1', title: '1 country' },
         { value: '2', title: '2 countries' },
         { value: '3', title: '3 countries' },
@@ -232,7 +231,6 @@ const amountCountries = new SelectOptions(
 
 const amountCities = new SelectOptions(
     [
-        { value: '', title: 'Does not metter' },
         { value: '1', title: '1 city' },
         { value: '2', title: '2 cities' },
         { value: '3', title: '3 cities' },
@@ -246,7 +244,6 @@ const amountCities = new SelectOptions(
 
 const budget = new SelectOptions(
     [
-        { value: '', title: 'Does not metter' },
         { value: '100', title: 'Up to 100$' },
         { value: '300', title: 'Up to 300$' },
         { value: '700', title: 'Up to 700$' },
@@ -274,7 +271,6 @@ const category = new SelectOptions(
 
 const continent = new SelectOptions(
     [
-        { value: '', title: 'Does not metter' },
         { value: 'Africa', title: 'Africa' },
         { value: 'Antarctica', title: 'Antarctica' },
         { value: 'Asia', title: 'Asia' },
@@ -287,18 +283,15 @@ const continent = new SelectOptions(
 );
 
 const country = new SelectOptions(
-    [{ value: '', title: 'Does not metter' }].concat(
-        countries.map((name) => ({
-            value: name,
-            title: name,
-        }))
-    ),
+    countries.map((name) => ({
+        value: name,
+        title: name,
+    })),
     'France'
 );
 
 const duration = new SelectOptions(
     [
-        { value: '', title: 'Does not metter' },
         { value: '1', title: '1 day' },
         { value: '2-3', title: '2-3 days' },
         { value: '4-5', title: '4-5 days' },
@@ -312,7 +305,6 @@ const duration = new SelectOptions(
 
 const people = new SelectOptions(
     [
-        { value: '', title: 'Does not metter' },
         { value: '1', title: '1 person' },
         { value: '2', title: '2 people' },
         { value: '3', title: '3 people' },

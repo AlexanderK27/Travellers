@@ -19,12 +19,14 @@ export class SelectComponent implements OnChanges {
     @Output() onSelect: EventEmitter<string> = new EventEmitter<string>();
 
     isOpened = false;
+    searchInputValue = '';
     selectedOption: SelectOption;
 
     constructor() {}
 
     ngOnChanges(changes: SimpleChanges) {
         this.selectedOption = changes.options.currentValue.defaultOption();
+        this.searchInputValue = '';
     }
 
     closeSelect() {

@@ -10,6 +10,7 @@ import { ImgPickerComponent } from './components/img-picker/img-picker.component
 import { ConfirmWindowComponent } from './components/confirm-window/confirm-window.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { SelectComponent } from './components/select/select.component';
+import { FilterPipe } from './components/select/filter.pipe';
 
 @NgModule({
     declarations: [
@@ -19,6 +20,7 @@ import { SelectComponent } from './components/select/select.component';
         ConfirmWindowComponent,
         LoaderComponent,
         SelectComponent,
+        FilterPipe,
     ],
     imports: [
         CommonModule,

@@ -1,8 +1,8 @@
 @import "../../../../styles/variables.scss";
 
-.select {
-    $height: 46px;
+$height: 46px;
 
+.select {
     position: relative;
     width: 100%;
     height: $height;
@@ -48,16 +48,31 @@
         right: 0;
         max-height: 200px;
         overflow-y: auto;
+        overflow-x: hidden;
         background-color: rgba($color: $color_primary, $alpha: 0.5);
         box-shadow: 0px 4px 6px hsla(0, 0%, 0%, 0.2);
         z-index: 24;
+        &::-webkit-scrollbar {
+            width: 3px;
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #0f0f0f;
+        }
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
     }
 
-    &-option {
+    &-option,
+    &-option-input {
         width: 100%;
         height: $height;
         line-height: $height - 2px;
         padding: 0 1rem;
+    }
+
+    &-option {
         border-bottom: 1px solid #000;
         background-color: transparent;
         cursor: pointer;
@@ -66,6 +81,12 @@
         &.active {
             background: rgba($color: $color_tertiary, $alpha: 0.7);
         }
+    }
+
+    &-option-input {
+        border: 1px solid #000;
+        border-radius: 4px;
+        background-color: #fff;
     }
 
     &.opened {

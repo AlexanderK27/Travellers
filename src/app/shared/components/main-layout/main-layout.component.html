@@ -1,25 +1,94 @@
 <app-alert></app-alert>
 <header>
-    <nav>
-        <ul>
-            <li>
-                <a routerLink="/"><span>Travel Plans</span></a>
+    <nav class="navbar-container" #navbar>
+        <ul class="navbar">
+            <li class="navbar-section logo">
+                <a routerLink="/">
+                    <img
+                        src="../../../../assets/logo.png"
+                        alt="Travellers' logo"
+                        class="logo-img"
+                    />
+                    <span>Travellers</span>
+                </a>
             </li>
-            <li *ngIf="isLoggedIn" routerLinkActive="active">
-                <a routerLink="/subscriptions">Subscriptions</a>
+            <li
+                class="navbar-section"
+                *ngIf="auth.showProfile$ | async; else authLinks"
+            >
+                <ul class="logged-nav">
+                    <li class="logged-nav-item" routerLinkActive="active">
+                        <a routerLink="/profile/create">
+                            <i class="material-icons material-icons-outlined">
+                                post_add
+                            </i>
+                        </a>
+                    </li>
+                    <li class="logged-nav-item" routerLinkActive="active">
+                        <a routerLink="/subscriptions">
+                            <i class="material-icons"> dynamic_feed </i>
+                        </a>
+                    </li>
+                    <li class="logged-nav-item" routerLinkActive="active">
+                        <a routerLink="/saved">
+                            <i class="material-icons material-icons-outlined">
+                                bookmark_border
+                            </i>
+                        </a>
+                    </li>
+                    <li
+                        class="logged-nav-item profile-menu"
+                        (click)="handleProfileMenu()"
+                    >
+                        <img
+                            *ngIf="userAvatarSrc"
+                            src="{{ userAvatarSrc | async }}"
+                            alt="Your avatar"
+                            class="profile-menu-avatar"
+                        />
+                        <ul *ngIf="showProfileMenu" class="profile-menu-popup">
+                            <li>
+                                <a routerLink="/profile">Profile</a>
+                            </li>
+                            <li>
+                                <a routerLink="/profile/settings">Settings</a>
+                            </li>
+                            <li>
+                                <span (click)="logOut()">Log out</span>
+                            </li>
+                            <div
+                                class="profile-menu-popup-backdrop"
+                                (click)="
+                                    handleProfileMenu($event);
+                                    $event.stopPropagation()
+                                "
+                            ></div>
+                        </ul>
+                    </li>
+                </ul>
             </li>
-            <li *ngIf="isLoggedIn" routerLinkActive="active">
-                <a routerLink="/saved">Saved</a>
-            </li>
-        </ul>
-        <div>
-            <a *ngIf="isLoggedIn; else logIn" routerLink="/profile">Profile</a>
-            <ng-template #logIn>
-                <a routerLink="/authentication">Log in</a>
+            <ng-template #authLinks>
+                <li class="navbar-section">
+                    <ul class="auth-nav">
+                        <li class="auth-nav-item">
+                            <a class="signin-btn" routerLink="/authentication"
+                                >Sign in</a
+                            >
+                        </li>
+                        <li class="auth-nav-item">
+                            <a
+                                class="signup-btn"
+                                routerLink="/authentication"
+                                [queryParams]="{ newMember: true }"
+                                >Join us!</a
+                            >
+                        </li>
+                    </ul>
+                </li>
             </ng-template>
-        </div>
+        </ul>
     </nav>
 </header>
-<main>
+<main class="page-content">
     <router-outlet></router-outlet>
 </main>

@@ -14,6 +14,7 @@ body {
     font-family: $font_primary;
     font-size: 1rem;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 a {
@@ -91,6 +92,12 @@ textarea {
     }
 }
 
+.card-list {
+    .publication-card {
+        width: 320px;
+    }
+}
+
 .center {
     display: flex;
     justify-content: center;
@@ -142,11 +149,19 @@ textarea {
     }
 }
 
+.publication-cards-section {
+    display: flex;
+    width: 100%;
+    max-width: $publication_card_section_width;
+    padding: 0 2%;
+    margin: auto;
+}
+
 .user-avatar {
     width: 100%;
     height: 100%;
-    max-width: 240px;
-    max-height: 240px;
+    max-width: 200px;
+    max-height: 200px;
     border-radius: 50%;
     overflow: hidden;
 
@@ -165,4 +180,60 @@ textarea {
 .ql-editor {
     font-size: 1rem;
     font-family: $font_primary;
+}
+
+@media screen and (min-width: 1641px) {
+    .publication-card-wrapper {
+        width: 20%;
+    }
+}
+@media screen and (max-width: 1640px) {
+    .publication-card-wrapper {
+        width: 25%;
+    }
+}
+@media screen and (max-width: 1150px) {
+    .publication-card-wrapper {
+        width: 33.3%;
+    }
+}
+@media screen and (min-width: 901px) {
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+    }
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+}
+@media screen and (max-width: 900px) {
+    .publication-cards-section {
+        padding: 0 4%;
+    }
+    .publication-card-wrapper {
+        width: 50%;
+    }
+}
+@media screen and (max-width: 750px) {
+    .publication-cards-section {
+        padding: 0 2%;
+    }
+}
+@media screen and (max-width: 600px) {
+    .publication-cards-section {
+        padding: 0 8%;
+    }
+    .publication-card-wrapper {
+        width: 100%;
+        margin: auto;
+    }
+}
+@media screen and (max-width: 460px) {
+    .publication-cards-section {
+        padding: 0 1%;
+    }
 }

@@ -1,0 +1,11 @@
+<div
+    class="original-image-wrapper app-cropper"
+    [class.rounded]="ariaShape === 'rounded'"
+>
+    <img
+        #originalImage
+        [src]="originalImage$ | async"
+        alt="Your image"
+        crossorigin
+    />
+</div>

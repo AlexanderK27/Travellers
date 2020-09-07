@@ -5,7 +5,7 @@ import { QuillModule } from 'ngx-quill';
 import { RouterModule } from '@angular/router';
 
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
-import { ImgCropperComponent } from './components/img-cropper/img-cropper.component';
+import { ImgCropperComponent } from './components/img-picker/img-cropper/img-cropper.component';
 import { ImgPickerComponent } from './components/img-picker/img-picker.component';
 import { ConfirmWindowComponent } from './components/confirm-window/confirm-window.component';
 import { LoaderComponent } from './components/loader/loader.component';

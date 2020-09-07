@@ -1,66 +1,68 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {
+    Component,
+    Input,
+    OnDestroy,
+    ViewChild,
+    ElementRef,
+} from '@angular/core';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { AvatarService } from '../../services/avatar.service';
 import { ImageSource } from '../../types';
+import { ImagePickerService } from './image-picker.service';
+import { canvasParams } from './img-cropper/img-cropper.component';
 
 @Component({
     selector: 'app-img-picker',
     templateUrl: './img-picker.component.html',
-    styleUrls: ['./img-picker.component.scss']
+    styleUrls: ['./img-picker.component.scss'],
 })
 export class ImgPickerComponent implements OnDestroy {
-    @Input('src') defaultImageSrc: ImageSource = '../../../../assets/avatar.jpg'
-    croppedAvatarSub: Subscription
-    croppedImageSrc: ImageSource
-    selectedFile = null
-    showCropper = false
-    showNewImage = false
+    @Input() cropperAriaShape = '';
+    @Input() cropperAspectRatio = 1;
+    @Input() croppedSizes: canvasParams[];
+    @Input('src') defaultImageSrc: ImageSource;
+    @ViewChild('fileUploadInput') fileInputRef: ElementRef;
+
+    croppedImageSrc: ImageSource;
+    uploadedImageSrc$: BehaviorSubject<ImageSource> = new BehaviorSubject<
+        ImageSource
+    >('');
+    uSub: Subscription;
 
     constructor(
         private alert: AlertService,
-        public avatarService: AvatarService
+        public pickerService: ImagePickerService
     ) {
-        this.croppedAvatarSub = this.avatarService.croppedAvatar$.subscribe(value => {
-            this.croppedImageSrc = value
-
-            if(value) {
-                this.showCropper = false
-                this.showNewImage = true
-            }
-        })
+        this.uSub = this.pickerService.onUploadFile$.subscribe((_) => {
+            this.fileInputRef.nativeElement.click();
+        });
     }
 
-    uploadFile(event) {
-        this.selectedFile = event.target.files[0]
+    uploadFile(event: Event) {
+        const selectedFile = event.target['files'][0];
 
-        if (!this.selectedFile) {
-            return
+        if (!selectedFile) return;
+
+        if (
+            selectedFile.type !== 'image/png' &&
+            selectedFile.type !== 'image/jpeg'
+        ) {
+            return this.alert.warning(
+                'Only .png, .jpg and .jpeg formats are supported'
+            );
         }
 
-        if (this.selectedFile.type !== 'image/png' && this.selectedFile.type !== 'image/jpeg') {
-            return this.alert.warning('Only .png, .jpg and .jpeg formats are supported')
-        }
-
-        const reader = new FileReader()
-        reader.readAsDataURL(this.selectedFile);
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedFile);
         reader.onload = () => {
-            this.avatarService.avatar$.next(reader.result)
-            this.showNewImage = false
-            this.showCropper = true
-        }
-    }
-
-    onResetAvatar() {
-        this.showCropper = false
-        this.showNewImage = false
-        this.selectedFile = null
-        this.avatarService.avatar$.next('')
-        this.avatarService.croppedAvatar$.next('')
-        this.avatarService.minCroppedAvatar$.next('')
+            this.uploadedImageSrc$.next(reader.result);
+            this.pickerService.displayCropper();
+            // this.pickerService.showNewImage$.next(false);
+            // this.pickerService.showCropper$.next(true);
+        };
     }
 
     ngOnDestroy() {
-        this.croppedAvatarSub.unsubscribe()
+        this.uSub.unsubscribe();
     }
 }

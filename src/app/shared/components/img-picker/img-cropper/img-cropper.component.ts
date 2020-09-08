@@ -29,6 +29,8 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy, OnInit {
     @Input() originalImage$: Observable<ImageSource>;
     @ViewChild('originalImage') imageRef: ElementRef;
     croppedImagesSrc: ImageSource[];
+    cropperHeight = 0;
+    cropperWidth = 0;
     oImageSub: Subscription;
     submitSub: Subscription;
     private cropper: Cropper;
@@ -36,6 +38,11 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy, OnInit {
     constructor(private pickerService: ImagePickerService) {}
 
     ngOnInit() {
+        this.cropperHeight = Math.round(
+            this.pickerService.cropperWidth / this.aspectRatio
+        );
+        this.cropperWidth = this.pickerService.cropperWidth;
+
         this.oImageSub = this.originalImage$.subscribe((_) => {
             if (this.cropper) {
                 this.cropper.destroy();
@@ -45,6 +52,7 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy, OnInit {
                 };
             }
         });
+
         this.submitSub = this.pickerService.onSubmitCroppedImage$.subscribe(
             (_) => {
                 this.outputCroppedImages();

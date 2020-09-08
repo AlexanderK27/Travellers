@@ -1,27 +1,29 @@
-<app-img-cropper
-    *ngIf="pickerService.showCropper; else userImage"
-    [ariaShape]="cropperAriaShape"
-    [aspectRatio]="cropperAspectRatio"
-    [canvasesSizes]="croppedSizes"
-    [originalImage$]="uploadedImageSrc$"
-></app-img-cropper>
-<ng-template #userImage>
-    <div
-        *ngIf="pickerService.showNewImage; else defaultImage"
-        class="user-avatar"
-    >
-        <img [src]="pickerService.displayedCroppedImage" alt="Your image" />
-    </div>
-    <ng-template #defaultImage>
-        <div class="user-avatar">
-            <img [src]="defaultImageSrc" alt="Default image" />
+<div #container>
+    <app-img-cropper
+        *ngIf="pickerService.showCropper; else userImage"
+        [ariaShape]="cropperAriaShape"
+        [aspectRatio]="cropperAspectRatio"
+        [canvasesSizes]="croppedSizes"
+        [originalImage$]="uploadedImageSrc$"
+    ></app-img-cropper>
+    <ng-template #userImage>
+        <div *ngIf="pickerService.showNewImage; else defaultImage">
+            <img
+                [src]="pickerService.displayedCroppedImage"
+                alt="Cropped image"
+            />
         </div>
+        <ng-template #defaultImage>
+            <div>
+                <img [src]="defaultImageSrc" alt="Default image" />
+            </div>
+        </ng-template>
     </ng-template>
-</ng-template>
-<input
-    type="file"
-    accept="image/jpeg,image/png"
-    (change)="uploadFile($event)"
-    class="file-input"
-    #fileUploadInput
-/>
+    <input
+        type="file"
+        accept="image/jpeg,image/png"
+        (change)="uploadFile($event)"
+        class="file-input"
+        #fileUploadInput
+    />
+</div>

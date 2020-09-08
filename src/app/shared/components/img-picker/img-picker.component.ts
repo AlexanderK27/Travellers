@@ -1,9 +1,11 @@
 import {
     Component,
     Input,
+    OnInit,
     OnDestroy,
     ViewChild,
     ElementRef,
+    AfterViewInit
 } from '@angular/core';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert.service';
@@ -16,12 +18,13 @@ import { canvasParams } from './img-cropper/img-cropper.component';
     templateUrl: './img-picker.component.html',
     styleUrls: ['./img-picker.component.scss'],
 })
-export class ImgPickerComponent implements OnDestroy {
+export class ImgPickerComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() cropperAriaShape = '';
     @Input() cropperAspectRatio = 1;
     @Input() croppedSizes: canvasParams[];
     @Input('src') defaultImageSrc: ImageSource;
     @ViewChild('fileUploadInput') fileInputRef: ElementRef;
+    @ViewChild('container') rootElRef: ElementRef;
 
     croppedImageSrc: ImageSource;
     uploadedImageSrc$: BehaviorSubject<ImageSource> = new BehaviorSubject<
@@ -32,10 +35,16 @@ export class ImgPickerComponent implements OnDestroy {
     constructor(
         private alert: AlertService,
         public pickerService: ImagePickerService
-    ) {
+    ) {}
+
+    ngOnInit() {
         this.uSub = this.pickerService.onUploadFile$.subscribe((_) => {
             this.fileInputRef.nativeElement.click();
         });
+    }
+
+    ngAfterViewInit() {
+        this.pickerService.setCropperWidth(this.rootElRef.nativeElement.clientWidth);
     }
 
     uploadFile(event: Event) {
@@ -57,12 +66,11 @@ export class ImgPickerComponent implements OnDestroy {
         reader.onload = () => {
             this.uploadedImageSrc$.next(reader.result);
             this.pickerService.displayCropper();
-            // this.pickerService.showNewImage$.next(false);
-            // this.pickerService.showCropper$.next(true);
         };
     }
 
     ngOnDestroy() {
         this.uSub.unsubscribe();
+        this.pickerService.resetImage();
     }
 }

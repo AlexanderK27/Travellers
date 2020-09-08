@@ -1,6 +1,10 @@
 <div
     class="original-image-wrapper app-cropper"
     [class.rounded]="ariaShape === 'rounded'"
+    [ngStyle]="{
+        width: cropperWidth + 'px',
+        height: cropperHeight + 'px'
+    }"
 >
     <img
         #originalImage

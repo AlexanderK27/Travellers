@@ -4,6 +4,7 @@ import { ImageSource } from '../../types';
 
 @Injectable({ providedIn: 'root' })
 export class ImagePickerService {
+    cropperWidth = 300;
     croppedImagesSrc: ImageSource[] = [];
     displayedCroppedImage: ImageSource;
     onSubmitCroppedImage$: Subject<any> = new Subject<any>();
@@ -33,6 +34,10 @@ export class ImagePickerService {
         this.showCropper = false;
         this.showNewImage = false;
         this.setCroppedImagesSrc([]);
+    }
+
+    setCropperWidth(width: number) {
+        this.cropperWidth = width;
     }
 
     submitCroppedImage() {

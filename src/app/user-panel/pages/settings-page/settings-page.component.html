@@ -18,11 +18,14 @@
             </button>
         </div>
         <div class="block">
-            <app-img-picker
-                cropperAriaShape="rounded"
-                [croppedSizes]="croppedAvatarSizes"
-                [src]="user.avatar || '../../../../assets/avatar.jpg'"
-            ></app-img-picker>
+            <div [class.user-avatar]="!pickerService.showCropper">
+                <app-img-picker
+                    cropperAriaShape="rounded"
+                    [croppedSizes]="croppedAvatarSizes"
+                    [src]="user.avatar || '../../../../assets/avatar.jpg'"
+                ></app-img-picker>
+            </div>
+
             <button
                 type="button"
                 [disabled]="

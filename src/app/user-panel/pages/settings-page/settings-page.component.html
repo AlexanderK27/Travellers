@@ -1,13 +1,15 @@
 <div *ngIf="user" class="settings">
     <div class="section">
         <div class="block">
-            <h4>Update avatar</h4>
-            <p>
-                This picture will appear on all your publications and comments
+            <h3>Update avatar</h3>
+            <p class="block-description">
+                You can upload your photo or any other image you like. It will
+                help distinguish you from other users, by appearing near all
+                your publications and comments.
             </p>
             <button
                 type="submit"
-                class="btn secondary"
+                class="btn btn-filled btn-secondary"
                 [disabled]="
                     pickerService.croppedImagesSrc.length <
                         croppedAvatarSizes.length || submitted
@@ -17,7 +19,7 @@
                 Save new avatar
             </button>
         </div>
-        <div class="block">
+        <div class="block block-avatar">
             <div [class.user-avatar]="!pickerService.showCropper">
                 <app-img-picker
                     cropperAriaShape="rounded"
@@ -25,42 +27,48 @@
                     [src]="user.avatar || '../../../../assets/avatar.jpg'"
                 ></app-img-picker>
             </div>
-
-            <button
-                type="button"
-                [disabled]="
-                    !pickerService.showCropper && !pickerService.showNewImage
-                "
-                (click)="pickerService.resetImage()"
-            >
-                Remove file
-            </button>
-            <button
-                type="button"
-                (click)="pickerService.triggerFileUploadInput()"
-            >
-                Upload file
-            </button>
-            <button
-                type="button"
-                [disabled]="!pickerService.showCropper"
-                (click)="pickerService.submitCroppedImage()"
-            >
-                cropper submit changes
-            </button>
+            <div class="buttons">
+                <button
+                    class="btn btn-filled btn-danger"
+                    type="button"
+                    [disabled]="
+                        !pickerService.showCropper &&
+                        !pickerService.showNewImage
+                    "
+                    (click)="pickerService.resetImage()"
+                >
+                    Cancel
+                </button>
+                <button
+                    class="btn btn-filled btn-neutral"
+                    type="button"
+                    (click)="pickerService.triggerFileUploadInput()"
+                >
+                    Upload
+                </button>
+                <button
+                    class="btn btn-filled btn-secondary"
+                    type="button"
+                    [disabled]="!pickerService.showCropper"
+                    (click)="pickerService.submitCroppedImage()"
+                >
+                    Submit
+                </button>
+            </div>
         </div>
     </div>
     <hr />
     <div class="section">
         <div class="block">
-            <h4>Write about yourself</h4>
-            <p>
-                Let people find out who you are, what you do and how to contact
-                with you
+            <h3>Write about yourself</h3>
+            <p class="block-description">
+                Let people know who you are and what you do. If you would like
+                to live a contact to you - there is a place for it. Note, these
+                are just recommendations, don't hold back your creativity.
             </p>
             <button
+                class="btn btn-filled btn-secondary"
                 type="submit"
-                class="btn"
                 [disabled]="
                     !profileDataChanged || profileDataForm.invalid || submitted
                 "
@@ -95,13 +103,13 @@
                 <textarea
                     id="bio"
                     class="bio"
-                    maxlength="70"
+                    maxlength="150"
                     autocomplete="off"
                     formControlName="bio"
                     >{{ profileDataForm.get("bio").value }}</textarea
                 >
-                <small>
-                    {{ 70 - profileDataForm.get("bio").value.length }}
+                <small class="hint characters-left">
+                    {{ 150 - profileDataForm.get("bio").value.length }}
                 </small>
             </div>
         </form>
@@ -109,11 +117,14 @@
     <hr />
     <div class="section">
         <div class="block">
-            <h4>Change email</h4>
-            <p>This email is not public, you will use it to log in</p>
+            <h3>Change email</h3>
+            <p class="block-description">
+                This email is not public, you will use it to sign in. Simple
+                yourname@kolomiichuk.info would be a great, neutral choice.
+            </p>
             <button
                 type="submit"
-                class="btn secondary"
+                class="btn btn-filled btn-secondary"
                 [disabled]="emailForm.invalid || submitted"
                 (click)="saveEmail()"
             >
@@ -156,14 +167,14 @@
     <hr />
     <div class="section">
         <div class="block">
-            <h4>Change password</h4>
-            <p>
-                Use special charecters, digits and uppercase letter to make your
-                password stronger
+            <h3>Change password</h3>
+            <p class="block-description">
+                Special charecters, digits and letters with different case will
+                make your password stronger.
             </p>
             <button
                 type="submit"
-                class="btn secondary"
+                class="btn btn-filled btn-secondary"
                 [disabled]="passwordForm.invalid || submitted"
                 (click)="savePassword()"
             >
@@ -188,7 +199,7 @@
                 />
                 <i
                     class="material-icons-outlined"
-                    (click)="onShowHidePassword('showPassword')"
+                    (click)="showHidePassword('showPassword')"
                 >
                     {{ showPassword ? "visibility_off" : "visibility" }}
                 </i>
@@ -226,7 +237,7 @@
                 />
                 <i
                     class="material-icons-outlined"
-                    (click)="onShowHidePassword('showConfirmPassword')"
+                    (click)="showHidePassword('showConfirmPassword')"
                 >
                     {{ showConfirmPassword ? "visibility_off" : "visibility" }}
                 </i>
@@ -254,14 +265,18 @@
     <hr />
     <div class="section">
         <div class="block">
-            <h4>Delete account</h4>
-            <p>
-                After pressing this button, your account and all your
-                publications will be deleted
+            <h3>Delete account</h3>
+            <p class="block-description">
+                After pressing on this button, your account and all your
+                publications will be deleted. Do you really want it?
             </p>
         </div>
         <div class="block">
-            <button type="button" class="btn danger" (click)="deleteAccount()">
+            <button
+                type="button"
+                class="btn btn-filled btn-danger"
+                (click)="deleteAccount()"
+            >
                 Delete account
             </button>
         </div>

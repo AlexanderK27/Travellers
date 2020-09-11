@@ -3,22 +3,49 @@ hr {
 }
 
 .block {
-    width: 100%;
-    max-width: 400px;
-    padding: 24px;
+    flex: 1;
+    padding: 12px;
+    min-width: 260px;
 
-    p {
+    &-description {
+        margin: 10px 0px 20px;
+        line-height: 1.4;
         font-size: 0.9rem;
+    }
+
+    &-avatar {
+        > div {
+            margin: auto;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+
+            button {
+                min-width: 80px;
+                margin: 6px;
+
+                &:disabled {
+                    opacity: 0.2;
+                }
+            }
+        }
     }
 }
 
 .section {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
+    padding: 12px;
+
+    &:last-of-type .block-description {
+        margin-bottom: 0;
+    }
 }
 
 .settings {
     width: 100%;
     max-width: 800px;
-    margin: auto;
+    margin: 10px auto 40px;
 }

@@ -60,7 +60,7 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
                         Validators.maxLength(30),
                     ]),
                     bio: new FormControl(user.bio || '', [
-                        Validators.maxLength(70),
+                        Validators.maxLength(150),
                     ]),
                 });
 
@@ -135,12 +135,6 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
             .actualLength;
         return `Password must contain at least ${requiredLength} characters.
             ${requiredLength - actualLength} left`;
-    }
-
-    onShowHidePassword(
-        passwordStateName: 'showPassword' | 'showConfirmPassword'
-    ): boolean {
-        return (this[passwordStateName] = !this[passwordStateName]);
     }
 
     saveAvatar() {
@@ -267,6 +261,12 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
                 this.submitted = false;
             }
         );
+    }
+
+    showHidePassword(
+        passwordStateName: 'showPassword' | 'showConfirmPassword'
+    ): boolean {
+        return (this[passwordStateName] = !this[passwordStateName]);
     }
 
     private showAlert(

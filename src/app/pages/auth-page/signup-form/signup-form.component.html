@@ -1,253 +1,467 @@
-<form
-    *ngIf="!usernameChoosed; else signUp"
-    [formGroup]="usernameForm"
-    (ngSubmit)="setUsername()"
->
-    <h2>Choose your username</h2>
-    <div
-        class="form-control"
-        [ngClass]="{
-            invalid:
-                usernameForm.get('username').touched &&
-                usernameForm.get('username').invalid
-        }"
-    >
-        <label for="username">Username</label>
-        <input
-            id="username"
-            type="text"
-            maxlength="20"
-            autocomplete="off"
-            formControlName="username"
-        />
-        <div
-            *ngIf="
-                usernameForm.get('username').touched &&
-                usernameForm.get('username').invalid
-            "
-            class="validation"
+<div class="window" [class.wide]="newUserRegistered">
+    <div class="form-container">
+        <form
+            *ngIf="!usernameChoosed; else signUp"
+            [formGroup]="usernameForm"
+            (ngSubmit)="setUsername()"
+            class="form"
         >
-            <small *ngIf="usernameForm.get('username').errors.required">
-                Field is required
-            </small>
-            <small *ngIf="usernameForm.get('username').errors.pattern">
-                Username must contain only latin letters, numbers, and
-                underscores
-            </small>
-            <small *ngIf="usernameForm.get('username').errors.usernameExists">
-                username {{ usernameForm.get("username").value }} is taken
-            </small>
-        </div>
-    </div>
-
-    <button
-        type="submit"
-        [disabled]="usernameForm.pending || usernameForm.invalid || submitted"
-    >
-        Submit
-    </button>
-</form>
-<ng-template #signUp>
-    <form
-        *ngIf="!newUserRegistered; else addProfileData"
-        [formGroup]="signUpForm"
-        (ngSubmit)="registrateNewUser()"
-    >
-        <h2>Registration</h2>
-        <div
-            class="form-control"
-            [ngClass]="{
-                invalid:
-                    signUpForm.get('email').touched &&
-                    signUpForm.get('email').invalid
-            }"
-        >
-            <label for="email">Email</label>
-            <input
-                id="email"
-                type="email"
-                maxlength="30"
-                formControlName="email"
-            />
-            <div
-                *ngIf="
-                    signUpForm.get('email').touched &&
-                    signUpForm.get('email').invalid
-                "
-                class="validation"
-            >
-                <small *ngIf="signUpForm.get('email').errors.required">
-                    Field is required
-                </small>
-                <small *ngIf="signUpForm.get('email').errors.isEmail">
-                    Invalid email
-                </small>
+            <div class="form-heading">
+                <h3>Come up with a username</h3>
+                <small>sometimes first name is enough</small>
             </div>
-        </div>
-
-        <div
-            class="form-control"
-            [ngClass]="{
-                invalid:
-                    signUpForm.get('password').touched &&
-                    signUpForm.get('password').invalid
-            }"
-        >
-            <label for="password">Password</label>
-            <input
-                id="password"
-                type="{{ showPasswordValue ? 'text' : 'password' }}"
-                maxlength="30"
-                formControlName="password"
-            />
-            <i (click)="showHidePassword('showPasswordValue')">
-                {{ showPasswordValue ? "hide" : "show" }}
-            </i>
-            <div
-                *ngIf="
-                    signUpForm.get('password').touched &&
-                    signUpForm.get('password').invalid
-                "
-                class="validation"
-            >
-                <small *ngIf="signUpForm.get('password').errors.required">
-                    Field is required
-                </small>
-                <small *ngIf="signUpForm.get('password').errors.minlength">
-                    {{ onMinLengthError("password") }}
-                </small>
-            </div>
-        </div>
-
-        <div
-            class="form-control"
-            [ngClass]="{
-                invalid:
-                    signUpForm.get('confirmPass').touched &&
-                    signUpForm.get('confirmPass').invalid
-            }"
-        >
-            <label for="confirmPass">Repeat password</label>
-            <input
-                id="confirmPass"
-                type="{{ showConfirmPassValue ? 'text' : 'password' }}"
-                maxlength="30"
-                formControlName="confirmPass"
-            />
-            <i (click)="showHidePassword('showConfirmPassValue')">
-                {{ showConfirmPassValue ? "hide" : "show" }}
-            </i>
-            <div
-                *ngIf="
-                    signUpForm.get('confirmPass').touched &&
-                    signUpForm.get('confirmPass').invalid
-                "
-                class="validation"
-            >
-                <small *ngIf="signUpForm.get('confirmPass').errors.required">
-                    Field is required
-                </small>
-                <small *ngIf="signUpForm.get('confirmPass').errors.minlength">
-                    {{ onMinLengthError("confirmPass") }}
-                </small>
-            </div>
-        </div>
-
-        <div *ngIf="signUpForm.errors" class="validation">
-            <small *ngIf="signUpForm.errors.mismatch">
-                Passwords do not match
-            </small>
-        </div>
-
-        <button type="button" [disabled]="submitted" (click)="backToUsername()">
-            Back to username
-        </button>
-        <button type="submit" [disabled]="signUpForm.invalid || submitted">
-            Registrate
-        </button>
-    </form>
-    <ng-template #addProfileData>
-        <div>
-            <div>
-                <div [class.user-avatar]="!pickerService.showCropper">
-                    <app-img-picker
-                        cropperAriaShape="rounded"
-                        [croppedSizes]="croppedAvatarSizes"
-                        src="../../../../assets/avatar.jpg"
-                    ></app-img-picker>
+            <div class="form-controls">
+                <div
+                    class="form-control"
+                    [ngClass]="{
+                        invalid:
+                            usernameForm.get('username').touched &&
+                            usernameForm.get('username').invalid
+                    }"
+                >
+                    <div class="input-wrapper">
+                        <input
+                            id="username"
+                            type="text"
+                            maxlength="20"
+                            autocomplete="off"
+                            formControlName="username"
+                        />
+                        <div
+                            *ngIf="usernameForm.pending || usernameForm.valid"
+                            class="circle-loader"
+                            [class.load-complete]="
+                                !usernameForm.pending && usernameForm.valid
+                            "
+                        >
+                            <div class="checkmark draw"></div>
+                        </div>
+                    </div>
+                    <div
+                        *ngIf="
+                            usernameForm.get('username').touched &&
+                            usernameForm.get('username').invalid
+                        "
+                        class="validation"
+                    >
+                        <small
+                            *ngIf="usernameForm.get('username').errors.required"
+                        >
+                            Field is required
+                        </small>
+                        <small
+                            *ngIf="
+                                usernameForm.get('username').errors.minlength
+                            "
+                        >
+                            This username is too short
+                        </small>
+                        <small
+                            *ngIf="usernameForm.get('username').errors.pattern"
+                        >
+                            Only latin letters, numbers and underscores are
+                            allowed
+                        </small>
+                        <small
+                            *ngIf="
+                                usernameForm.get('username').errors
+                                    .usernameExists
+                            "
+                        >
+                            username {{ usernameForm.get("username").value }} is
+                            taken
+                        </small>
+                    </div>
                 </div>
+            </div>
+            <div class="form-buttons">
                 <button
-                    type="button"
+                    class="btn btn-filled btn-primary"
+                    type="submit"
                     [disabled]="
-                        !pickerService.showCropper &&
-                        !pickerService.showNewImage
+                        usernameForm.pending ||
+                        usernameForm.invalid ||
+                        submitted
                     "
-                    (click)="pickerService.resetImage()"
                 >
-                    Remove file
-                </button>
-                <button
-                    type="button"
-                    (click)="pickerService.triggerFileUploadInput()"
-                >
-                    Upload file
-                </button>
-                <button
-                    type="button"
-                    [disabled]="!pickerService.showCropper"
-                    (click)="pickerService.submitCroppedImage()"
-                >
-                    cropper submit changes
+                    Submit
                 </button>
             </div>
-            <form [formGroup]="profileDataForm">
-                <p>This information will be open for everyone</p>
-                <div class="form-control">
-                    <label for="name">Name</label>
-                    <input
-                        id="name"
-                        type="text"
-                        maxlength="30"
-                        autocomplete="off"
-                        formControlName="name"
-                    />
+        </form>
+        <ng-template #signUp>
+            <form
+                *ngIf="!newUserRegistered; else addProfileData"
+                [formGroup]="signUpForm"
+                (ngSubmit)="registrateNewUser()"
+                class="form"
+            >
+                <div class="form-heading">
+                    <h3>Registrate an account</h3>
+                    <small>do not use a real password</small>
                 </div>
-                <div class="form-control">
-                    <label for="website">Website</label>
-                    <input
-                        id="website"
-                        type="text"
-                        maxlength="30"
-                        autocomplete="off"
-                        formControlName="website"
-                    />
+                <div class="form-controls">
+                    <div
+                        class="form-control"
+                        [ngClass]="{
+                            invalid:
+                                signUpForm.get('email').touched &&
+                                signUpForm.get('email').invalid
+                        }"
+                    >
+                        <label for="email">Email</label>
+                        <div class="input-wrapper">
+                            <input
+                                id="email"
+                                type="email"
+                                maxlength="30"
+                                formControlName="email"
+                            />
+                            <div
+                                *ngIf="signUpForm.get('email').valid"
+                                class="circle-loader"
+                                [class.load-complete]="
+                                    signUpForm.get('email').valid
+                                "
+                            >
+                                <div class="checkmark draw"></div>
+                            </div>
+                        </div>
+                        <div
+                            *ngIf="
+                                signUpForm.get('email').touched &&
+                                signUpForm.get('email').invalid
+                            "
+                            class="validation"
+                        >
+                            <small
+                                *ngIf="signUpForm.get('email').errors.required"
+                            >
+                                Field is required
+                            </small>
+                            <small
+                                *ngIf="signUpForm.get('email').errors.isEmail"
+                            >
+                                Invalid email
+                            </small>
+                        </div>
+                    </div>
+                    <div
+                        class="form-control password"
+                        [ngClass]="{
+                            invalid:
+                                signUpForm.get('password').touched &&
+                                signUpForm.get('password').invalid,
+                                valid: signUpForm.get('password').valid
+                        }"
+                    >
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <input
+                                id="password"
+                                type="{{
+                                    showPasswordValue ? 'text' : 'password'
+                                }}"
+                                maxlength="30"
+                                formControlName="password"
+                            />
+                            <div
+                                *ngIf="signUpForm.get('password').valid"
+                                class="circle-loader"
+                                [class.load-complete]="
+                                    signUpForm.get('password').valid
+                                "
+                            >
+                                <div class="checkmark draw"></div>
+                            </div>
+                        </div>
+                        <i
+                            class="material-icons-outlined"
+                            (click)="showHidePassword('showPasswordValue')"
+                        >
+                            {{
+                                showPasswordValue
+                                    ? "visibility_off"
+                                    : "visibility"
+                            }}
+                        </i>
+                        <div
+                            *ngIf="
+                                signUpForm.get('password').touched &&
+                                signUpForm.get('password').invalid
+                            "
+                            class="validation"
+                        >
+                            <small
+                                *ngIf="
+                                    signUpForm.get('password').errors.required
+                                "
+                            >
+                                Field is required
+                            </small>
+                            <small
+                                *ngIf="
+                                    signUpForm.get('password').errors.minlength
+                                "
+                            >
+                                {{ onMinLengthError("password") }}
+                            </small>
+                        </div>
+                    </div>
+                    <div
+                        class="form-control password"
+                        [ngClass]="{
+                            invalid:
+                                signUpForm.get('confirmPass').touched &&
+                                signUpForm.get('confirmPass').invalid,
+                            valid: signUpForm.get('confirmPass').valid
+                        }"
+                    >
+                        <label for="confirmPass">Repeat password</label>
+                        <div class="input-wrapper">
+                            <input
+                                id="confirmPass"
+                                type="{{
+                                    showConfirmPassValue ? 'text' : 'password'
+                                }}"
+                                maxlength="30"
+                                formControlName="confirmPass"
+                            />
+                            <div
+                                *ngIf="signUpForm.get('confirmPass').valid"
+                                class="circle-loader"
+                                [class.load-complete]="
+                                    signUpForm.get('confirmPass').valid
+                                "
+                            >
+                                <div class="checkmark draw"></div>
+                            </div>
+                        </div>
+                        <i
+                            class="material-icons-outlined"
+                            (click)="showHidePassword('showConfirmPassValue')"
+                        >
+                            {{
+                                showConfirmPassValue
+                                    ? "visibility_off"
+                                    : "visibility"
+                            }}
+                        </i>
+                        <div
+                            *ngIf="
+                                signUpForm.get('confirmPass').touched &&
+                                signUpForm.get('confirmPass').invalid
+                            "
+                            class="validation"
+                        >
+                            <small
+                                *ngIf="
+                                    signUpForm.get('confirmPass').errors
+                                        .required
+                                "
+                            >
+                                Field is required
+                            </small>
+                            <small
+                                *ngIf="
+                                    signUpForm.get('confirmPass').errors
+                                        .minlength
+                                "
+                            >
+                                {{ onMinLengthError("confirmPass") }}
+                            </small>
+                        </div>
+                    </div>
+                    <div *ngIf="signUpForm.errors" class="validation">
+                        <small *ngIf="signUpForm.errors.mismatch">
+                            Passwords do not match
+                        </small>
+                    </div>
                 </div>
-                <div class="form-control">
-                    <label for="bio">Short bio</label>
-                    <input
-                        id="bio"
-                        type="text"
-                        maxlength="70"
-                        autocomplete="off"
-                        formControlName="bio"
-                    />
-                    <small>
-                        {{ profileDataForm.get("bio") }}
-                    </small>
-                </div>
-                <div class="buttons">
-                    <button type="button" (click)="skipEnteringProfileData()">
-                        Skip
+
+                <div class="form-buttons">
+                    <button
+                        class="btn btn-filled btn-neutral"
+                        type="button"
+                        [disabled]="submitted"
+                        (click)="backToUsername()"
+                    >
+                        Step back
                     </button>
                     <button
-                        type="button"
-                        [disabled]="profileDataForm.invalid || submitted"
-                        (click)="saveProfileData()"
+                        class="btn btn-filled btn-primary"
+                        type="submit"
+                        [disabled]="signUpForm.invalid || submitted"
                     >
-                        Save
+                        Registrate
                     </button>
                 </div>
             </form>
+            <ng-template #addProfileData>
+                <div class="form">
+                    <div class="form-heading">
+                        <h3>Complete your profile</h3>
+                        <small>you are able to do it later</small>
+                    </div>
+                    <div class="form-controls-wrapper">
+                        <div class="form-controls-avatar">
+                            <div
+                                class="avatar-control"
+                                [class.user-avatar]="!pickerService.showCropper"
+                            >
+                                <app-img-picker
+                                    cropperAriaShape="rounded"
+                                    [croppedSizes]="croppedAvatarSizes"
+                                    src="../../../../assets/avatar.jpg"
+                                ></app-img-picker>
+                            </div>
+                            <div class="avatar-buttons">
+                                <button
+                                    class="danger"
+                                    type="button"
+                                    [disabled]="
+                                        !pickerService.showCropper &&
+                                        !pickerService.showNewImage
+                                    "
+                                    (click)="pickerService.resetImage()"
+                                >
+                                    <i class="material-icons">clear</i>
+                                </button>
+                                <button
+                                    type="button"
+                                    (click)="
+                                        pickerService.triggerFileUploadInput()
+                                    "
+                                >
+                                    <i class="material-icons">publish</i>
+                                </button>
+                                <button
+                                    class="success"
+                                    type="button"
+                                    [disabled]="!pickerService.showCropper"
+                                    (click)="pickerService.submitCroppedImage()"
+                                >
+                                    <i class="material-icons">checkmark</i>
+                                </button>
+                            </div>
+                        </div>
+                        <form
+                            [formGroup]="profileDataForm"
+                            class="form-controls"
+                        >
+                            <div class="form-control">
+                                <label for="name">Name</label>
+                                <input
+                                    id="name"
+                                    type="text"
+                                    maxlength="30"
+                                    autocomplete="off"
+                                    formControlName="name"
+                                />
+                            </div>
+                            <div class="form-control">
+                                <label for="website">Website</label>
+                                <input
+                                    id="website"
+                                    type="text"
+                                    maxlength="30"
+                                    autocomplete="off"
+                                    formControlName="website"
+                                />
+                            </div>
+                            <div class="form-control">
+                                <label for="bio">Short bio</label>
+                                <textarea
+                                    id="bio"
+                                    type="text"
+                                    maxlength="150"
+                                    autocomplete="off"
+                                    formControlName="bio"
+                                ></textarea>
+                                <small class="hint characters-left">
+                                    {{
+                                        150 -
+                                            profileDataForm.get("bio").value
+                                                .length
+                                    }}
+                                </small>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-buttons">
+                        <button
+                            class="btn btn-neutral btn-filled"
+                            type="button"
+                            (click)="skipEnteringProfileData()"
+                        >
+                            Skip
+                        </button>
+                        <button
+                            class="btn btn-primary btn-filled"
+                            type="button"
+                            [disabled]="profileDataForm.invalid || submitted"
+                            (click)="saveProfileData()"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </ng-template>
+        </ng-template>
+        <div class="form-footer">
+            Have an account?
+            <a [routerLink]="['/authentication']">Sign in</a>
         </div>
-    </ng-template>
-</ng-template>
+        <i
+            class="step-container-toggle material-icons md-18"
+            (click)="handleStepSidebar()"
+            >{{ showStepSidebar ? "fullscreen" : "fullscreen_exit" }}</i
+        >
+    </div>
+    <aside class="step-container" [class.closed]="!showStepSidebar">
+        <div class="step-item">
+            <p
+                class="step-item-title"
+                [class.active]="!usernameChoosed"
+                [class.done]="usernameChoosed"
+                (click)="stepElStateHandler($event)"
+            >
+                Step 1
+            </p>
+            <ul class="step-item-description">
+                <li>Create username</li>
+            </ul>
+        </div>
+        <div class="step-item">
+            <p
+                class="step-item-title"
+                [class.active]="usernameChoosed && !newUserRegistered"
+                [class.done]="newUserRegistered"
+                (click)="stepElStateHandler($event)"
+            >
+                Step 2
+            </p>
+            <ul class="step-item-description">
+                <li>Provide email</li>
+                <li>Create password</li>
+            </ul>
+        </div>
+        <div class="step-item">
+            <p
+                class="step-item-title"
+                [class.active]="newUserRegistered"
+                (click)="stepElStateHandler($event)"
+            >
+                Step 3
+            </p>
+            <ul class="step-item-description">
+                <li>Upload avatar*</li>
+                <li>Write about yourself*</li>
+                <li><small>*optional</small></li>
+            </ul>
+        </div>
+        <div
+            class="step-container-footer"
+            [class.last-step]="newUserRegistered"
+        ></div>
+    </aside>
+</div>

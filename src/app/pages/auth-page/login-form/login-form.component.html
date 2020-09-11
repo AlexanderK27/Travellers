@@ -1,59 +1,80 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <h2>Logging in</h2>
-    <div
-        class="form-control"
-        [ngClass]="{invalid: form.get('email').touched && form.get('email').invalid}"
-    >
-        <label for="email">Email</label>
-        <input
-            id="email"
-            type="email"
-            maxlength="30"
-            formControlName="email"
-        >
+<form class="form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-heading">
+        <h1>Signing into account</h1>
+    </div>
+    <div class="form-controls">
         <div
-            *ngIf="form.get('email').touched && form.get('email').invalid"
-            class="validation"
+            class="form-control"
+            [ngClass]="{
+                invalid: form.get('email').touched && form.get('email').invalid
+            }"
         >
-            <small *ngIf="form.get('email').errors.required">
-                Field is required
-            </small>
-            <small *ngIf="form.get('email').errors.isEmail">
-                Invalid email
-            </small>
+            <label for="email">Email</label>
+            <input
+                id="email"
+                type="email"
+                maxlength="30"
+                formControlName="email"
+            />
+            <div
+                *ngIf="form.get('email').touched && form.get('email').invalid"
+                class="validation"
+            >
+                <small *ngIf="form.get('email').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('email').errors.isEmail">
+                    Invalid email
+                </small>
+            </div>
+        </div>
+        <div
+            class="form-control password"
+            [ngClass]="{
+                invalid:
+                    form.get('password').touched && form.get('password').invalid
+            }"
+        >
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="{{ showPassword ? 'text' : 'password' }}"
+                maxlength="30"
+                formControlName="password"
+            />
+            <i class="material-icons-outlined" (click)="showHidePassword()">
+                {{ showPassword ? "visibility_off" : "visibility" }}
+            </i>
+            <div
+                *ngIf="
+                    form.get('password').touched && form.get('password').invalid
+                "
+                class="validation"
+            >
+                <small *ngIf="form.get('password').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('password').errors.minlength">
+                    {{ onMinLengthError() }}
+                </small>
+            </div>
         </div>
     </div>
-
-    <div
-        class="form-control"
-        [ngClass]="{invalid: form.get('password').touched && form.get('password').invalid}"
-    >
-        <label for="password">Password</label>
-        <input
-            id="password"
-            type="{{showPassword ? 'text' : 'password'}}"
-            maxlength="30"
-            formControlName="password"
+    <div class="form-buttons">
+        <button
+            type="submit"
+            class="btn btn-filled btn-primary"
+            [disabled]="form.invalid || submitted"
         >
-        <i (click)="onShowHidePassword()">
-            {{showPassword ? 'hide' : 'show'}}
-        </i>
-        <div
-            *ngIf="form.get('password').touched && form.get('password').invalid"
-            class="validation"
-        >
-            <small *ngIf="form.get('password').errors.required">
-                Field is required
-            </small>
-            <small *ngIf="form.get('password').errors.minlength">
-                {{onMinLengthError()}}
-            </small>
-        </div>
+            Submit
+        </button>
     </div>
-
-    <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="form.invalid || submitted"
-    >Submit</button>
+    <div class="form-footer">
+        First time?
+        <a
+            [routerLink]="['/authentication']"
+            [queryParams]="{ newMember: true }"
+            >Go here to get an account</a
+        >
+    </div>
 </form>

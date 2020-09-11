@@ -18,9 +18,15 @@ body {
 }
 
 a {
-    cursor: pointer;
     color: #000;
     text-decoration: none;
+    cursor: pointer;
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
 }
 
 h1,
@@ -67,37 +73,85 @@ textarea {
 }
 
 .btn {
-    padding: 4px 10px;
-    border: 1px solid $color_gray_d;
-    background-color: transparent;
     letter-spacing: 1px;
     font-size: 0.7rem;
     font-weight: bold;
     text-transform: uppercase;
-    color: $color_gray_d;
-    cursor: pointer;
     transition: 0.2s;
 
-    &.danger {
-        color: $color_danger;
-        border-color: $color_danger;
-    }
-    &.secondary {
-        color: $color_secondary;
-        border-color: $color_secondary;
-    }
-    &.success {
-        color: $color_success;
-        border-color: $color_success;
-    }
-    &.warning {
-        color: $color_warning;
-        border-color: $color_warning;
+    &-outlined {
+        padding: 4px 10px;
+
+        &.btn-neutral {
+            color: $color_gray_d;
+            border: 1px solid $color_gray_d;
+        }
+
+        &.btn-danger {
+            color: $color_danger;
+            border-color: $color_danger;
+        }
+        &.btn-secondary {
+            color: $color_secondary;
+            border-color: $color_secondary;
+        }
+        &.btn-success {
+            color: $color_success;
+            border-color: $color_success;
+        }
+        &.btn-warning {
+            color: $color_warning;
+            border-color: $color_warning;
+        }
+
+        &:hover,
+        &:disabled {
+            opacity: 0.7;
+        }
     }
 
-    &:hover,
-    &:disabled {
-        opacity: 0.7;
+    &-filled {
+        min-width: 120px;
+        padding: 10px 18px;
+        background-color: $color_primary;
+        box-shadow: 0px 4px 6px rgba($color: #000000, $alpha: 0.2);
+
+        &:active {
+            box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+        &:disabled {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        &:not(:disabled) {
+            &:hover {
+                box-shadow: none;
+            }
+            &.btn-primary {
+                background-color: $color_primary;
+            }
+            &.btn-secondary {
+                background-color: $color_secondary;
+            }
+            &.btn-tertiary {
+                background-color: $color_tertiary;
+            }
+            &.btn-neutral {
+                background-color: $color_gray_lll;
+            }
+            &.btn-danger {
+                background-color: $color_danger;
+                color: #fff;
+            }
+            &.btn-success {
+                background-color: $color_success;
+            }
+            &.btn-warning {
+                background-color: $color_warning;
+            }
+        }
     }
 }
 
@@ -118,8 +172,24 @@ textarea {
 .file-input {
     display: none;
 }
+.form-controls {
+    flex: 1;
+    min-width: 300px;
+    min-height: 120px;
+    padding: 20px;
 
+    &-avatar {
+        width: 240px;
+        padding: 20px 0;
+    }
+
+    .form-control:first-of-type label {
+        margin-top: 0;
+    }
+}
 .form-control {
+    margin: auto;
+
     input,
     label,
     textarea {
@@ -127,13 +197,24 @@ textarea {
         width: 100%;
     }
 
+    input,
+    textarea {
+        flex: 1;
+        border-radius: 4px;
+    }
+
+    label {
+        margin-top: 6px;
+        font-size: 0.9rem;
+    }
+
     &.invalid {
+        input {
+            border-color: $color_danger;
+        }
         label,
         small {
             color: $color_danger;
-        }
-        input {
-            border-color: $color_danger;
         }
     }
 
@@ -146,10 +227,33 @@ textarea {
 
         i {
             position: absolute;
-            top: 32px;
-            right: 4px;
+            top: 28px;
+            right: 6px;
+            color: $color_gray_d;
             z-index: 1;
+            cursor: pointer;
         }
+
+        &.invalid i {
+            color: $color_danger;
+        }
+    }
+
+    .hint.characters-left {
+        display: inline-block;
+        width: 100%;
+        text-align: right;
+    }
+
+    .input-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .validation {
+        margin-top: 2px;
+        line-height: 1;
     }
 }
 
@@ -166,6 +270,7 @@ textarea {
     height: 100%;
     max-width: 200px;
     max-height: 200px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
     border-radius: 50%;
     overflow: hidden;
 

@@ -36,6 +36,7 @@ export class SignupFormComponent implements OnInit, OnDestroy {
     newUserRegistered = false;
     showPasswordValue = false;
     showConfirmPassValue = false;
+    showStepSidebar = true;
     submitted = false;
     userData: UserData;
     usernameChoosed = false;
@@ -89,12 +90,16 @@ export class SignupFormComponent implements OnInit, OnDestroy {
         this.profileDataForm = new FormGroup({
             name: new FormControl('', [Validators.maxLength(30)]),
             website: new FormControl('', [Validators.maxLength(30)]),
-            bio: new FormControl('', [Validators.maxLength(70)]),
+            bio: new FormControl('', [Validators.maxLength(150)]),
         });
     }
 
     backToUsername() {
         this.usernameChoosed = false;
+    }
+
+    handleStepSidebar() {
+        this.showStepSidebar = !this.showStepSidebar;
     }
 
     onMinLengthError(controlName: string): string {
@@ -104,57 +109,6 @@ export class SignupFormComponent implements OnInit, OnDestroy {
             .actualLength;
         return `Password must contain at least ${requiredLength} characters.
             ${requiredLength - actualLength} left`;
-    }
-
-    showHidePassword(
-        passwordStateName: 'showPasswordValue' | 'showConfirmPassValue'
-    ): boolean {
-        return (this[passwordStateName] = !this[passwordStateName]);
-    }
-
-    registrateNewUser() {
-        if (this.signUpForm.invalid) {
-            return;
-        }
-
-        this.submitted = true;
-
-        const credentials: UserCredentials = {
-            email: this.signUpForm.value.email,
-            password: this.signUpForm.value.password,
-        };
-
-        const username = this.usernameForm.value.username;
-
-        this.user.getAuthor(username).subscribe((response) => {
-            if (Object.values(response).length) {
-                this.alert.danger(
-                    `Username "${username}" has just been taken by another user :(`
-                );
-                this.usernameChoosed = false;
-                this.submitted = false;
-            } else {
-                this.auth.signup(credentials).subscribe(
-                    (response) => {
-                        const userData: UserData = {
-                            userId: response.localId,
-                            username,
-                        };
-
-                        this.auth.createUser(userData).subscribe(() => {
-                            this.user.userData$.next(userData);
-                            this.alert.success('User created');
-                            this.signUpForm.reset();
-                            this.submitted = false;
-                            this.newUserRegistered = true;
-                        });
-                    },
-                    () => {
-                        this.submitted = false;
-                    }
-                );
-            }
-        });
     }
 
     saveProfileData() {
@@ -211,8 +165,70 @@ export class SignupFormComponent implements OnInit, OnDestroy {
         this.usernameChoosed = true;
     }
 
+    showHidePassword(
+        passwordStateName: 'showPasswordValue' | 'showConfirmPassValue'
+    ): boolean {
+        return (this[passwordStateName] = !this[passwordStateName]);
+    }
+
     skipEnteringProfileData() {
         this.router.navigate(['/profile']);
+    }
+
+    stepElStateHandler(event: MouseEvent) {
+        console.log('click');
+        console.log(event);
+        const parent = event.target['parentNode'];
+        if (parent.classList.contains('closed')) {
+            parent.classList.remove('closed');
+        } else {
+            parent.classList.add('closed');
+        }
+    }
+
+    registrateNewUser() {
+        if (this.signUpForm.invalid) {
+            return;
+        }
+
+        this.submitted = true;
+
+        const credentials: UserCredentials = {
+            email: this.signUpForm.value.email,
+            password: this.signUpForm.value.password,
+        };
+
+        const username = this.usernameForm.value.username;
+
+        this.user.getAuthor(username).subscribe((response) => {
+            if (Object.values(response).length) {
+                this.alert.danger(
+                    `Username "${username}" has just been taken by another user :(`
+                );
+                this.usernameChoosed = false;
+                this.submitted = false;
+            } else {
+                this.auth.signup(credentials).subscribe(
+                    (response) => {
+                        const userData: UserData = {
+                            userId: response.localId,
+                            username,
+                        };
+
+                        this.auth.createUser(userData).subscribe(() => {
+                            this.user.userData$.next(userData);
+                            this.alert.success('User created');
+                            this.signUpForm.reset();
+                            this.submitted = false;
+                            this.newUserRegistered = true;
+                        });
+                    },
+                    () => {
+                        this.submitted = false;
+                    }
+                );
+            }
+        });
     }
 
     usernameExists(user: UserService): AsyncValidatorFn {

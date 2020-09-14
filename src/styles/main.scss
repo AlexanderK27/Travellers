@@ -81,15 +81,19 @@ textarea {
 
     &-outlined {
         padding: 4px 10px;
-
-        &.btn-neutral {
-            color: $color_gray_d;
-            border: 1px solid $color_gray_d;
-        }
+        border: 1px solid transparent;
 
         &.btn-danger {
             color: $color_danger;
             border-color: $color_danger;
+        }
+        &.btn-neutral {
+            color: $color_gray_d;
+            border-color: $color_gray_d;
+        }
+        &.btn-primary {
+            color: $color_primary;
+            border-color: $color_primary;
         }
         &.btn-secondary {
             color: $color_secondary;
@@ -98,6 +102,10 @@ textarea {
         &.btn-success {
             color: $color_success;
             border-color: $color_success;
+        }
+        &.btn-tertiary {
+            color: $color_tertiary;
+            border-color: $color_tertiary;
         }
         &.btn-warning {
             color: $color_warning;
@@ -113,7 +121,6 @@ textarea {
     &-filled {
         min-width: 120px;
         padding: 10px 18px;
-        background-color: $color_primary;
         box-shadow: 0px 4px 6px rgba($color: #000000, $alpha: 0.2);
 
         &:active {
@@ -125,32 +132,31 @@ textarea {
             cursor: default;
         }
 
-        &:not(:disabled) {
-            &:hover {
-                box-shadow: none;
-            }
-            &.btn-primary {
-                background-color: $color_primary;
-            }
-            &.btn-secondary {
-                background-color: $color_secondary;
-            }
-            &.btn-tertiary {
-                background-color: $color_tertiary;
-            }
-            &.btn-neutral {
-                background-color: $color_gray_lll;
-            }
-            &.btn-danger {
-                background-color: $color_danger;
-                color: #fff;
-            }
-            &.btn-success {
-                background-color: $color_success;
-            }
-            &.btn-warning {
-                background-color: $color_warning;
-            }
+        &:hover:not(:disabled) {
+            box-shadow: none;
+        }
+
+        &.btn-primary {
+            background-color: $color_primary;
+        }
+        &.btn-secondary {
+            background-color: $color_secondary;
+        }
+        &.btn-tertiary {
+            background-color: $color_tertiary;
+        }
+        &.btn-neutral {
+            background-color: $color_gray_lll;
+        }
+        &.btn-danger {
+            background-color: $color_danger;
+            color: #fff;
+        }
+        &.btn-success {
+            background-color: $color_success;
+        }
+        &.btn-warning {
+            background-color: $color_warning;
         }
     }
 }
@@ -165,8 +171,73 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.comment-form {
+    $textarea_min_height: 100px;
+
+    position: relative;
     width: 100%;
-    height: 100%;
+
+    textarea {
+        width: 100%;
+        min-height: $textarea_min_height;
+        max-height: 500px;
+        padding: 0.5rem 1.8rem 0.5rem 0.8rem;
+        resize: none;
+        border-color: $color_gray_lll;
+        transition: 0.2s;
+
+        &:focus {
+            border-color: $color_gray_ll;
+        }
+    }
+
+    .backdrop {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: transparent;
+        z-index: 8;
+    }
+
+    .buttons {
+        margin: 5px;
+        text-align: right;
+    }
+
+    .emoji-picker {
+        position: absolute;
+        right: 0;
+        bottom: calc(100% - 10px);
+        z-index: 9;
+    }
+
+    .not-authorized-cover {
+        position: absolute;
+        width: 100%;
+        height: $textarea_min_height;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        z-index: 9;
+    }
+
+    .open-emoji-picker-btn {
+        position: absolute;
+        top: -4px;
+        right: 4px;
+        font-size: 1.6rem;
+        opacity: 0.5;
+        transition: 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
 }
 
 .file-input {
@@ -287,6 +358,7 @@ textarea {
 }
 
 .ql-editor {
+    padding: 0;
     font-size: 1rem;
     font-family: $font_primary;
 }

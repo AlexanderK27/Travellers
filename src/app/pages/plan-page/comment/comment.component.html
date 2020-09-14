@@ -1,58 +1,107 @@
 <div class="comment">
-    <div class="image-wrapper">
-        <img [src]="comment.userAv || '../../../assets/avatar.jpg'" alt="Avatar">
+    <div class="comment-head">
+        <div class="image-wrapper">
+            <img
+                [src]="comment.userAv || '../../../assets/avatar.jpg'"
+                alt="Avatar"
+            />
+        </div>
+        <a [routerLink]="['/author', comment.username]" class="username">{{
+            comment.username
+        }}</a>
+        <small class="time">{{
+            comment.created | date: "MMMM d, yy - h:mm a"
+        }}</small>
     </div>
-    <div class="content">
-        <p>
-            <span>{{comment.username}}</span>
-            <small>{{comment.created | date:'MMMM d, y - H:mm'}}</small>
-        </p>
-        <p class="text">{{comment.text}}</p>
-        <strong
-            *ngIf="comment.answers"
-            (click)="showHideAnswers()"
-        >
-            {{showAnswers ? 'hide comments' : 'comments ' + comment.answers.length}}
-        </strong>
-        <button type="button" (click)="showHideAnswerForm()">Answer</button>
-    </div>
+    <p class="comment-text">{{ comment.text }}</p>
     <div *ngIf="showForm" class="comment-form">
-        <textarea [(ngModel)]="answerText" (input)="autoResize($event)"></textarea>
-        <emoji-mart
-            color="#880000"
-            emoji=""
-            [emojiSize]="16"
-            [enableSearch]="false"
-            [isNative]="true"
-            [perLine]="8"
-            [showPreview]="false"
-            (emojiSelect)="addEmoji($event)"
-        ></emoji-mart>
+        <textarea
+            [(ngModel)]="answerText"
+            (input)="autoResize($event)"
+        ></textarea>
+        <span
+            *ngIf="!showEmojis; else emojiPicker"
+            class="open-emoji-picker-btn"
+            (click)="showHideEmojis()"
+            >&#9786;</span
+        >
+        <ng-template #emojiPicker>
+            <div class="backdrop" (click)="showHideEmojis()"></div>
+            <emoji-mart
+                class="emoji-picker"
+                color="#880000"
+                emoji=""
+                [emojiSize]="16"
+                [enableSearch]="false"
+                [isNative]="true"
+                [perLine]="8"
+                [showPreview]="false"
+                (emojiSelect)="addEmoji($event)"
+            ></emoji-mart>
+        </ng-template>
         <div class="buttons">
             <button
+                class="btn btn-filled btn-neutral"
                 type="button"
-                [disabled]="!answerText || submitted"
+                [disabled]="submitted"
                 (click)="cancelAnswering()"
-            >Cancel</button>
+            >
+                Cancel
+            </button>
             <button
+                class="btn btn-filled btn-secondary"
                 type="submit"
                 [disabled]="!answerText || submitted"
                 (click)="submitAnswer()"
-            >Submit</button>
+            >
+                Submit
+            </button>
         </div>
     </div>
+    <div class="comment-buttons">
+        <button
+            *ngIf="comment.answers"
+            type="button"
+            class="btn btn-outlined btn-danger"
+            (click)="showHideAnswers()"
+        >
+            {{
+                showAnswers
+                    ? "hide replies"
+                    : comment.answers.length + " replies"
+            }}
+        </button>
+        <button
+            *ngIf="allowReplying && !showForm"
+            type="button"
+            class="btn btn-outlined btn-neutral"
+            (click)="showHideAnswerForm()"
+        >
+            Reply
+        </button>
+    </div>
     <div *ngIf="showAnswers">
-        <div *ngFor="let answer of comment.answers" class="comment">
-            <div class="image-wrapper">
-                <img [src]="answer.userAv || '../../../assets/avatar.jpg'" alt="Avatar">
+        <div
+            *ngFor="let answer of comment.answers"
+            class="comment comment-reply"
+        >
+            <div class="comment-head">
+                <div class="image-wrapper">
+                    <img
+                        [src]="answer.userAv || '../../../assets/avatar.jpg'"
+                        alt="Avatar"
+                    />
+                </div>
+                <a
+                    [routerLink]="['/author', answer.username]"
+                    class="username"
+                    >{{ answer.username }}</a
+                >
+                <small class="time">{{
+                    answer.created | date: "MMMM d, yy - h:mm a"
+                }}</small>
             </div>
-            <div class="content">
-                <p>
-                    <span>{{answer.username}}</span>
-                    <small>{{answer.created | date:'MMMM d, y - H:mm'}}</small>
-                </p>
-                <p class="text">{{answer.text}}</p>
-            </div>
+            <p class="comment-text">{{ answer.text }}</p>
         </div>
     </div>
 </div>

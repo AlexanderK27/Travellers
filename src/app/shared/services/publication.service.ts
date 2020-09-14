@@ -57,7 +57,17 @@ export class PublicationService {
             );
             return;
         }
-        return this.http.delete(`${this.urlToPublications}/${pubId}.json`);
+
+        const publications = this.user.publications - 1;
+
+        return this.http.delete(`${this.urlToPublications}/${pubId}.json`).pipe(
+            mergeMap(() => {
+                return this.http.patch(
+                    `${environment.firebaseDbUrl}users/${this.user.userId}.json`,
+                    { publications }
+                );
+            })
+        );
     }
 
     deletePublications(): Observable<any> {
@@ -106,12 +116,10 @@ export class PublicationService {
                     disliked = disliked.filter((id) => id !== pubId);
                 }
 
-                this.userService.userData$.next({ ...this.user, disliked }); // update data in services
-                this.pubs.forEach((pub) => {
-                    if (pub.link === pubId) pub.dislikes = dislikes;
-                });
-                this.publications$.next(this.pubs);
+                // update data in service
+                this.userService.userData$.next({ ...this.user, disliked });
 
+                // update publication and user in database
                 this.http
                     .patch(`${this.urlToPublications}/${pubId}.json`, {
                         dislikes,
@@ -166,6 +174,7 @@ export class PublicationService {
     }
 
     likePublication(pubId: string): void {
+        // same as for dislike
         let likes = 0;
         let liked = [].concat(this.user.liked || []);
         let disliked = [].concat(this.user.disliked || []);
@@ -189,10 +198,6 @@ export class PublicationService {
                 }
 
                 this.userService.userData$.next({ ...this.user, liked });
-                this.pubs.forEach((pub) => {
-                    if (pub.link === pubId) pub.likes = likes;
-                });
-                this.publications$.next(this.pubs);
 
                 this.http
                     .patch(`${this.urlToPublications}/${pubId}.json`, { likes })
@@ -213,17 +218,21 @@ export class PublicationService {
     }
 
     savePublication(pubId: string, savedPage: boolean): void {
-        let saved = [].concat(this.user.saved || []);
-        !saved.includes(pubId)
+        let saved = [].concat(this.user.saved || []); // get all saved publications
+        !saved.includes(pubId) // delete this one if it was there
             ? saved.unshift(pubId)
-            : (saved = saved.filter((id) => id !== pubId));
+            : (saved = saved.filter((id) => id !== pubId)); // or add if was not
+
+        // save to service
         this.userService.userData$.next({ ...this.user, saved });
 
+        // add to publications array, it is saved page
         if (savedPage) {
             const savedPubs = this.pubs.filter((pub) => pub.link !== pubId);
             this.publications$.next(savedPubs);
         }
 
+        // save updated user to the database
         this.http
             .patch(
                 `${environment.firebaseDbUrl}users/${this.user.userId}.json`,

@@ -1,58 +1,144 @@
 <section *ngIf="!loading; else notReady">
-    <header>
-        <div [routerLink]="['/author', publication.author]">
-            <div class="image-wrapper">
-                <img [src]="publication.authorAv || '../../../../assets/avatar.jpg'" alt="Author's avatar">
-            </div>
-            <span>{{publication.author}}</span>
+    <div class="meta">
+        <div class="image-wrapper">
+            <img
+                [src]="publication.authorAv || '../../../../assets/avatar.jpg'"
+                alt="Author's avatar"
+            />
         </div>
-        <div class="dates">
-            <small>Created: {{publication.created | date:'MMMM d, y - H:mm:ss'}}</small>
-            <small *ngIf="publication.modified">Modified: {{publication.modified | date:'MMMM d, y - H:mm:ss'}}</small>
+        <div>
+            <a
+                class="username"
+                [routerLink]="['/author', publication.author]"
+                >{{ publication.author }}</a
+            >
+            <small class="date">
+                {{ publication.created | date: "MMMM d, y - h:mm a" }}
+            </small>
         </div>
-    </header>
-    <hr>
-    <body>
-        <article>
-            <h1>{{publication.title}}</h1>
-            <quill-view-html [content]="publication.text"></quill-view-html>
-            <div class="categories">
-                <p *ngIf="publication.filters.continent">
-                    {{publication.filters.continent}}
-                </p>
-                <p *ngIf="publication.filters.country">
-                    {{publication.filters.country}}
-                </p>
-                <p *ngIf="publication.filters.city" id='city'>
-                    {{publication.filters.city}}
-                </p>
-                <p *ngIf="publication.filters.duration">
-                    {{publication.filters.duration}}
-                    {{publication.filters.duration === '1' ? ' day' : ' days'}}
-                </p>
-                <p *ngIf="publication.filters.people">
-                    {{publication.filters.people}}
-                    {{publication.filters.people === '1' ? ' person' : ' people'}}
-                </p>
-                <p *ngIf="publication.filters.budget">
-                    {{publication.filters.budget.split('').includes('+')
-                        ? 'Over ' + publication.filters.budget
-                        : 'Up to ' + publication.filters.budget
-                    }}$ per person
-                </p>
-            </div>
-        </article>
-        <div id="comments">
-            <button
-                *ngIf="showGetCommentsBtn; else commentsBlock"
-                type="button"
-                [disabled]="submitted"
-                (click)="fetchComments()"
-            >Load comments {{publication.comments || null}}</button>
-            <ng-template #commentsBlock>
-                <div *ngIf="auth.isAuthenticated(); else notAuthed" class="comment-form">
-                    <textarea [(ngModel)]="commentText" (input)="autoResize($event)"></textarea>
+    </div>
+    <article>
+        <h1 class="artice-title">{{ publication.title }}</h1>
+        <div class="categories">
+            <p *ngIf="publication.filters.continent" class="category">
+                {{ publication.filters.continent }}
+            </p>
+            <p *ngIf="publication.filters.country" class="category">
+                {{ publication.filters.country }}
+            </p>
+            <p *ngIf="publication.filters.city" class="category category-city">
+                {{ publication.filters.city }}
+            </p>
+            <p *ngIf="publication.filters.duration" class="category">
+                {{ publication.filters.duration }}
+                {{
+                    publication.filters.duration === "1"
+                        ? " day trip"
+                        : " days trip"
+                }}
+            </p>
+            <p *ngIf="publication.filters.people" class="category">
+                {{ publication.filters.people }}
+                {{ publication.filters.people === "1" ? " person" : " people" }}
+            </p>
+            <p *ngIf="publication.filters.budget" class="category">
+                {{
+                    publication.filters.budget.split("").includes("+")
+                        ? "Over " + publication.filters.budget
+                        : "Up to " + publication.filters.budget
+                }}$ per person
+            </p>
+        </div>
+        <quill-view-html [content]="publication.text"></quill-view-html>
+        <small *ngIf="publication.modified" class="update-date">
+            <b>Updated:</b>
+            {{ publication.modified | date: "MMMM d, y - h:mm a" }}
+        </small>
+    </article>
+    <div class="handlers">
+        <div class="handlers-rate">
+            <span
+                (click)="likeArticle()"
+                class="action"
+                [class.active]="publicationState.liked"
+                tabindex="0"
+                [title]="publication.likes || 0"
+            >
+                <i
+                    class="material-icons"
+                    [class.material-icons-outlined]="!publicationState.liked"
+                >
+                    thumb_up
+                </i>
+            </span>
+            <span
+                class="rate-value"
+                [ngClass]="{
+                    positive: likeDifference > 0,
+                    negative: likeDifference < 0
+                }"
+            >
+                {{ likeDifference > 0 ? "+" + likeDifference : likeDifference }}
+            </span>
+            <span
+                (click)="dislikeArticle()"
+                class="action"
+                [class.active]="publicationState.disliked"
+                tabindex="0"
+                [title]="publication.dislikes || 0"
+            >
+                <i
+                    class="material-icons"
+                    [class.material-icons-outlined]="!publicationState.disliked"
+                >
+                    thumb_down
+                </i>
+            </span>
+        </div>
+
+        <span (click)="saveArticle()" class="action" tabindex="0">
+            <i class="material-icons">
+                {{ publicationState.saved ? "bookmark" : "bookmark_border" }}
+            </i>
+        </span>
+        <span (click)="copyLinkToClipboard()" class="action" tabindex="0">
+            <i class="material-icons"> share </i>
+        </span>
+    </div>
+    <div id="comments">
+        <button
+            *ngIf="showGetCommentsBtn; else commentsBlock"
+            class="btn btn-filled btn-tertiary load-comments-btn"
+            type="button"
+            [disabled]="submitted"
+            (click)="fetchComments()"
+        >
+            Load comments {{ publication.comments || null }}
+        </button>
+        <ng-template #commentsBlock>
+            <div class="comment-form">
+                <div *ngIf="!isAuthenticated" class="not-authorized-cover">
+                    <a [routerLink]="['/authentication']">Sign in to comment</a>
+                </div>
+                <textarea
+                    [(ngModel)]="commentText"
+                    (input)="autoResize($event)"
+                    placeholder="Write your opinion"
+                    #commentTextarea
+                ></textarea>
+                <span
+                    *ngIf="!showEmojis; else emojiPicker"
+                    class="open-emoji-picker-btn"
+                    (click)="emojiPickerStateHandler()"
+                    >&#9786;</span
+                >
+                <ng-template #emojiPicker>
+                    <div
+                        class="backdrop"
+                        (click)="emojiPickerStateHandler()"
+                    ></div>
                     <emoji-mart
+                        class="emoji-picker"
                         color="#880000"
                         emoji=""
                         [emojiSize]="16"
@@ -62,40 +148,42 @@
                         [showPreview]="false"
                         (emojiSelect)="addEmoji($event)"
                     ></emoji-mart>
-                    <div class="buttons">
-                        <button
-                            type="button"
-                            [disabled]="!commentText || submitted"
-                            (click)="cancelCommenting()"
-                        >Cancel</button>
-                        <button
-                            type="submit"
-                            [disabled]="!commentText || submitted"
-                            (click)="saveComment()"
-                        >Submit</button>
-                    </div>
-                </div>
-                <ng-template #notAuthed>
-                    <div class="not-authorized">
-                        <p>Only authorized users can comment</p>
-                    </div>
                 </ng-template>
-                <div *ngIf="comments.length; else noComments" class="comments">
-                    <app-comment
-                        *ngFor="let comment of comments"
-                        [comment]="comment"
-                        (onAddAnswer)="saveAnswer($event)"
-                    ></app-comment>
+                <div class="buttons">
+                    <button
+                        class="btn btn-filled btn-neutral"
+                        type="button"
+                        [disabled]="!commentText || submitted"
+                        (click)="cancelCommenting()"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        class="btn btn-filled btn-secondary"
+                        type="submit"
+                        [disabled]="!commentText || submitted"
+                        (click)="saveComment()"
+                    >
+                        Submit
+                    </button>
                 </div>
-                <ng-template #noComments>
-                    <p>There are no comments yet</p>
-                </ng-template>
+            </div>
+            <div *ngIf="comments.length; else noComments" class="comments">
+                <app-comment
+                    *ngFor="let comment of comments"
+                    [allowReplying]="isAuthenticated"
+                    [comment]="comment"
+                    (onAddAnswer)="saveAnswer($event)"
+                ></app-comment>
+            </div>
+            <ng-template #noComments>
+                <p class="no-comments" (click)="focusOnCommentTextarea()">Be first who left a comment</p>
             </ng-template>
-        </div>
-    </body>
+        </ng-template>
+    </div>
 </section>
 <ng-template #notReady>
-    <section>
+    <section class="center">
         <app-loader></app-loader>
     </section>
 </ng-template>

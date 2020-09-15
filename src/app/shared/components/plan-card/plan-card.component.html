@@ -1,55 +1,88 @@
-<div *ngIf="plan.link; else demo" class="card">
+<div *ngIf="plan.link; else demo" class="publication-card">
     <div class="header">
         <div [routerLink]="['/author', plan.author]">
             <div class="image-wrapper">
-                <img [src]="plan.authorAv || '../../../../assets/avatar.jpg'" alt="Author's avatar">
+                <img
+                    [src]="plan.authorAv || '../../../../assets/avatar.jpg'"
+                    alt="Author's avatar"
+                />
             </div>
-            <span>{{plan.author}}</span>
+            <span>{{ plan.author }}</span>
         </div>
-        <i>link</i>
+        <i class="material-icons" tabindex="0">link</i>
     </div>
-    <a [routerLink]="['/plan', plan.link]">
-        <img [src]="plan.poster || '../../../../assets/avatar.jpg'" alt="Plan poster">
-        <p>{{plan.title}}</p>
+    <a class="body" [routerLink]="['/plan', plan.link]">
+        <img
+            [src]="plan.poster || '../../../../assets/article_poster.jpg'"
+            alt="Plan poster"
+        />
+        <p title="{{ plan.title }}">{{ plan.title }}</p>
     </a>
     <div class="meta">
-        <i (click)="onLike()">{{user.liked.includes(plan.link) ? 'L[x]' : 'L[]'}} {{plan.likes || 0}}</i>
-        <i (click)="onDislike()">{{user.disliked.includes(plan.link) ? 'D[x]' : 'D[]'}} {{plan.dislikes || 0}}</i>
-        <i (click)="onOpenComments()">C {{plan.comments || 0}}</i>
-        <i (click)="onSave()">{{user.saved.includes(plan.link) ? '[x]' : '[]'}}</i>
+        <span class="date">
+            {{ plan.created | date: "MMMM d, y" }}
+        </span>
+        <span (click)="saveArticle()" class="action" tabindex="0">
+            <i class="material-icons">
+                {{ isSaved ? "bookmark" : "bookmark_border" }}
+            </i>
+        </span>
     </div>
     <div *ngIf="isAuthor" class="buttons">
-        <button *ngIf="!plan.published; else hide" (click)="onPublish(true)">Publish</button>
+        <button
+            *ngIf="!plan.published; else hide"
+            class="btn btn-outlined btn-secondary"
+            (click)="publishArticle(true)"
+        >
+            Publish
+        </button>
         <ng-template #hide>
-            <button (click)="onPublish(false)">Hide</button>
+            <button
+                class="btn btn-outlined btn-neutral"
+                (click)="publishArticle(false)"
+            >
+                Hide
+            </button>
         </ng-template>
-        <button (click)="onEdit()">Edit</button>
-        <button (click)="onDelete()">Delete</button>
+        <button class="btn btn-outlined btn-neutral" (click)="editArticle()">
+            Edit
+        </button>
+        <button class="btn btn-outlined btn-danger" (click)="deleteArticle()">
+            Delete
+        </button>
     </div>
 </div>
 <ng-template #demo>
-    <div class="card">
+    <div class="publication-card demo">
         <div class="header">
             <div>
                 <div class="image-wrapper">
-                    <img [src]="plan.authorAv || '../../../../assets/avatar.jpg'" alt="Author's avatar">
+                    <img
+                        [src]="plan.authorAv || '../../../../assets/avatar.jpg'"
+                        alt="Author's avatar"
+                    />
                 </div>
-                <span>{{plan.author}}</span>
+                <span>{{ plan.author }}</span>
             </div>
-            <i>link</i>
+            <i class="material-icons">link</i>
         </div>
-        <img [src]="plan.poster || '../../../../assets/avatar.jpg'" alt="Plan poster">
-        <p>{{plan.title}}</p>
+        <app-img-picker
+            class="front-picture"
+            [cropperAspectRatio]="croppedImageRatio"
+            [croppedSizes]="croppedImageSize"
+            [src]="plan.poster || '../../../../assets/article_poster.jpg'"
+        ></app-img-picker>
+        <p title="{{ plan.title }}">{{ plan.title }}</p>
         <div class="meta">
-            <i>L 0</i>
-            <i>D 0</i>
-            <i>C 0</i>
-            <i>[]</i>
+            <span class="date">July 14, 2020</span>
+            <span class="action">
+                <i class="material-icons">bookmark_border</i>
+            </span>
         </div>
     </div>
 </ng-template>
 <app-confirm-window
     *ngIf="window"
     [settings]="window"
-    (closeWindow)="onCloseWindow($event)"
+    (onClose)="closeWindow()"
 ></app-confirm-window>

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PlanCard, Confirmation } from '../../interfaces';
 import { Router } from '@angular/router';
+import { PlanCard, Confirmation } from '../../interfaces';
 import { PublicationService } from '../../services/publication.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
@@ -9,19 +9,17 @@ import { UserService } from '../../services/user.service';
 @Component({
     selector: 'app-plan-card',
     templateUrl: './plan-card.component.html',
-    styleUrls: ['./plan-card.component.scss']
+    styleUrls: ['./plan-card.component.scss'],
 })
 export class PlanCardComponent implements OnInit {
-    @Input() plan: PlanCard
-    @Input() isAuthor = false
-    @Input() savedPage = false
-    @Output() deletePub: EventEmitter<string> = new EventEmitter<string>()
-    user = {
-        disliked: [],
-        liked: [],
-        saved: []
-    }
-    window: Confirmation = null
+    @Input() plan: PlanCard;
+    @Input() isAuthor = false;
+    @Input() savedPage = false;
+    @Output() onDelete: EventEmitter<string> = new EventEmitter<string>();
+    croppedImageSize = [{ width: 480, height: 360 }];
+    croppedImageRatio = 4 / 3;
+    isSaved = false;
+    window: Confirmation = null;
 
     constructor(
         private alert: AlertService,
@@ -29,86 +27,78 @@ export class PlanCardComponent implements OnInit {
         private userService: UserService,
         private pubService: PublicationService,
         private router: Router
-    ) {
-        this.userService.userData$.subscribe(user => {
-            if (user) {
-                this.user = {
-                    disliked: user.disliked || [],
-                    liked: user.liked || [],
-                    saved: user.saved || []
-                }
-            }
-        })
-    }
+    ) {}
 
     ngOnInit(): void {
+        this.userService.userData$.subscribe((user) => {
+            if (user) {
+                this.isSaved = (user.saved || []).includes(this.plan.link);
+            }
+        });
     }
 
-    deletePublication() {
-        this.pubService.deletePublication(this.plan.authorId, this.plan.link).subscribe(() => {
-            this.alert.success('Publication has been deleted')
-            this.deletePub.emit(this.plan.link)
-        }, () => {
-            this.alert.danger('Something went wrong, try again later')
-        }, () => {
-            this.window = null
-        })
+    closeWindow() {
+        this.window = null;
     }
 
-    onCloseWindow(_: any) {
-        this.window = null
-    }
-
-    onEdit() {
-        this.router.navigate(['/profile', 'edit', this.plan.link])
-    }
-
-    onDelete() {
+    deleteArticle() {
         this.window = {
             text: 'Are you sure you want to delete this publication?',
             confirmButtonTitle: 'Delete',
-            callback: this.deletePublication.bind(this)
-        }
+            callback: this.deleteCallback.bind(this),
+        };
     }
 
-    onDislike() {
-        if(this.auth.isAuthenticated()) {
-            this.pubService.dislikePublication(this.plan.link)
-        } else {
-            this.alert.warning('Please authorize')
-        }
+    deleteCallback() {
+        this.pubService
+            .deletePublication(this.plan.authorId, this.plan.link)
+            .subscribe(
+                () => {
+                    this.alert.success('Publication has been deleted');
+                    this.onDelete.emit(this.plan.link);
+                },
+                () => {
+                    this.alert.danger('Something went wrong, try again later');
+                },
+                () => {
+                    this.window = null;
+                }
+            );
     }
 
-    onLike() {
-        if(this.auth.isAuthenticated()) {
-            this.pubService.likePublication(this.plan.link)
-        } else {
-            this.alert.warning('Please authorize')
-        }
+    editArticle() {
+        this.router.navigate(['/profile', 'edit', this.plan.link]);
     }
 
-    onOpenComments() {
+    openComments() {
         this.router.navigate(['/plan', this.plan.link], {
-            fragment: 'comments'
-        })
+            fragment: 'comments',
+        });
     }
 
-    onPublish(state: boolean) {
-        this.pubService.publishPublication(this.plan.link, state).subscribe(() => {
-            this.plan.published = state
-            if (state) {
-                this.alert.success('Your publication is open for everyone now')
-            } else [
-                this.alert.success('Your publication has been hidden from search engine')
-            ]
-        })
+    publishArticle(state: boolean) {
+        this.pubService
+            .publishPublication(this.plan.link, state)
+            .subscribe(() => {
+                this.plan.published = state;
+                if (state) {
+                    this.alert.success(
+                        'Your publication is open for everyone now'
+                    );
+                } else
+                    [
+                        this.alert.success(
+                            'Your publication has been hidden from search engine'
+                        ),
+                    ];
+            });
     }
 
-    onSave() {
-        if(this.auth.isAuthenticated()) {
-            this.pubService.savePublication(this.plan.link, this.savedPage)
+    saveArticle() {
+        if (this.auth.isAuthenticated()) {
+            this.pubService.savePublication(this.plan.link, this.savedPage);
         } else {
-            this.alert.warning('Please authorize')
+            this.alert.warning('Please authorize');
         }
     }
 }

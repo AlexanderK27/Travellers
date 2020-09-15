@@ -1,15 +1,18 @@
-$cardWidth: 300px;
+.publication-card {
+    margin: 15px 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 3px 1px #999;
+    overflow: hidden;
 
-.card {
-    width: $cardWidth;
-    margin: 15px;
-    border: 1px solid #999;
+    &.demo {
+        margin: 15px 0px;
+    }
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 8px 10px;
 
     div {
         display: flex;
@@ -18,13 +21,19 @@ $cardWidth: 300px;
     }
 
     span {
-        margin-left: 12px;
+        margin-left: 10px;
+        font-size: 0.8rem;
+    }
+
+    i {
+        font-size: 20px;
+        transform: rotate(-60deg);
     }
 }
 
 .image-wrapper {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     overflow: hidden;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
@@ -35,20 +44,40 @@ $cardWidth: 300px;
     }
 }
 
-img {
+i {
+    font-size: 18px;
+    color: #555;
+    cursor: pointer;
+}
+
+img,
+.front-picture {
     width: 100%;
-    max-height: $cardWidth;
 }
 
 p {
-    margin: 10px;
+    margin: 6px 10px;
+    font-size: 0.9rem;
     font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .meta {
     display: flex;
     justify-content: space-between;
-    padding: 4px 8px;
+    padding: 0px 8px;
+
+    .date {
+        margin-left: 2px;
+        font-size: 0.6rem;
+        color: #555;
+    }
+
+    .action {
+        margin-top: -2px;
+    }
 }
 
 .buttons {

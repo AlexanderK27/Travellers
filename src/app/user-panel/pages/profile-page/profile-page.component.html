@@ -2,36 +2,70 @@
 
 <ng-template #content>
     <div class="profile-data">
-        <div class="image-wrapper">
-            <img [src]="user.avatar || '../../../../assets/avatar.jpg'" alt="Your avatar">
+        <div class="user-avatar">
+            <img
+                [src]="user.avatar || '../../../../assets/avatar.jpg'"
+                alt="Your avatar"
+            />
         </div>
         <div class="information">
-            <h4>{{user.username}}</h4>
-            <p *ngIf="user.name">{{user.name}}</p>
-            <p *ngIf="user.website">{{user.website}}</p>
-            <p *ngIf="user.bio">{{user.bio}}</p>
+            <h1 class="username">{{ user.username }}</h1>
+            <p class="secondary">
+                <span *ngIf="user.name">
+                    {{ user.name }}
+                </span>
+                <span *ngIf="user.name && user.website">
+                    &nbsp;&bull;&nbsp;
+                </span>
+                <span *ngIf="user.website">
+                    {{ user.website }}
+                </span>
+            </p>
             <div class="statistics">
-                <div class="block">
-                    <strong>{{user.publications || 0}}</strong>
+                <div class="statistics-item">
+                    <b>{{ user.publications || 0 }}</b>
                     <span>publications</span>
                 </div>
-                <div class="block">
-                    <strong>{{user.subscribers || 0}}</strong>
-                    <span>subscribers</span>
+                <div class="statistics-item">
+                    <b>{{ user.subscribers || 0 }}</b>
+                    <span>followers</span>
                 </div>
-                <div class="block">
-                    <strong>{{user.subscriptions ? user.subscriptions.length : 0}}</strong>
-                    <span>subscribtions</span>
+                <div class="statistics-item">
+                    <b>{{
+                        user.subscriptions ? user.subscriptions.length : 0
+                    }}</b>
+                    <span>following</span>
                 </div>
             </div>
+            <p class="bio" *ngIf="user.bio">{{ user.bio }}</p>
         </div>
     </div>
-    <div class="publications" *ngIf="publications.length">
+    <nav class="profile-navigation">
+        <ul>
+            <li class="profile-navigation-item">
+                <a routerLink="/profile/create">
+                    <i class="material-icons md-36">post_add</i>
+                    <span>New Publication</span>
+                </a>
+            </li>
+            <li class="profile-navigation-item">
+                <a routerLink="/profile/settings">
+                    <i class="material-icons md-36">settings</i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div
+        class="publications publication-cards-section"
+        *ngIf="publications.length"
+    >
         <app-plan-card
             *ngFor="let post of publications"
             [plan]="post"
             [isAuthor]="true"
-            (deletePub)="onDeletePublication($event)"
+            (onDelete)="deletePublication($event)"
+            class="publication-card-wrapper"
         ></app-plan-card>
     </div>
 </ng-template>

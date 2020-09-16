@@ -1,49 +1,105 @@
+@import "../../../../styles/variables.scss";
+
+.information {
+    text-align: left;
+    margin-left: 30px;
+
+    .username {
+        font-weight: normal;
+        font-size: 1.8rem;
+    }
+    .secondary {
+        display: block;
+        margin-top: -0.1rem;
+        font-size: 0.8rem;
+        color: #777;
+    }
+    .bio {
+        max-width: 300px;
+        max-height: 100px;
+        margin: 8px 0px;
+        line-height: 1.2;
+        font-size: 0.9rem;
+        white-space: pre-line;
+        overflow-x: auto;
+    }
+}
 .profile-data {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     width: 100%;
-    padding: 30px 0;
+    padding: 30px 10px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
+.profile-navigation {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
 
-.image-wrapper {
-    width: 100%;
-    height: 100%;
-    max-width: 280px;
-    max-height: 280px;
-    border-radius: 50%;
-    overflow: hidden;
+    &-item {
+        display: inline-block;
 
-    img {
-        width: 100%;
-        height: 100%;
+        a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            color: $color_gray_d;
+            transition: 0.2s;
+            cursor: pointer;
+
+            &:hover {
+                color: $color_gray_dd;
+            }
+        }
+
+        i {
+            margin-top: -1px;
+            margin-right: 4px;
+            font-size: 24px;
+        }
     }
 }
-
-.block {
-    display: inline-block;
-    width: 70px;
-    margin: 4px;
-    padding: 4px;
-    text-align: center;
-    transition: 0.2s;
-    cursor: default;
-
-    &:hover {
-        width: 90px;
-
-        span { overflow: visible;}
-    }
-
-    span {
-        display: block;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-}
-
 .publications {
     display: flex;
     flex-wrap: wrap;
+}
+.statistics {
+    margin-top: 4px;
+
+    &-item {
+        display: inline-block;
+        margin-right: 12px;
+        padding: 4px;
+        font-family: $font_secondary;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        span {
+            margin-left: 8px;
+        }
+    }
+}
+@media screen and (max-width: 600px) {
+    .statistics-item {
+        width: 33%;
+        margin: 0;
+    }
+}
+@media screen and (max-width: 560px) {
+    .profile-data {
+        flex-direction: column;
+        align-items: center;
+    }
+    .information {
+        text-align: center;
+        margin: auto;
+
+        .bio {
+            margin-top: 0;
+        }
+    }
 }

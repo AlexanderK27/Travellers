@@ -1,99 +1,107 @@
 <div class="filters">
-    <h4>Select categories that fit your travel plan</h4>
-    <p>It will make search easier for other users</p>
     <form [formGroup]="form">
         <div class="filter" [class.selected]="form.get('continent').value">
-            <label for="continent">Main continent:</label>
+            <label for="continent">Main continent</label>
             <select id="continent" formControlName="continent">
-                <option value="">---</option>
-                <option value="Africa">Africa</option>
-                <option value="Antarctica">Antarctica</option>
-                <option value="Asia">Asia</option>
-                <option value="Australia">Australia</option>
-                <option value="Europe">Europe</option>
-                <option value="North America">North America</option>
-                <option value="South America">South America</option>
+                <option value=""></option>
+                <option
+                    *ngFor="let option of searchSelects.continent.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
         <div class="filter" [class.selected]="form.get('country').value !== ''">
-            <label for="country">Main country:</label>
+            <label for="country">Main country</label>
             <select id="country" formControlName="country">
-                <option value="">---</option>
+                <option value=""></option>
                 <option
-                    *ngFor="let country of countries"
-                    [value]="country"
-                >{{country}}</option>
+                    *ngFor="let option of searchSelects.country.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
         <div class="filter" [class.selected]="form.get('city').value !== ''">
             <label for="city">Main city:</label>
-            <input id="city" type="text" maxlength="24" formControlName="city">
+            <input
+                id="city"
+                type="text"
+                maxlength="30"
+                autocomplete="off"
+                formControlName="city"
+            />
         </div>
-        <div class="filter" [class.selected]="form.get('duration').value !== ''">
+        <div
+            class="filter"
+            [class.selected]="form.get('duration').value !== ''"
+        >
             <label for="duration">Trip duration:</label>
             <select id="duration" formControlName="duration">
-                <option value="">---</option>
-                <option value="1">1 day</option>
-                <option value="2-3">2-3 days</option>
-                <option value="4-5">4-5 days</option>
-                <option value="6-8">6-8 days</option>
-                <option value="9-11">9-11 days</option>
-                <option value="12-14">12-14 days</option>
-                <option value="15+">15 or more</option>
+                <option value=""></option>
+                <option
+                    *ngFor="let option of searchSelects.duration.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
-        <div class="filter" [class.selected]="form.get('amountCountries').value !== ''">
+        <div
+            class="filter"
+            [class.selected]="form.get('amountCountries').value !== ''"
+        >
             <label for="amountCountries">Amount of countries:</label>
             <select id="amountCountries" formControlName="amountCountries">
-                <option value="">---</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4-5">4-5</option>
-                <option value="6-7">6-7</option>
-                <option value="8-10">8-10</option>
-                <option value="10+">11 or more</option>
+                <option value=""></option>
+                <option
+                    *ngFor="let option of searchSelects.amountCountries.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
-        <div class="filter" [class.selected]="form.get('amountCities').value !== ''">
+        <div
+            class="filter"
+            [class.selected]="form.get('amountCities').value !== ''"
+        >
             <label for="amountCities">Amount of cities:</label>
             <select id="amountCities" formControlName="amountCities">
-                <option value="">---</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4-5">4-5</option>
-                <option value="6-7">6-7</option>
-                <option value="8-10">8-10</option>
-                <option value="10+">11 or more</option>
+                <option value=""></option>
+                <option
+                    *ngFor="let option of searchSelects.amountCities.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
         <div class="filter" [class.selected]="form.get('people').value !== ''">
             <label for="people">Amount of people:</label>
             <select id="people" formControlName="people">
-                <option value="">---</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6-8">6-8</option>
-                <option value="8+">8 or more</option>
+                <option value=""></option>
+                <option
+                    *ngFor="let option of searchSelects.people.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
         <div class="filter" [class.selected]="form.get('budget').value !== ''">
             <label for="budget">Budget for one person:</label>
             <select id="budget" formControlName="budget">
-                <option value="">---</option>
-                <option value="100">Up to 100$</option>
-                <option value="300">Up to 300$</option>
-                <option value="700">Up to 700$</option>
-                <option value="1500">Up to 1500$</option>
-                <option value="2000">Up to 2000$</option>
-                <option value="4000">Up to 4000$</option>
-                <option value="4000+">4001$ or more</option>
+                <option value=""></option>
+                <option
+                    *ngFor="let option of searchSelects.budget.options"
+                    [value]="option.value"
+                >
+                    {{ option.title }}
+                </option>
             </select>
         </div>
     </form>
-    <p>If any categories does not metter - just leave them empty (three dashes)</p>
 </div>

@@ -1,3 +1,5 @@
+@import "../../../../../styles/variables.scss";
+
 form {
     display: flex;
     flex-wrap: wrap;
@@ -9,33 +11,73 @@ p {
 }
 
 .filter {
-    width: 200px;
-    padding: 16px;
+    width: 50%;
+    padding: 16px 8px;
 
-    label, input, select {
+    label,
+    input,
+    select {
         display: block;
         width: 100%;
     }
 
-    select, input {
-        padding: 14px;
-        border-radius: 10px;
-        border: 2px solid #000;
-        background-color: #fff;
+    select,
+    input {
+        height: 40px;
+        padding: 0 10px;
+        border: none;
+        background-color: #eee;
+
+        &:focus {
+            background-color: #fff;
+            border: 1px solid #000;
+        }
     }
 
-    select, option, input {
+    select,
+    option,
+    input {
         font-size: 1rem;
     }
 
+    option {
+        background-color: #fff;
+    }
+
+    select {
+        cursor: pointer;
+    }
+
     &.selected {
-        select, input {
-            border-color: #59abea;
-            background-color: #a4d6fc;
+        select,
+        input {
+            background-color: $color_secondary;
+
+            &:focus {
+                background-color: #fff;
+                border: 1px solid #000;
+            }
         }
     }
 }
 
 #city {
     text-transform: capitalize;
+}
+
+@media screen and (min-width: 800px) {
+    .filter {
+        max-width: 200px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .filter {
+        padding: 12px 4px;
+
+        label,
+        select {
+            font-size: 0.9rem;
+        }
+    }
 }

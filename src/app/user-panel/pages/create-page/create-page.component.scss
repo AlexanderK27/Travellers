@@ -1,11 +1,130 @@
+@import "../../../../styles/variables.scss";
+
+.block-description {
+    margin: 8px 0px;
+    padding: 24px 18px;
+    border-left: 4px solid #000;
+    background-color: #eee;
+
+    &-header,
+    small {
+        display: block;
+        line-height: 1.2;
+    }
+
+    small {
+        margin-top: 8px;
+        line-height: 1.4;
+    }
+}
 .form-wrapper {
     width: 100%;
     max-width: 800px;
-    margin: auto;
+    margin: 0px auto 40px;
+}
+
+.submit-article-btn {
+    display: block;
+    margin: 20px auto;
+}
+.submitted-loader {
+    width: fit-content;
+    margin: 30px auto;
+
+    p {
+        display: block;
+    }
 }
 
 .view {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-bottom: 16px;
+    overflow-x: auto;
+
+    &-plan-card {
+        flex: 1;
+        padding: 0 2px;
+        min-width: 320px;
+        max-width: 420px;
+    }
+
+    &-controls {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        max-width: 420px;
+        padding: 15px 0px 15px 10px;
+
+        &-block {
+            flex: 1;
+            display: flex;
+        }
+    }
+
+    &-control {
+        &-btn {
+            flex: 1;
+            padding: 24px 0;
+            background-color: #f0f0f0;
+            color: $color_gray_d;
+            transition: 0.2s;
+
+            i,
+            span {
+                display: block;
+                margin: auto;
+            }
+
+            i {
+                width: 36px;
+                font-size: 36px;
+            }
+
+            &:disabled {
+                display: none;
+            }
+
+            &:hover {
+                color: #000;
+
+                &.danger {
+                    color: $color_danger;
+                }
+
+                &.success {
+                    color: $color_success;
+                }
+            }
+        }
+
+        &-input {
+            width: 100%;
+            margin-top: 10px;
+
+            input {
+                padding: 8px 12px;
+                border-radius: 0;
+            }
+        }
+    }
+}
+@media screen and (max-width: 600px) {
+    .block-description-header {
+        font-size: 1.3rem;
+    }
+    .form-wrapper {
+        max-width: 500px;
+    }
+    .view {
+        flex-direction: column;
+        align-items: center;
+
+        &-controls {
+            width: 100%;
+            padding: 0;
+            min-width: 320px;
+        }
+    }
 }

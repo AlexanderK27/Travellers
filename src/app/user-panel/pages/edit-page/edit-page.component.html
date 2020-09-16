@@ -1,64 +1,124 @@
 <div *ngIf="!loading; else notReady" class="form-wrapper">
-    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="form" [formGroup]="form">
+        <div class="block-description">
+            <h2 class="block-description-header">Catch user's attention</h2>
+            <small>
+                Upload a nice picture and come up with a title that describes
+                your article
+            </small>
+        </div>
         <div class="view">
             <app-plan-card
                 [plan]="planView"
+                class="view-plan-card"
             ></app-plan-card>
-            <div
-                class="form-control"
-                [ngClass]="{invalid: form.get('title').touched && form.get('title').invalid}"
-            >
-                <label for="title">Title:</label>
-                <input
-                    id="title"
-                    type="text"
-                    formControlName="title"
-                    maxlength="100"
-                    (input)="setPlanViewTitle()"
-                >
+            <div class="view-controls">
+                <div class="view-controls-block">
+                    <button
+                        class="view-control-btn danger"
+                        type="button"
+                        [disabled]="
+                            !pickerService.showCropper &&
+                            !pickerService.showNewImage
+                        "
+                        (click)="pickerService.resetImage()"
+                    >
+                        <i class="material-icons md-36">clear</i>
+
+                        <span>Remove photo</span>
+                    </button>
+                    <button
+                        class="view-control-btn"
+                        type="button"
+                        [disabled]="pickerService.showCropper"
+                        (click)="pickerService.triggerFileUploadInput()"
+                    >
+                        <i class="material-icons md-36">publish</i>
+                        <span>Upload photo</span>
+                    </button>
+                    <button
+                        class="view-control-btn success"
+                        type="button"
+                        [disabled]="!pickerService.showCropper"
+                        (click)="pickerService.submitCroppedImage()"
+                    >
+                        <i class="material-icons md-36">checkmark</i>
+                        <span>Save changes</span>
+                    </button>
+                </div>
                 <div
-                    *ngIf="form.get('title').touched && form.get('title').invalid"
-                    class="validation"
+                    class="view-control-input form-control"
+                    [ngClass]="{
+                        invalid:
+                            form.get('title').touched &&
+                            form.get('title').invalid
+                    }"
                 >
-                    <small *ngIf="form.get('title').errors.required">
-                        Field is required
-                    </small>
+                    <input
+                        id="title"
+                        type="text"
+                        formControlName="title"
+                        placeholder="Write your title here"
+                        maxlength="100"
+                        (input)="setPlanViewTitle()"
+                    />
+                    <div
+                        *ngIf="
+                            form.get('title').touched &&
+                            form.get('title').invalid
+                        "
+                        class="validation"
+                    >
+                        <small *ngIf="form.get('title').errors.required">
+                            Field is required
+                        </small>
+                        <small *ngIf="form.get('title').errors.maxlength">
+                            Sorry, but 100 symbols is maximum
+                        </small>
+                    </div>
                 </div>
             </div>
-            <div>
-                <input
-                    type="file"
-                    accept="image/jpeg,image/png"
-                    (change)="uploadFile($event)"
-                    class="file-input"
-                    #fileInput
-                >
-                <button type="button" (click)="fileInput.click()">
-                    Upload front picture
-                </button>
-            </div>
+        </div>
+        <div class="block-description">
+            <h2 class="block-description-header">Write the content</h2>
+            <small
+                >Use headings, images or lists to make your plan attractive and
+                easy to read</small
+            >
         </div>
         <div class="form-control quill">
             <quill-editor
                 [styles]="quillStyle"
                 [modules]="quillConfig"
                 formControlName="text"
-                placeholder="Write your trip plan here"
+                placeholder="Press here to start typing"
             ></quill-editor>
+        </div>
+        <div class="block-description">
+            <h2 class="block-description-header">
+                Select the categories your article belongs to
+            </h2>
+            <small>Our search engine like them</small>
         </div>
         <app-filters
             [values]="filterValues"
             (onSelect)="setFilterValues($event)"
         ></app-filters>
-        <div class="buttons">
-            <button
-                type="submit"
-                [disabled]="form.invalid || submitted"
-                (submit)="onSubmit()"
-            >
-                Save changes
-            </button>
-        </div>
+        <button
+            *ngIf="!submitted; else submittedLoader"
+            class="submit-article-btn btn btn-filled btn-primary"
+            type="button"
+            [disabled]="form.invalid"
+            (click)="saveChanges()"
+        >
+            Save publication
+        </button>
+        <ng-template #submittedLoader>
+            <div class="submitted-loader">
+                <app-loader></app-loader>
+                <p>Your article is saving... Please wait.</p>
+            </div>
+        </ng-template>
     </form>
 </div>
 <ng-template #notReady>

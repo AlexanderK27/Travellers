@@ -1,3 +1,19 @@
+@import "../../../styles/variables.scss";
+
+.no-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 65vh;
+
+    &-heading {
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 1.4em;
+        font-family: $font_secondary;
+    }
+}
 .publications {
     display: flex;
     flex-wrap: wrap;

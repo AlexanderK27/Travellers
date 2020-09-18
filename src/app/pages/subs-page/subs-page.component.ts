@@ -1,35 +1,35 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PlanCard } from 'src/app/shared/interfaces';
+import { Subscription } from 'rxjs';
+import { take, switchMap } from 'rxjs/operators';
+import { Publication } from 'src/app/shared/interfaces';
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { UserService } from 'src/app/shared/services/user.service';
-import { Subscription } from 'rxjs';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 
 interface publicationsSortedByDate {
-    today: Array<PlanCard>
-    yesterday: Array<PlanCard>
-    week: Array<PlanCard>
-    month: Array<PlanCard>
-    earlier: Array<PlanCard>
+    today: Array<Publication>;
+    yesterday: Array<Publication>;
+    week: Array<Publication>;
+    month: Array<Publication>;
+    earlier: Array<Publication>;
 }
 
 @Component({
     selector: 'app-subs-page',
     templateUrl: './subs-page.component.html',
-    styleUrls: ['./subs-page.component.scss']
+    styleUrls: ['./subs-page.component.scss'],
 })
 export class SubsPageComponent implements OnInit, OnDestroy {
-    aSub: Subscription
-    loading = true
+    loading = true;
+    noContent = true;
     publications: publicationsSortedByDate = {
         today: [],
         yesterday: [],
         week: [],
         month: [],
-        earlier: []
-    }
-    pSub: Subscription
-    uSub: Subscription
+        earlier: [],
+    };
+    uSub: Subscription;
 
     constructor(
         private avatarService: AvatarService,
@@ -37,63 +37,97 @@ export class SubsPageComponent implements OnInit, OnDestroy {
         private userService: UserService
     ) {}
 
-    ngOnInit(): void {
-        this.pSub = this.pubService.publications$.subscribe(publications => {
-            if (!publications.length) {
-                return
-            }
-            const pSorted = [[], [], [], [], []]
-            const now = new Date().getTime()
-            for (let p of publications) {
-                const published = p.modified ? new Date(p.modified).getTime() : new Date(p.created).getTime()
-                const timePassed = now - published
-                if (timePassed <= 24 * 3600000) {
-                    pSorted[0].unshift(p)
-                } else if (timePassed <= 48 * 3600000) {
-                    pSorted[1].unshift(p)
-                } else if (timePassed <= 7 * 24 * 3600000) {
-                    pSorted[2].unshift(p)
-                } else if (timePassed <= 30 * 24 * 3600000) {
-                    pSorted[3].unshift(p)
-                } else {
-                    pSorted[4].unshift(p)
+    ngOnInit() {
+        this.uSub = this.userService.userData$
+            .pipe(take(2))
+            .subscribe((user) => {
+                if (!user) {
+                    return;
                 }
-            }
 
-            this.publications = {
-                today: [...pSorted[0]],
-                yesterday: [...pSorted[1]],
-                week: [...pSorted[2]],
-                month: [...pSorted[3]],
-                earlier: [...pSorted[4]]
-            }
-        })
-        this.uSub = this.userService.userData$.subscribe(user => {
-            if (user) {
                 if (user.subscriptions && user.subscriptions.length) {
-                    this.pubService.getPublicationsFromSubs(user.subscriptions).subscribe(publications => {
-                        const usernames = publications.map(p => p.author)
+                    let publications: Publication[] = [];
 
-                        this.aSub = this.avatarService.getMinAvatars(usernames).subscribe(avatars => {
-                            publications.forEach(pub => {
-                                pub.authorAv = avatars.find(a => a.username === pub.author).avatar
-                            })
+                    // fetch publications
+                    this.pubService
+                        .getPublicationsFromSubs(user.subscriptions)
+                        .pipe(
+                            switchMap((pubs) => {
+                                publications = pubs;
 
-                            this.pubService.publications$.next(publications)
-                            this.loading = false
-                        })
-                    })
+                                // fetch avatars
+                                const usernames = pubs.map((p) => p.author);
+                                return this.avatarService.getMinAvatars(
+                                    usernames
+                                );
+                            }),
+                            take(1)
+                        )
+                        .subscribe((avatars) => {
+                            // assing avatars
+                            publications.forEach((pub) => {
+                                pub.authorAv = avatars.find(
+                                    (a) => a.username === pub.author
+                                ).avatar;
+                            });
+
+                            if (publications.length) {
+                                this.noContent = false
+                                this.publications = {
+                                    ...this.sortToGroupsByDate(publications),
+                                };
+                            }
+
+                            this.loading = false;
+                        });
                 } else {
-                    this.pubService.publications$.next([])
-                    this.loading = false
+                    this.loading = false;
                 }
-            }
-        })
+            });
     }
 
-    ngOnDestroy(): void {
-        if (this.aSub) this.aSub.unsubscribe()
-        this.pSub.unsubscribe()
-        this.uSub.unsubscribe()
+    ngOnDestroy() {
+        this.uSub.unsubscribe();
+    }
+
+    private sortByDate(publications: Publication[]): Publication[] {
+        return publications.sort(
+            (a, b) =>
+                Date.parse(b.created.toString()) -
+                Date.parse(a.created.toString())
+        );
+    }
+
+    private sortToGroupsByDate(
+        publications: Publication[]
+    ): publicationsSortedByDate {
+        const pSorted = [[], [], [], [], []];
+        const now = new Date().getTime();
+
+        for (let p of publications) {
+            const published = p.modified
+                ? new Date(p.modified).getTime()
+                : new Date(p.created).getTime();
+            const timePassed = now - published;
+            if (timePassed <= 24 * 3600000) {
+                pSorted[0].unshift(p);
+            } else if (timePassed <= 48 * 3600000) {
+                pSorted[1].unshift(p);
+            } else if (timePassed <= 7 * 24 * 3600000) {
+                pSorted[2].unshift(p);
+            } else if (timePassed <= 30 * 24 * 3600000) {
+                pSorted[3].unshift(p);
+            } else {
+                pSorted[4].unshift(p);
+            }
+        }
+
+        return {
+            today: this.sortByDate(pSorted[0]),
+            yesterday: this.sortByDate(pSorted[1]),
+            week: this.sortByDate(pSorted[2]),
+            month: this.sortByDate(pSorted[3]),
+            earlier: this.sortByDate(pSorted[4]),
+        };
     }
 }

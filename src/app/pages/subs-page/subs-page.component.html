@@ -1,61 +1,78 @@
-<section *ngIf="!loading; else notReady">
-    <h2>Your subscriptions</h2>
-    <div *ngIf="publications.today.length">
-        <div>
-            <p>Today</p>
+<ng-container *ngIf="!loading; else notReady">
+    <div *ngIf="noContent" class="no-content">
+        <p class="no-content-heading">
+            Follow authors to do not miss their latest publications
+        </p>
+        <button class="btn btn-filled btn-danger" type="button" routerLink="/">
+            Follow
+        </button>
+    </div>
+    <section *ngIf="publications.today.length">
+        <div class="publication-cards-section-header">
+            <h2>Today</h2>
         </div>
-        <div class="publications">
+        <div class="publications publication-cards-section">
             <app-plan-card
                 *ngFor="let publication of publications.today"
+                [markUpdated]="true"
                 [plan]="publication"
+                class="publication-card-wrapper"
             ></app-plan-card>
         </div>
-    </div>
-    <div *ngIf="publications.yesterday.length">
-        <div>
-            <p>Yesterday</p>
+    </section>
+    <section *ngIf="publications.yesterday.length">
+        <div class="publication-cards-section-header">
+            <h2>Yesterday</h2>
         </div>
-        <div class="publications">
+        <div class="publications publication-cards-section">
             <app-plan-card
                 *ngFor="let publication of publications.yesterday"
+                [markUpdated]="true"
                 [plan]="publication"
+                class="publication-card-wrapper"
             ></app-plan-card>
         </div>
-    </div>
-    <div *ngIf="publications.week.length">
-        <div>
-            <p>This week</p>
+    </section>
+    <section *ngIf="publications.week.length">
+        <div class="publication-cards-section-header">
+            <h2>This week</h2>
         </div>
-        <div class="publications">
+        <div class="publications publication-cards-section">
             <app-plan-card
                 *ngFor="let publication of publications.week"
+                [markUpdated]="true"
                 [plan]="publication"
+                class="publication-card-wrapper"
             ></app-plan-card>
         </div>
-    </div>
-    <div *ngIf="publications.month.length">
-        <div>
-            <p>This month</p>
+    </section>
+    <section *ngIf="publications.month.length">
+        <div class="publication-cards-section-header">
+            <h2>This month</h2>
         </div>
-        <div class="publications">
+        <div class="publications publication-cards-section">
             <app-plan-card
                 *ngFor="let publication of publications.month"
+                [markUpdated]="true"
                 [plan]="publication"
+                class="publication-card-wrapper"
             ></app-plan-card>
         </div>
-    </div>
-    <div *ngIf="publications.earlier.length">
-        <div>
-            <p>Earlier</p>
+    </section>
+    <section *ngIf="publications.earlier.length">
+        <div class="publication-cards-section-header">
+            <h2>Earlier</h2>
         </div>
-        <div class="publications">
+        <div class="publications publication-cards-section">
             <app-plan-card
                 *ngFor="let publication of publications.earlier"
+                [markUpdated]="true"
                 [plan]="publication"
+                class="publication-card-wrapper"
             ></app-plan-card>
         </div>
-    </div>
-</section>
+    </section>
+</ng-container>
 <ng-template #notReady>
     <section>
         <app-loader></app-loader>

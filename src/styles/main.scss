@@ -263,6 +263,7 @@ textarea {
 
     input,
     label,
+    small,
     textarea {
         display: block;
         width: 100%;
@@ -334,6 +335,14 @@ textarea {
     max-width: $publication_card_section_width;
     padding: 0 2%;
     margin: auto;
+
+    &-header {
+        width: 100%;
+        max-width: 1950px;
+        padding: 10px calc(2% + 10px) 0;
+        margin: auto;
+        border-top: 1px solid #ddd;
+    }
 }
 
 .user-avatar {
@@ -394,6 +403,10 @@ textarea {
 @media screen and (max-width: 900px) {
     .publication-cards-section {
         padding: 0 4%;
+
+        &-header {
+            padding: 10px calc(4% + 10px) 0;
+        }
     }
     .publication-card-wrapper {
         width: 50%;
@@ -402,11 +415,19 @@ textarea {
 @media screen and (max-width: 750px) {
     .publication-cards-section {
         padding: 0 2%;
+
+        &-header {
+            padding: 10px calc(2% + 10px) 0;
+        }
     }
 }
 @media screen and (max-width: 600px) {
     .publication-cards-section {
         padding: 0 8%;
+
+        &-header {
+            padding: 10px calc(8% + 10px) 0;
+        }
     }
     .publication-card-wrapper {
         width: 100%;
@@ -416,5 +437,9 @@ textarea {
 @media screen and (max-width: 460px) {
     .publication-cards-section {
         padding: 0 1%;
+
+        &-header {
+            padding: 10px calc(1% + 10px) 0;
+        }
     }
 }

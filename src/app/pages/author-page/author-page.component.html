@@ -1,53 +1,148 @@
 <app-loader *ngIf="loading; else content"></app-loader>
 <ng-template #content>
-    <div class="profile-data">
-        <div class="image-wrapper">
-            <img [src]="author.avatar || '../../../../assets/avatar.jpg'" alt="Avatar">
-        </div>
-        <div class="information">
-            <h4>{{author.username}}</h4>
-            <p *ngIf="author.name">{{author.name}}</p>
-            <p *ngIf="author.website">{{author.website}}</p>
-            <p *ngIf="author.bio">{{author.bio}}</p>
-            <div class="statistics">
-                <div class="block">
-                    <strong>{{author.publications || 0}}</strong>
-                    <span>publications</span>
-                </div>
-                <div class="block">
-                    <strong>{{author.subscribers || 0}}</strong>
-                    <span>subscribers</span>
-                </div>
-                <div class="block">
-                    <strong>{{author.subscriptions ? author.subscriptions.length : 0}}</strong>
-                    <span>subscribtions</span>
+    <section class="not-found" *ngIf="notFoundAuthor; else profile">
+        <h1 class="not-found-title">
+            Author "{{ notFoundAuthor }}" has not been found
+        </h1>
+        <form class="not-found-form">
+            <p class="not-found-form-tiile">
+                Would you like to change query and try again?
+            </p>
+            <div
+                class="form-control"
+                [class.invalid]="authorName.value && authorName.invalid"
+            >
+                <input
+                    name="authorName"
+                    type="text"
+                    minlength="3"
+                    maxlength="20"
+                    pattern="[a-zA-Z0-9_]*"
+                    autocomplete="off"
+                    [(ngModel)]="authorNameValue"
+                    #authorName="ngModel"
+                />
+                <div
+                    *ngIf="authorName.value && authorName.invalid"
+                    class="validation"
+                >
+                    <small *ngIf="authorName.errors.minlength">
+                        This username is too short
+                    </small>
+                    <small *ngIf="authorName.errors.maxlength">
+                        This username is too long
+                    </small>
+                    <small *ngIf="authorName.errors.pattern">
+                        Only latin letters, numbers and underscores are allowed
+                    </small>
                 </div>
             </div>
-            <div *ngIf="author.userId !== user.userId">
+            <div class="not-found-form-buttons">
                 <button
-                    *ngIf="!user.subscriptions || !user.subscriptions.includes(author.username); else unsub"
+                    class="btn btn-filled btn-neutral"
                     type="button"
-                    [disabled]="btnPressed"
-                    (click)="onSubscribe(true)"
+                    (click)="navigateBack()"
                 >
-                    Subscribe
+                    Take me back
                 </button>
-                <ng-template #unsub>
+                <button
+                    class="btn btn-filled btn-secondary"
+                    type="submit"
+                    [disabled]="!authorName.value || authorName.invalid"
+                    (click)="fetchAuhor(authorName.value)"
+                >
+                    Try again
+                </button>
+            </div>
+        </form>
+    </section>
+    <ng-template #profile>
+        <div class="profile-data">
+            <div class="user-avatar">
+                <img
+                    [src]="author.avatar || '../../../../assets/avatar.jpg'"
+                    alt="Avatar"
+                />
+            </div>
+            <div class="information">
+                <h1 class="username">{{ author.username }}</h1>
+                <p class="secondary">
+                    <span *ngIf="author.name">
+                        {{ author.name }}
+                    </span>
+                    <span *ngIf="author.name && author.website">
+                        &nbsp;&bull;&nbsp;
+                    </span>
+                    <span *ngIf="author.website">
+                        {{ author.website }}
+                    </span>
+                </p>
+                <div class="statistics">
+                    <div class="statistics-item">
+                        <b>{{ author.publications || 0 }}</b>
+                        <span>publications</span>
+                    </div>
+                    <div class="statistics-item">
+                        <b>{{ author.subscribers || 0 }}</b>
+                        <span>followers</span>
+                    </div>
+                    <div class="statistics-item">
+                        <b>{{
+                            author.subscriptions
+                                ? author.subscriptions.length
+                                : 0
+                        }}</b>
+                        <span>following</span>
+                    </div>
+                </div>
+                <p class="bio" *ngIf="author.bio">{{ author.bio }}</p>
+                <ng-container
+                    *ngIf="author.userId !== user.userId; else myProfile"
+                >
+                    <button
+                        *ngIf="
+                            !user.subscriptions ||
+                                !user.subscriptions.includes(author.username);
+                            else unsub
+                        "
+                        type="button"
+                        class="btn btn-filled btn-danger"
+                        [disabled]="followBtnPressed"
+                        (click)="followAuthor(true)"
+                    >
+                        Follow
+                    </button>
+                    <ng-template #unsub>
+                        <button
+                            type="button"
+                            class="btn btn-filled btn-neutral"
+                            [disabled]="followBtnPressed"
+                            (click)="followAuthor(false)"
+                        >
+                            Unfollow
+                        </button>
+                    </ng-template>
+                </ng-container>
+                <ng-template #myProfile>
                     <button
                         type="button"
-                        [disabled]="btnPressed"
-                        (click)="onSubscribe(false)"
+                        class="btn btn-filled btn-danger"
+                        [disabled]="true"
                     >
-                        Unsubscribe
+                        Follow
                     </button>
                 </ng-template>
             </div>
         </div>
-    </div>
-    <div class="publications" *ngIf="publications.length">
-        <app-plan-card
-            *ngFor="let post of publications"
-            [plan]="post"
-        ></app-plan-card>
-    </div>
+        <div
+            class="publications publication-cards-section"
+            *ngIf="publications.length"
+        >
+            <app-plan-card
+                *ngFor="let post of publications"
+                [plan]="post"
+                class="publication-card-wrapper"
+            ></app-plan-card>
+        </div>
+    </ng-template>
 </ng-template>

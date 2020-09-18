@@ -5,6 +5,7 @@ import { PublicationService } from '../../services/publication.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-plan-card',
@@ -12,13 +13,14 @@ import { UserService } from '../../services/user.service';
     styleUrls: ['./plan-card.component.scss'],
 })
 export class PlanCardComponent implements OnInit {
-    @Input() plan: PlanCard;
     @Input() isAuthor = false;
-    @Input() savedPage = false;
+    @Input() markUpdated = false;
+    @Input() plan: PlanCard;
     @Output() onDelete: EventEmitter<string> = new EventEmitter<string>();
     croppedImageSize = [{ width: 480, height: 360 }];
     croppedImageRatio = 4 / 3;
     isSaved = false;
+    showPopupMenu = false;
     window: Confirmation = null;
 
     constructor(
@@ -29,16 +31,30 @@ export class PlanCardComponent implements OnInit {
         private router: Router
     ) {}
 
-    ngOnInit(): void {
-        this.userService.userData$.subscribe((user) => {
+    ngOnInit() {
+        this.userService.userData$.pipe(take(2)).subscribe((user) => {
             if (user) {
                 this.isSaved = (user.saved || []).includes(this.plan.link);
             }
         });
     }
 
-    closeWindow() {
+    closeConfirmWindow() {
         this.window = null;
+    }
+
+    copyLink() {
+        navigator.clipboard
+            .writeText(document.location.href)
+            .then(() => {
+                this.alert.success('Link copied to clipboard');
+            })
+            .catch(() => {
+                this.alert.danger('Failed to copy a link');
+            })
+            .finally(() => {
+                this.handlePopupMenu();
+            });
     }
 
     deleteArticle() {
@@ -70,7 +86,11 @@ export class PlanCardComponent implements OnInit {
         this.router.navigate(['/profile', 'edit', this.plan.link]);
     }
 
-    openComments() {
+    handlePopupMenu() {
+        this.showPopupMenu = !this.showPopupMenu;
+    }
+
+    navigateToComments() {
         this.router.navigate(['/plan', this.plan.link], {
             fragment: 'comments',
         });
@@ -96,7 +116,8 @@ export class PlanCardComponent implements OnInit {
 
     saveArticle() {
         if (this.auth.isAuthenticated()) {
-            this.pubService.savePublication(this.plan.link, this.savedPage);
+            this.isSaved = !this.isSaved;
+            this.pubService.savePublication(this.plan.link);
         } else {
             this.alert.warning('Please authorize');
         }

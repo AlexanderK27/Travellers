@@ -1,20 +1,34 @@
-.publication-card {
-    margin: 15px 10px;
-    background-color: #fff;
-    box-shadow: 0px 0px 3px 1px #999;
+i {
+    font-size: 18px;
+    color: #555;
+    cursor: pointer;
+}
+img,
+.front-picture {
+    width: 100%;
+}
+p {
+    margin: 6px 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.buttons {
+    display: flex;
 
-    &.demo {
-        margin: 15px 0px;
+    button {
+        flex-grow: 1;
     }
 }
-
 .header {
     display: flex;
     justify-content: space-between;
     padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
 
-    div {
+    &-author {
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -27,10 +41,8 @@
 
     i {
         font-size: 20px;
-        transform: rotate(-60deg);
     }
 }
-
 .image-wrapper {
     width: 20px;
     height: 20px;
@@ -43,27 +55,6 @@
         height: 100%;
     }
 }
-
-i {
-    font-size: 18px;
-    color: #555;
-    cursor: pointer;
-}
-
-img,
-.front-picture {
-    width: 100%;
-}
-
-p {
-    margin: 6px 10px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
 .meta {
     display: flex;
     justify-content: space-between;
@@ -79,11 +70,81 @@ p {
         margin-top: -2px;
     }
 }
+.popup-menu {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    z-index: 1;
 
-.buttons {
-    display: flex;
+    &-list {
+        display: block;
+        min-width: 140px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0px 1px 4px 1px rgba($color: #000000, $alpha: 0.2);
+        overflow: hidden;
+    }
 
-    button {
-        flex-grow: 1;
+    &-item {
+        display: flex;
+        align-items: center;
+        padding: 0.4rem 0.8rem;
+        transition: 0.4s;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+        &-comment-icon {
+            margin-right: 8px;
+            font-size: 16px;
+            color: #777;
+        }
+
+        &-link-icon {
+            margin-right: 4px;
+            font-size: 20px;
+            transform: rotate(-70deg);
+            color: #777;
+        }
+
+        &-title {
+            font-size: 0.9rem;
+        }
+    }
+
+    &-backdrop {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: transparent;
+        z-index: -1;
+        outline: none;
+    }
+}
+.publication-card {
+    position: relative;
+    margin: 15px 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 3px 1px #999;
+    overflow: hidden;
+
+    &.demo {
+        margin: 15px 0px;
+    }
+
+    .label {
+        position: absolute;
+        right: 35px;
+        bottom: 5px;
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        color: #fff;
+        background-color: #ac660b;
     }
 }

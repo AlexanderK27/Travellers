@@ -1,6 +1,24 @@
 <div *ngIf="plan.link; else demo" class="publication-card">
+    <div *ngIf="showPopupMenu" class="popup-menu">
+        <ul class="popup-menu-list">
+            <li class="popup-menu-item" (click)="copyLink()">
+                <i class="material-icons popup-menu-item-link-icon md-18"
+                    >link</i
+                >
+                <span class="popup-menu-item-title">Copy link</span>
+            </li>
+            <li class="popup-menu-item" (click)="navigateToComments()">
+                <i
+                    class="material-icons material-icons-outlined popup-menu-item-comment-icon md-18"
+                    >mode_comment</i
+                >
+                <span class="popup-menu-item-title">Read comments</span>
+            </li>
+        </ul>
+        <div class="popup-menu-backdrop" (click)="handlePopupMenu()"></div>
+    </div>
     <div class="header">
-        <div [routerLink]="['/author', plan.author]">
+        <a [routerLink]="['/author', plan.author]" class="header-author">
             <div class="image-wrapper">
                 <img
                     [src]="plan.authorAv || '../../../../assets/avatar.jpg'"
@@ -8,8 +26,8 @@
                 />
             </div>
             <span>{{ plan.author }}</span>
-        </div>
-        <i class="material-icons" tabindex="0">link</i>
+        </a>
+        <i class="material-icons" (click)="handlePopupMenu()">more_vert</i>
     </div>
     <a class="body" [routerLink]="['/plan', plan.link]">
         <img
@@ -22,7 +40,12 @@
         <span class="date">
             {{ plan.created | date: "MMMM d, y" }}
         </span>
-        <span (click)="saveArticle()" class="action" tabindex="0">
+        <span
+            class="action"
+            tabindex="0"
+            (click)="saveArticle()"
+            (keyup.enter)="saveArticle()"
+        >
             <i class="material-icons">
                 {{ isSaved ? "bookmark" : "bookmark_border" }}
             </i>
@@ -51,6 +74,7 @@
             Delete
         </button>
     </div>
+    <span *ngIf="markUpdated && plan.modified" class="label">Updated</span>
 </div>
 <ng-template #demo>
     <div class="publication-card demo">
@@ -74,7 +98,7 @@
         ></app-img-picker>
         <p title="{{ plan.title }}">{{ plan.title }}</p>
         <div class="meta">
-            <span class="date">July 14, 2020</span>
+            <span class="date">{{ plan.created | date: "MMMM d, y" }}</span>
             <span class="action">
                 <i class="material-icons">bookmark_border</i>
             </span>
@@ -84,5 +108,5 @@
 <app-confirm-window
     *ngIf="window"
     [settings]="window"
-    (onClose)="closeWindow()"
+    (onClose)="closeConfirmWindow()"
 ></app-confirm-window>

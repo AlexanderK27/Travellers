@@ -1,12 +1,34 @@
-<section *ngIf="loading; else ready" class="center">
+<div *ngIf="loading; else ready" class="center">
     <app-loader></app-loader>
-</section>
+</div>
 <ng-template #ready>
-    <section>
+    <div class="header">
+        <h1>Your saved publications</h1>
+        <p>
+            {{
+                publications.length
+                    ? "Folders are comming soon!"
+                    : "You have not saved any publications yet"
+            }}
+        </p>
+    </div>
+    <div
+        class="publications publication-cards-section"
+        *ngIf="publications.length; else noSaved"
+    >
         <app-plan-card
             *ngFor="let post of publications"
             [plan]="post"
-            [savedPage]="true"
+            class="publication-card-wrapper"
         ></app-plan-card>
-    </section>
+    </div>
+    <ng-template #noSaved>
+        <div class="no-content">
+            <img
+                class="no-content-img"
+                src="../../../assets/no_data.svg"
+                alt="No publications"
+            />
+        </div>
+    </ng-template>
 </ng-template>

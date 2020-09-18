@@ -1,8 +1,31 @@
-section {
+.header {
+    margin-bottom: 20px;
+    padding: 30px 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+.no-content {
+    text-align: center;
+
+    &-img {
+        width: 90%;
+        max-width: 400px;
+        opacity: 0.7;
+    }
+}
+.publications {
     display: flex;
     flex-wrap: wrap;
-    width: 94%;
-    max-width: 1320px;
-    min-height: 90vh;
-    margin: auto;
+}
+@media screen and (max-width: 440px) {
+    .header {
+        margin-bottom: 0;
+
+        h1 {
+            font-size: 1.5rem;
+        }
+    }
+    .no-content {
+        padding-top: 50px;
+    }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
+
 import { Publication } from 'src/app/shared/interfaces';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
@@ -19,10 +21,13 @@ export class SavedPageComponent implements OnInit, OnDestroy {
     constructor(
         private avatarService: AvatarService,
         private pubService: PublicationService,
-        private userService: UserService
+        private userService: UserService,
+        private title: Title
     ) {}
 
     ngOnInit(): void {
+        this.title.setTitle('Saved • Travellers');
+
         this.uSub = this.userService.userData$
             .pipe(take(2))
             .subscribe((user) => {

@@ -1,4 +1,6 @@
-<app-loader *ngIf="loading; else content"></app-loader>
+<div *ngIf="loading; else content" class="page-loader">
+    <app-loader></app-loader>
+</div>
 <ng-template #content>
     <section class="not-found" *ngIf="notFoundAuthor; else profile">
         <h1 class="not-found-title">

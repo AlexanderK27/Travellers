@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { switchMap, take } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Comment, Publication } from 'src/app/shared/interfaces';
 import { CommentService } from 'src/app/pages/plan-page/comment/comment.service';
-import { mergeMap, take } from 'rxjs/operators';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
@@ -45,17 +48,25 @@ export class PlanPageComponent implements OnInit {
         private commentService: CommentService,
         private pubService: PublicationService,
         private route: ActivatedRoute,
-        private user: UserService
+        private router: Router,
+        private user: UserService,
+        private title: Title
     ) {}
 
     ngOnInit() {
         this.route.params
             .pipe(
                 // fetch publication
-                mergeMap((params: Params) =>
+                switchMap((params: Params) =>
                     this.pubService.getPublication(params.title)
                 ),
-                mergeMap((publication) => {
+                switchMap((publication) => {
+                    if (!publication) {
+                        return throwError(404);
+                    }
+
+                    this.setTitle(publication.title);
+
                     this.publication = {
                         ...publication,
                         likes: publication.likes || 0,
@@ -69,7 +80,7 @@ export class PlanPageComponent implements OnInit {
                         publication.author,
                     ]);
                 }),
-                mergeMap((avatarArr) => {
+                switchMap((avatarArr) => {
                     this.publication.authorAv = avatarArr[0].avatar;
 
                     // check if user came for comments
@@ -108,9 +119,12 @@ export class PlanPageComponent implements OnInit {
                     }
                 },
                 (e) => {
-                    this.alert.danger(
-                        'Unkown error. Please inform the website support. ' + e
-                    );
+                    if (e === 404) {
+                        this.alert.danger('Publication not found');
+                    } else {
+                        this.alert.danger('Unkown error');
+                    }
+                    this.router.navigate(['/']);
                 }
             );
     }
@@ -290,5 +304,13 @@ export class PlanPageComponent implements OnInit {
                     }
                 );
         }
+    }
+
+    private setTitle(title: string) {
+        if (title.length > 50) {
+            title = title.trim().substring(0, 50) + '... ';
+        }
+
+        this.title.setTitle(title + ' • Travellers');
     }
 }

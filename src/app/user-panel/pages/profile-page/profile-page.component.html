@@ -1,5 +1,6 @@
-<app-loader *ngIf="loading; else content"></app-loader>
-
+<div *ngIf="loading; else content" class="page-loader">
+    <app-loader></app-loader>
+</div>
 <ng-template #content>
     <div class="profile-data">
         <div class="user-avatar">

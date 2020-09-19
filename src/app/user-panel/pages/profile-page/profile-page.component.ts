@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+
 import { UserData, Publication } from 'src/app/shared/interfaces';
 import { UserService } from 'src/app/shared/services/user.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
@@ -17,13 +19,18 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
     constructor(
         private userService: UserService,
-        private pubService: PublicationService
+        private pubService: PublicationService,
+        private title: Title
     ) {}
 
     ngOnInit(): void {
         this.userSub = this.userService.userData$.subscribe((user) => {
             if (user) {
                 this.user = user;
+
+                this.title.setTitle(
+                    `${user.username} | User Profile • Travellers`
+                );
 
                 this.pubService
                     .getPublications('authorId', user.userId)

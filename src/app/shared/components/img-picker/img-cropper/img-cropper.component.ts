@@ -9,8 +9,7 @@ import {
 } from '@angular/core';
 import Cropper from 'cropperjs';
 import { Subscription, Observable } from 'rxjs';
-import { ImagePickerService } from '../image-picker.service';
-import { ImageSource } from '../../../types';
+import { ImagePickerService, ImageSource } from '../image-picker.service';
 
 export interface canvasParams {
     height: number;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ImageSource } from '../../types';
+
+export type ImageSource = string | ArrayBuffer;
 
 @Injectable({ providedIn: 'root' })
 export class ImagePickerService {

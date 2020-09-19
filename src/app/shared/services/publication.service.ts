@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, forkJoin } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
+
 import { environment } from 'src/environments/environment';
 import { Publication, UserData, PubAllowedChanges } from '../interfaces';
 import { UserService } from './user.service';
 import { AlertService } from './alert.service';
-import { map, mergeMap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class PublicationService {
@@ -217,20 +218,18 @@ export class PublicationService {
         });
     }
 
-    savePublication(pubId: string, savedPage: boolean): void {
-        let saved = [].concat(this.user.saved || []); // get all saved publications
-        !saved.includes(pubId) // delete this one if it was there
+    savePublication(pubId: string, _?: boolean): void {
+        // get all saved publications
+        let saved = [].concat(this.user.saved || []);
+
+        // delete this passed publication if it was saved
+        !saved.includes(pubId)
             ? saved.unshift(pubId)
-            : (saved = saved.filter((id) => id !== pubId)); // or add if was not
+            : // or add if it was not
+              (saved = saved.filter((id) => id !== pubId));
 
         // save to service
         this.userService.userData$.next({ ...this.user, saved });
-
-        // add to publications array, it is saved page
-        if (savedPage) {
-            const savedPubs = this.pubs.filter((pub) => pub.link !== pubId);
-            this.publications$.next(savedPubs);
-        }
 
         // save updated user to the database
         this.http

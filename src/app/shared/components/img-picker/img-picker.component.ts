@@ -5,12 +5,11 @@ import {
     OnDestroy,
     ViewChild,
     ElementRef,
-    AfterViewInit
+    AfterViewInit,
 } from '@angular/core';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { ImageSource } from '../../types';
-import { ImagePickerService } from './image-picker.service';
+import { ImagePickerService, ImageSource } from './image-picker.service';
 import { canvasParams } from './img-cropper/img-cropper.component';
 
 @Component({
@@ -44,7 +43,9 @@ export class ImgPickerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.pickerService.setCropperWidth(this.rootElRef.nativeElement.clientWidth);
+        this.pickerService.setCropperWidth(
+            this.rootElRef.nativeElement.clientWidth
+        );
     }
 
     uploadFile(event: Event) {

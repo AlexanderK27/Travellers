@@ -11,27 +11,46 @@ import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 
 const routes: Routes = [
     {
-        path: '', component: MainLayoutComponent, children: [
+        path: '',
+        component: MainLayoutComponent,
+        children: [
             { path: '', redirectTo: '/', pathMatch: 'full' },
             { path: '', component: HomePageComponent },
-            { path: 'subscriptions', component: SubsPageComponent, canActivate: [AuthGuard] },
-            { path: 'saved', component: SavedPageComponent, canActivate: [AuthGuard] },
-            { path: 'plan/:title', component: PlanPageComponent },
+            {
+                path: 'subscriptions',
+                component: SubsPageComponent,
+                canActivate: [AuthGuard],
+            },
+            {
+                path: 'saved',
+                component: SavedPageComponent,
+                canActivate: [AuthGuard],
+            },
+            { path: 'publication/:title', component: PlanPageComponent },
             { path: 'author/:username', component: AuthorPageComponent },
-            { path: 'authentication', component: AuthPageComponent, canActivate: [AuthGuard] },
-            { path: 'profile', loadChildren: () => (
-                    import('./user-panel/user-panel.module').then(m => m.UserPanelModule)
-                ), canActivateChild: [AuthGuard]
-            }
-        ]
+            {
+                path: 'authentication',
+                component: AuthPageComponent,
+                canActivate: [AuthGuard],
+            },
+            {
+                path: 'profile',
+                loadChildren: () =>
+                    import('./user-panel/user-panel.module').then(
+                        (m) => m.UserPanelModule
+                    ),
+                canActivateChild: [AuthGuard],
+            },
+        ],
     },
     {
-        path: '**', redirectTo: '/'
-    }
+        path: '**',
+        redirectTo: '/',
+    },
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
 export class AppRoutingModule {}

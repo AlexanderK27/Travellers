@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { MiniatureAvatar } from '../interfaces';
-import { ImageSource } from '../types';
 import { map } from 'rxjs/operators';
+
+import { environment } from 'src/environments/environment';
+import { ImageSource } from '../components/img-picker/image-picker.service';
+import { MiniatureAvatar } from '../interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class AvatarService {

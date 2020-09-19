@@ -29,7 +29,7 @@
         </a>
         <i class="material-icons" (click)="handlePopupMenu()">more_vert</i>
     </div>
-    <a class="body" [routerLink]="['/plan', plan.link]">
+    <a class="body" [routerLink]="['/publication', plan.link]">
         <img
             [src]="plan.poster || '../../../../assets/article_poster.jpg'"
             alt="Plan poster"
@@ -79,7 +79,7 @@
 <ng-template #demo>
     <div class="publication-card demo">
         <div class="header">
-            <div>
+            <a class="header-author">
                 <div class="image-wrapper">
                     <img
                         [src]="plan.authorAv || '../../../../assets/avatar.jpg'"
@@ -87,8 +87,8 @@
                     />
                 </div>
                 <span>{{ plan.author }}</span>
-            </div>
-            <i class="material-icons">link</i>
+            </a>
+            <i class="material-icons">more_vert</i>
         </div>
         <app-img-picker
             class="front-picture"

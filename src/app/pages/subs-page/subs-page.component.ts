@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 import { take, switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+
 import { Publication } from 'src/app/shared/interfaces';
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -34,10 +36,13 @@ export class SubsPageComponent implements OnInit, OnDestroy {
     constructor(
         private avatarService: AvatarService,
         private pubService: PublicationService,
-        private userService: UserService
+        private userService: UserService,
+        private title: Title
     ) {}
 
     ngOnInit() {
+        this.title.setTitle('Subscriptions • Travellers');
+
         this.uSub = this.userService.userData$
             .pipe(take(2))
             .subscribe((user) => {
@@ -72,7 +77,7 @@ export class SubsPageComponent implements OnInit, OnDestroy {
                             });
 
                             if (publications.length) {
-                                this.noContent = false
+                                this.noContent = false;
                                 this.publications = {
                                     ...this.sortToGroupsByDate(publications),
                                 };

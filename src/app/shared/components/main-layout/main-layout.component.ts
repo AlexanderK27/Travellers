@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import {
     Component,
     OnInit,
@@ -10,7 +11,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
-import { ImageSource } from '../../types';
+import { ImageSource } from '../img-picker/image-picker.service';
+
+type FooterType = 'large' | 'small';
 
 @Component({
     selector: 'app-main-layout',
@@ -19,6 +22,7 @@ import { ImageSource } from '../../types';
 })
 export class MainLayoutComponent implements OnInit {
     @ViewChild('navbar') navbarRef: ElementRef;
+    footerType: FooterType = 'large';
     isNavbarFixed = false;
     lastScrollTop = 0;
     showProfileMenu = false;
@@ -26,6 +30,7 @@ export class MainLayoutComponent implements OnInit {
 
     constructor(
         public auth: AuthService,
+        private location: Location,
         private router: Router,
         private user: UserService
     ) {}
@@ -38,6 +43,12 @@ export class MainLayoutComponent implements OnInit {
                     : '../../../../assets/avatar.jpg'
             )
         );
+
+        this.setFooterType();
+
+        this.location.onUrlChange(() => {
+            this.setFooterType();
+        });
     }
 
     handleProfileMenu(event?: MouseEvent) {
@@ -61,5 +72,13 @@ export class MainLayoutComponent implements OnInit {
         }
 
         this.lastScrollTop = newScrollTop;
+    }
+
+    private setFooterType() {
+        if (this.location.isCurrentPathEqualTo('')) {
+            this.footerType = 'large';
+        } else {
+            this.footerType = 'small';
+        }
     }
 }

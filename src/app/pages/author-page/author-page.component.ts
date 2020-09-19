@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { Subscription, throwError } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
+
 import { UserData, Publication } from 'src/app/shared/interfaces';
 import { UserService } from 'src/app/shared/services/user.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
@@ -30,6 +32,7 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
         private location: Location,
         private route: ActivatedRoute,
         private pubService: PublicationService,
+        private title: Title,
         private userService: UserService
     ) {}
 
@@ -40,6 +43,9 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
         });
         // get author
         this.route.params.subscribe((params: Params) => {
+            this.title.setTitle(
+                `${params.username} | Author Profile • Travellers`
+            );
             this.fetchAuhor(params.username);
         });
     }
@@ -109,11 +115,15 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
                     this.author.username,
                     this.author.userId
                 )
-                .subscribe((res) => {
+                .subscribe(
+                    (res) => {
                         this.author.subscribers = res.subscribers;
                         this.followBtnPressed = false;
-                    },(e) => {
-                        this.alert.danger('Something went wrong. Please, try again later')
+                    },
+                    (e) => {
+                        this.alert.danger(
+                            'Something went wrong. Please, try again later'
+                        );
                     }
                 );
         } else {

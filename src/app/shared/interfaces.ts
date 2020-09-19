@@ -1,4 +1,4 @@
-import { ImageSource } from './types';
+import { ImageSource } from './components/img-picker/image-picker.service';
 
 export interface Comment {
     created: Date;
@@ -47,6 +47,7 @@ export interface PlanCard {
 
     comments?: number;
     created?: Date;
+    modified?: Date;
     dislikes?: number;
     link?: string;
     likes?: number;

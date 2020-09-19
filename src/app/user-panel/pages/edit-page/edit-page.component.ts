@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
+import { switchMap, take } from 'rxjs/operators';
+
 import { PlanCard, Publication, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
-import { Subscription } from 'rxjs';
 import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
 
 @Component({
@@ -14,8 +15,7 @@ import { ImagePickerService } from 'src/app/shared/components/img-picker/image-p
     templateUrl: './edit-page.component.html',
     styleUrls: ['./edit-page.component.scss'],
 })
-export class EditPageComponent implements OnInit, OnDestroy {
-    aSub: Subscription;
+export class EditPageComponent implements OnInit {
     filterValues: Filters;
     form: FormGroup;
     loading = true;
@@ -44,12 +44,16 @@ export class EditPageComponent implements OnInit, OnDestroy {
     constructor(
         private avatarService: AvatarService,
         private alert: AlertService,
-        private route: ActivatedRoute,
         public pickerService: ImagePickerService,
-        private publications: PublicationService
+        private publications: PublicationService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private title: Title
     ) {}
 
     ngOnInit(): void {
+        this.title.setTitle('Editing • Travellers');
+
         this.route.params
             .pipe(
                 switchMap((params: Params) => {
@@ -57,40 +61,52 @@ export class EditPageComponent implements OnInit, OnDestroy {
                     return this.publications.getPublication(params.id);
                 })
             )
-            .subscribe((publication: Publication) => {
-                this.form = new FormGroup({
-                    title: new FormControl(publication.title, [
-                        Validators.required,
-                        Validators.maxLength(100),
-                    ]),
-                    text: new FormControl(publication.text, [
-                        Validators.required,
-                    ]),
-                });
-                this.filterValues = {
-                    amountCities: publication.filters.amountCities,
-                    amountCountries: publication.filters.amountCountries,
-                    budget: publication.filters.budget,
-                    city: publication.filters.city,
-                    continent: publication.filters.continent,
-                    country: publication.filters.country,
-                    duration: publication.filters.duration,
-                    people: publication.filters.people,
-                };
-                this.aSub = this.avatarService
-                    .getMinAvatars([publication.author])
-                    .subscribe((avatar) => {
-                        this.planView = {
-                            author: publication.author,
-                            authorId: publication.authorId,
-                            authorAv: avatar[0].avatar,
-                            created: publication.created,
-                            poster: publication.poster,
-                            title: publication.title,
-                        };
-                        this.loading = false;
+            .subscribe(
+                (publication: Publication) => {
+                    if (!publication) {
+                        this.alert.danger('Publication not found');
+                        return this.router.navigate(['/profile']);
+                    }
+
+                    this.form = new FormGroup({
+                        title: new FormControl(publication.title, [
+                            Validators.required,
+                            Validators.maxLength(100),
+                        ]),
+                        text: new FormControl(publication.text, [
+                            Validators.required,
+                        ]),
                     });
-            });
+                    this.filterValues = {
+                        amountCities: publication.filters.amountCities,
+                        amountCountries: publication.filters.amountCountries,
+                        budget: publication.filters.budget,
+                        city: publication.filters.city,
+                        continent: publication.filters.continent,
+                        country: publication.filters.country,
+                        duration: publication.filters.duration,
+                        people: publication.filters.people,
+                    };
+                    this.avatarService
+                        .getMinAvatars([publication.author])
+                        .pipe(take(1))
+                        .subscribe((avatar) => {
+                            this.planView = {
+                                author: publication.author,
+                                authorId: publication.authorId,
+                                authorAv: avatar[0].avatar,
+                                created: publication.created,
+                                poster: publication.poster,
+                                title: publication.title,
+                            };
+                            this.loading = false;
+                        });
+                },
+                (e) => {
+                    this.alert.danger('Unknown error');
+                    this.router.navigate(['/profile']);
+                }
+            );
     }
 
     saveChanges() {
@@ -138,32 +154,5 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
     setPlanViewTitle() {
         this.planView.title = this.form.value.title;
-    }
-
-    uploadFile(event) {
-        this.selectedFile = event.target.files[0];
-
-        if (!this.selectedFile) {
-            return;
-        }
-
-        if (
-            this.selectedFile.type !== 'image/png' &&
-            this.selectedFile.type !== 'image/jpeg'
-        ) {
-            return this.alert.warning(
-                'Only .png, .jpg and .jpeg formats are supported'
-            );
-        }
-
-        const reader = new FileReader();
-        reader.readAsDataURL(this.selectedFile);
-        reader.onload = () => {
-            this.planView.poster = reader.result;
-        };
-    }
-
-    ngOnDestroy(): void {
-        this.aSub.unsubscribe();
     }
 }

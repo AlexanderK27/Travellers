@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+
 import { PlanCard, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -52,10 +54,13 @@ export class CreatePageComponent implements OnInit {
         private publications: PublicationService,
         public pickerService: ImagePickerService,
         private router: Router,
-        private userService: UserService
+        private userService: UserService,
+        private title: Title
     ) {}
 
     ngOnInit(): void {
+        this.title.setTitle('Creating • Travellers');
+
         this.userSub = this.userService.userData$.subscribe((user) => {
             if (user) {
                 this.planView = {
@@ -121,28 +126,5 @@ export class CreatePageComponent implements OnInit {
 
     setPlanViewTitle() {
         this.planView.title = this.form.value.title;
-    }
-
-    uploadFile(event) {
-        this.selectedFile = event.target.files[0];
-
-        if (!this.selectedFile) {
-            return;
-        }
-
-        if (
-            this.selectedFile.type !== 'image/png' &&
-            this.selectedFile.type !== 'image/jpeg'
-        ) {
-            return this.alert.warning(
-                'Only .png, .jpg and .jpeg formats are supported'
-            );
-        }
-
-        const reader = new FileReader();
-        reader.readAsDataURL(this.selectedFile);
-        reader.onload = () => {
-            this.planView.poster = reader.result;
-        };
     }
 }

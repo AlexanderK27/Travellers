@@ -285,5 +285,5 @@
 <app-confirm-window
     *ngIf="deleteWindow"
     [settings]="deleteWindow"
-    (closeWindow)="closeDeleteWindow()"
+    (onClose)="closeDeleteWindow()"
 ></app-confirm-window>

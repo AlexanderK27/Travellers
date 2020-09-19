@@ -91,7 +91,7 @@ export class PlanCardComponent implements OnInit {
     }
 
     navigateToComments() {
-        this.router.navigate(['/plan', this.plan.link], {
+        this.router.navigate(['/publication', this.plan.link], {
             fragment: 'comments',
         });
     }

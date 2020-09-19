@@ -3,7 +3,7 @@
 section {
     position: relative;
     width: 100%;
-    max-width: 1320px;
+    max-width: $publication_card_section_width;
     margin: auto;
 }
 
@@ -15,7 +15,7 @@ section {
 
 .control {
     position: absolute;
-    top: 36%;
+    top: 42%;
     width: 36px;
     height: 72px;
     border: none;
@@ -61,8 +61,8 @@ section {
     visibility: hidden;
     opacity: 0;
     display: flex;
-    align-items: center;
-    top: 4px;
+    align-items: flex-start;
+    top: 14px;
     right: 12px;
     padding: 6px 10px;
     border: none;
@@ -92,5 +92,10 @@ section {
     i {
         margin-right: 6px;
         font-size: 18px;
+    }
+}
+@media screen and (max-width: 1024px) {
+    .control {
+        display: none;
     }
 }

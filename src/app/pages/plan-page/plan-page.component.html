@@ -177,13 +177,15 @@
                 ></app-comment>
             </div>
             <ng-template #noComments>
-                <p class="no-comments" (click)="focusOnCommentTextarea()">Be first who left a comment</p>
+                <p class="no-comments" (click)="focusOnCommentTextarea()">
+                    Be first who left a comment
+                </p>
             </ng-template>
         </ng-template>
     </div>
 </section>
 <ng-template #notReady>
-    <section class="center">
+    <div class="page-loader">
         <app-loader></app-loader>
-    </section>
+    </div>
 </ng-template>

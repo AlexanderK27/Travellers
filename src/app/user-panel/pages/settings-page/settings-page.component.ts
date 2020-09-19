@@ -1,19 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { mergeMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+
 import { UserService } from 'src/app/shared/services/user.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
+import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
+import { UserData, Confirmation } from 'src/app/shared/interfaces';
 import {
     isEmail,
     doPasswordsMatch,
 } from 'src/app/shared/services/input.validators';
-import { UserData, Confirmation } from 'src/app/shared/interfaces';
-import { Router } from '@angular/router';
-import { mergeMap } from 'rxjs/operators';
-import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
 
 @Component({
     selector: 'app-settings-page',
@@ -44,13 +46,16 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
         public pickerService: ImagePickerService,
         private pubService: PublicationService,
         private router: Router,
-        private userService: UserService
+        private userService: UserService,
+        private title: Title
     ) {}
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.userSub = this.userService.userData$.subscribe((user) => {
             if (user) {
                 this.user = user;
+
+                this.title.setTitle(`${user.username} | Settings • Travellers`);
 
                 this.profileDataForm = new FormGroup({
                     name: new FormControl(user.name || '', [

@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Subscription, forkJoin } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { PublicationService } from 'src/app/shared/services/publication.service';
 import { SearchQueryParams } from './search/search.component';
 import { Publication, MiniatureAvatar } from 'src/app/shared/interfaces';
-import { Subscription, forkJoin } from 'rxjs';
-import { map, take } from 'rxjs/operators';
 
 interface PublicationList {
     params?: SearchQueryParams;
@@ -59,10 +61,13 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     constructor(
         private avatarService: AvatarService,
-        private pubService: PublicationService
+        private pubService: PublicationService,
+        private title: Title
     ) {}
 
     ngOnInit(): void {
+        this.title.setTitle('Travellers');
+
         let requests = [];
         for (const category of this.categories) {
             requests.push(

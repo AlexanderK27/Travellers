@@ -1,37 +1,37 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AlertService } from '../../services/alert.service';
-import { Subscription } from 'rxjs';
+import { Alert, AlertService } from '../../services/alert.service';
+import { Subscription, timer } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-alert',
-  templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.scss']
+    selector: 'app-alert',
+    templateUrl: './alert.component.html',
+    styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent implements OnInit, OnDestroy {
-    public text: string
-    public type = 'success'
+    aSub: Subscription;
+    alerts: Alert[] = [];
 
-    aSub: Subscription
-
-    constructor(
-        private alertService: AlertService
-    ) { }
+    constructor(private alertService: AlertService) {}
 
     ngOnInit(): void {
-        this.aSub = this.alertService.alert$.subscribe(alert => {
-            this.text = alert.text,
-            this.type = alert.type
+        this.aSub = this.alertService.alert$.subscribe((alert) => {
+            this.alerts.push({
+                text: alert.text,
+                type: alert.type,
+            });
 
-            const timeout = setTimeout(() => {
-                clearTimeout(timeout)
-                this.text = ''
-            }, 30000)
-        })
+            timer(3400)
+                .pipe(take(1))
+                .subscribe(() => {
+                    this.alerts.shift();
+                });
+        });
     }
 
     ngOnDestroy(): void {
         if (this.aSub) {
-            this.aSub.unsubscribe()
+            this.aSub.unsubscribe();
         }
     }
 }

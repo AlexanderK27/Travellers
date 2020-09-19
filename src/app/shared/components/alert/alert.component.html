@@ -1,12 +1,12 @@
-<div
-    *ngIf="text"
-    class="alert"
-    [ngClass]="{
-        'success': type === 'success',
-        'warning': type === 'warning',
-        'danger': type === 'danger'
-    }"
->
-    <div class="indicator"></div>
-    <p>{{ text }}</p>
+<div *ngFor="let alert of alerts" [ngSwitch]="alert.type" class="alert">
+    <i *ngSwitchCase="'warning'" class="material-icons md-36 warning">
+        error_outline
+    </i>
+    <i *ngSwitchCase="'danger'" class="material-icons md-36 danger">
+        highlight_off
+    </i>
+    <i *ngSwitchDefault class="material-icons md-36 success">
+        check_circle_outline
+    </i>
+    <p>{{ alert.text }}</p>
 </div>

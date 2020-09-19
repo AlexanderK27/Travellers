@@ -1,10 +1,24 @@
-<div class="backdrop" (click)="onCancel()">
+<div class="window-backdrop" (click)="cancel()">
     <div class="window">
-        <i (click)="onCancel()">Close</i>
-        <p>{{settings.text}}</p>
-        <div class="buttons">
-            <button (click)="onCancel()">Cancel</button>
-            <button (click)="onConfirm()">{{settings.confirmButtonTitle}}</button>
+        <i class="window-close-icon material-icons" (click)="cancel()"
+            >close</i
+        >
+        <p class="window-message">{{ settings.text }}</p>
+        <div class="window-buttons">
+            <button
+                class="btn btn-filled btn-neutral"
+                type="button"
+                (click)="cancel()"
+            >
+                Cancel
+            </button>
+            <button
+                class="btn btn-filled btn-danger"
+                type="button"
+                (click)="confirm()"
+            >
+                {{ settings.confirmButtonTitle }}
+            </button>
         </div>
     </div>
 </div>

@@ -406,6 +406,12 @@ textarea {
     }
 }
 @media screen and (max-width: 900px) {
+    .comment-form {
+        .open-emoji-picker-btn {
+            top: 0;
+            font-size: 1rem;
+        }
+    }
     .publication-cards-section {
         padding: 0 4%;
 

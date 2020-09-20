@@ -66,7 +66,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.title.setTitle('Travellers');
+        this.title.setTitle(
+            'Travellers - An inexhaustible source of travel ideas'
+        );
 
         let requests = [];
         for (const category of this.categories) {

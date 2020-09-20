@@ -106,12 +106,12 @@
         ></app-filters>
         <button
             *ngIf="!submitted; else submittedLoader"
-            class="submit-article-btn btn btn-filled btn-primary"
+            class="submit-article-btn btn btn-filled btn-secondary"
             type="button"
             [disabled]="form.invalid"
-            (click)="onSubmit()"
+            (click)="saveArticle()"
         >
-            Save publication
+            Save article
         </button>
         <ng-template #submittedLoader>
             <div class="submitted-loader">

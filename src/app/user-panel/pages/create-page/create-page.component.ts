@@ -82,7 +82,7 @@ export class CreatePageComponent implements OnInit {
         });
     }
 
-    onSubmit() {
+    saveArticle() {
         if (this.form.invalid) {
             return;
         }
@@ -99,6 +99,7 @@ export class CreatePageComponent implements OnInit {
                     : this.filterValues.city.trim().toLowerCase(),
             },
             ...this.planView,
+            authorAv: '',
             poster: this.pickerService.croppedImagesSrc[0] || '',
             text: this.form.value.text,
         };
@@ -109,7 +110,7 @@ export class CreatePageComponent implements OnInit {
                     ...this.userService.user,
                     publications: this.userService.user.publications + 1,
                 });
-                this.alert.success('Your publication has been saved');
+                this.alert.success('Your article has been saved');
                 this.router.navigate(['/profile']);
                 this.submitted = false;
             },

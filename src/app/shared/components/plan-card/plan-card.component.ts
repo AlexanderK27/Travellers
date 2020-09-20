@@ -103,7 +103,7 @@ export class PlanCardComponent implements OnInit {
                 this.plan.published = state;
                 if (state) {
                     this.alert.success(
-                        'Your publication is open for everyone now'
+                        'Now your post will appear in search results'
                     );
                 } else
                     [

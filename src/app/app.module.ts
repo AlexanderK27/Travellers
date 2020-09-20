@@ -20,6 +20,8 @@ import { AuthorPageComponent } from './pages/author-page/author-page.component';
 import { CommentComponent } from './pages/plan-page/comment/comment.component';
 import { CardListComponent } from './pages/home-page/card-list/card-list.component';
 import { SearchComponent } from './pages/home-page/search/search.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 const INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -49,7 +51,8 @@ const INTERCEPTOR_PROVIDER: Provider = {
         AppRoutingModule,
         HttpClientModule,
         SharedModule,
-        PickerModule
+        PickerModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
     ],
     providers: [INTERCEPTOR_PROVIDER],
     bootstrap: [AppComponent]

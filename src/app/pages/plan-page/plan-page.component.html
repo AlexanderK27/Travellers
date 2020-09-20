@@ -61,7 +61,6 @@
                 (click)="likeArticle()"
                 class="action"
                 [class.active]="publicationState.liked"
-                tabindex="0"
                 [title]="publication.likes || 0"
             >
                 <i
@@ -84,7 +83,6 @@
                 (click)="dislikeArticle()"
                 class="action"
                 [class.active]="publicationState.disliked"
-                tabindex="0"
                 [title]="publication.dislikes || 0"
             >
                 <i
@@ -96,12 +94,12 @@
             </span>
         </div>
 
-        <span (click)="saveArticle()" class="action" tabindex="0">
+        <span (click)="saveArticle()" class="action">
             <i class="material-icons">
                 {{ publicationState.saved ? "bookmark" : "bookmark_border" }}
             </i>
         </span>
-        <span (click)="copyLinkToClipboard()" class="action" tabindex="0">
+        <span (click)="copyLinkToClipboard()" class="action">
             <i class="material-icons"> share </i>
         </span>
     </div>
@@ -139,7 +137,7 @@
                     ></div>
                     <emoji-mart
                         class="emoji-picker"
-                        color="#880000"
+                        color="#9bde4f"
                         emoji=""
                         [emojiSize]="16"
                         [enableSearch]="false"
@@ -161,7 +159,7 @@
                     <button
                         class="btn btn-filled btn-secondary"
                         type="submit"
-                        [disabled]="!commentText || submitted"
+                        [disabled]="!commentText.trim() || submitted"
                         (click)="saveComment()"
                     >
                         Submit

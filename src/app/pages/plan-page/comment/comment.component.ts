@@ -27,9 +27,17 @@ export class CommentComponent {
         this.answerText = this.answerText + emoji.native;
     }
 
-    autoResize(event) {
-        event.target.style.height = '0px';
-        event.target.style.height = event.target.scrollHeight + 16 + 'px';
+    autoResize(event: Event) {
+        const clientHeight = event.target['clientHeight'];
+        const scrollHeight = event.target['scrollHeight'];
+
+        if (clientHeight < scrollHeight) {
+            event.target['style'].height = scrollHeight + 16 + 'px';
+        }
+
+        if (!event.target['value'] && clientHeight > 98) {
+            event.target['style'].height = '98px';
+        }
     }
 
     cancelAnswering() {

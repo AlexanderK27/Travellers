@@ -29,7 +29,7 @@
             <div class="backdrop" (click)="showHideEmojis()"></div>
             <emoji-mart
                 class="emoji-picker"
-                color="#880000"
+                color="#9bde4f"
                 emoji=""
                 [emojiSize]="16"
                 [enableSearch]="false"
@@ -51,7 +51,7 @@
             <button
                 class="btn btn-filled btn-secondary"
                 type="submit"
-                [disabled]="!answerText || submitted"
+                [disabled]="!answerText.trim() || submitted"
                 (click)="submitAnswer()"
             >
                 Submit

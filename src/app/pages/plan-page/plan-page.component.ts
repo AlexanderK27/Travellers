@@ -134,8 +134,16 @@ export class PlanPageComponent implements OnInit {
     }
 
     autoResize(event: Event) {
-        event.target['style'].height = '0px';
-        event.target['style'].height = event.target['scrollHeight'] + 16 + 'px';
+        const clientHeight = event.target['clientHeight'];
+        const scrollHeight = event.target['scrollHeight'];
+
+        if (clientHeight < scrollHeight) {
+            event.target['style'].height = scrollHeight + 16 + 'px';
+        }
+
+        if (!event.target['value'] && clientHeight > 98) {
+            event.target['style'].height = '98px';
+        }
     }
 
     cancelCommenting() {
@@ -236,7 +244,11 @@ export class PlanPageComponent implements OnInit {
     }
 
     focusOnCommentTextarea() {
-        this.cTextareaRef.nativeElement.focus();
+        if (this.isAuthenticated) {
+            this.cTextareaRef.nativeElement.focus();
+        } else {
+            this.alert.warning('Please sign in');
+        }
     }
 
     likeArticle() {
@@ -264,10 +276,14 @@ export class PlanPageComponent implements OnInit {
     }
 
     saveAnswer({ commentId, text, onSuccess, onError }) {
-        if (text && this.auth.isAuthenticated()) {
+        if (text.trim() && this.auth.isAuthenticated()) {
             this.submitted = true;
             this.commentService
-                .commentPublication(this.publication.link, text, commentId)
+                .commentPublication(
+                    this.publication.link,
+                    text.trim(),
+                    commentId
+                )
                 .subscribe(
                     () => {
                         onSuccess();
@@ -277,6 +293,8 @@ export class PlanPageComponent implements OnInit {
                         onError();
                     }
                 );
+        } else {
+            this.alert.warning('Please sign in');
         }
     }
 
@@ -290,10 +308,13 @@ export class PlanPageComponent implements OnInit {
     }
 
     saveComment() {
-        if (this.commentText && this.auth.isAuthenticated()) {
+        if (this.commentText.trim() && this.auth.isAuthenticated()) {
             this.submitted = true;
             this.commentService
-                .commentPublication(this.publication.link, this.commentText)
+                .commentPublication(
+                    this.publication.link,
+                    this.commentText.trim()
+                )
                 .subscribe(
                     () => {
                         this.commentText = '';
@@ -303,6 +324,8 @@ export class PlanPageComponent implements OnInit {
                         this.submitted = false;
                     }
                 );
+        } else {
+            this.alert.warning('Please sign in');
         }
     }
 

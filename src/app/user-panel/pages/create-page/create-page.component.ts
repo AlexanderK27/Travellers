@@ -4,34 +4,25 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { PlanCard, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { UserService } from 'src/app/shared/services/user.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
+import { PostService } from 'src/app/shared/services/post/post.service';
 import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
+import { INewPost, INewPostCard } from 'src/app/shared/services/post/post.interfaces';
 
-@Component({
-    selector: 'app-create-page',
-    templateUrl: './create-page.component.html',
-    styleUrls: ['./create-page.component.scss'],
-})
-export class CreatePageComponent implements OnInit {
-    filterValues: Filters = {
-        amountCities: '',
-        amountCountries: '',
-        budget: '',
-        city: '',
-        continent: '',
-        country: '',
-        duration: '',
-        people: '',
-    };
-    form: FormGroup;
-    planView: PlanCard = null;
-    selectedFile = null;
-    submitted = false;
-    userSub: Subscription;
-    quillConfig = {
+export interface IFilterValues {
+    amount_of_cities: number,
+    amount_of_countries: number,
+    amount_of_people: number,
+    amount_of_days: number,
+    budget: number,
+    city: string,
+    continent: string,
+    country: string,
+}
+
+export const quillEditorSettings = {
+    config: {
         toolbar: [
             ['bold', 'italic', 'underline', 'strike'],
             [{ script: 'sub' }, { script: 'super' }],
@@ -46,12 +37,37 @@ export class CreatePageComponent implements OnInit {
             [{ size: ['small', false, 'large', 'huge'] }],
             [{ color: [] }, { background: [] }, 'link', 'image'],
         ],
+    },
+    style: { minHeight: '500px', padding: '10px 16px' }
+}
+
+@Component({
+    selector: 'app-create-page',
+    templateUrl: './create-page.component.html',
+    styleUrls: ['./create-page.component.scss'],
+})
+export class CreatePageComponent implements OnInit {
+    filterValues: IFilterValues = {
+        amount_of_cities: 0,
+        amount_of_countries: 0,
+        amount_of_people: 0,
+        amount_of_days: 0,
+        budget: 0,
+        city: '',
+        continent: '',
+        country: '',
     };
-    quillStyle = { minHeight: '500px', padding: '10px 16px' };
+    form: FormGroup;
+    postCard: INewPostCard = null;
+    selectedFile = null;
+    submitted = false;
+    userSub: Subscription;
+    quillConfig = quillEditorSettings.config;
+    quillStyle = quillEditorSettings.style;
 
     constructor(
         private alert: AlertService,
-        private publications: PublicationService,
+        private postService: PostService,
         public pickerService: ImagePickerService,
         private router: Router,
         private userService: UserService,
@@ -63,13 +79,11 @@ export class CreatePageComponent implements OnInit {
 
         this.userSub = this.userService.userData$.subscribe((user) => {
             if (user) {
-                this.planView = {
-                    author: this.userService.user.username,
-                    authorId: this.userService.user.userId,
-                    authorAv: this.userService.user.minAvatar,
+                this.postCard = {
+                    author_name: this.userService.user.username,
+                    author_avatar: this.userService.user.minAvatar,
                     poster: '',
-                    title: 'My first title',
-                    created: new Date(),
+                    title: 'My first title'
                 };
             }
         });
@@ -89,26 +103,26 @@ export class CreatePageComponent implements OnInit {
 
         this.submitted = true;
 
-        const publication = {
-            published: false,
-            created: new Date(),
+        const post: INewPost = {
             filters: {
                 ...this.filterValues,
+                continent: [this.filterValues.continent],
+                country: [this.filterValues.country],
                 city: !this.filterValues.city
-                    ? ''
-                    : this.filterValues.city.trim().toLowerCase(),
+                    ? ['']
+                    : [this.filterValues.city.trim().toLowerCase()],
             },
-            ...this.planView,
-            authorAv: '',
+            ...this.postCard,
+            author_avatar: '',
             poster: this.pickerService.croppedImagesSrc[0] || '',
-            text: this.form.value.text,
+            post_text: this.form.value.text,
         };
 
-        this.publications.createPublication(publication).subscribe(
+        this.postService.createOne(post).subscribe(
             () => {
                 this.userService.userData$.next({
                     ...this.userService.user,
-                    publications: this.userService.user.publications + 1,
+                    posts: this.userService.user.posts + 1,
                 });
                 this.alert.success('Your article has been saved');
                 this.router.navigate(['/profile']);
@@ -121,11 +135,11 @@ export class CreatePageComponent implements OnInit {
         );
     }
 
-    setFilterValues(values: Filters) {
+    setFilterValues(values: IFilterValues) {
         this.filterValues = { ...values };
     }
 
     setPlanViewTitle() {
-        this.planView.title = this.form.value.title;
+        this.postCard.title = this.form.value.title;
     }
 }

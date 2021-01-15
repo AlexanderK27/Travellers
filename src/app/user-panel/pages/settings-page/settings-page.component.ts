@@ -5,17 +5,18 @@ import { Router } from '@angular/router';
 import { mergeMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
-import { UserService } from 'src/app/shared/services/user.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { PublicationService } from 'src/app/shared/services/post/post.service';
 import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
-import { UserData, Confirmation } from 'src/app/shared/interfaces';
+import { Confirmation } from 'src/app/shared/interfaces';
 import {
     isEmail,
     doPasswordsMatch,
 } from 'src/app/shared/services/input.validators';
+import { IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
 
 @Component({
     selector: 'app-settings-page',
@@ -36,7 +37,7 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
     showPassword = false;
     showConfirmPassword = false;
     submitted = false;
-    user: UserData;
+    user: IUserProfileData;
     userSub: Subscription;
 
     constructor(
@@ -58,10 +59,10 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
                 this.title.setTitle(`${user.username} | Settings • Travellers`);
 
                 this.profileDataForm = new FormGroup({
-                    name: new FormControl(user.name || '', [
+                    name: new FormControl(user.real_name || '', [
                         Validators.maxLength(30),
                     ]),
-                    website: new FormControl(user.website || '', [
+                    website: new FormControl(user.contact || '', [
                         Validators.maxLength(30),
                     ]),
                     bio: new FormControl(user.bio || '', [
@@ -71,8 +72,8 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
 
                 this.profileDataForm.valueChanges.subscribe((value) => {
                     if (
-                        value.name !== this.user.name ||
-                        value.website !== this.user.website ||
+                        value.name !== this.user.real_name ||
+                        value.website !== this.user.contact ||
                         value.bio !== this.user.bio
                     ) {
                         if (this.profileDataChanged === false) {
@@ -115,9 +116,7 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
                 'Are you sure you want to delete account?\nThere is no way back.\nAll your publications will be deleted!',
             callback: () => {
                 this.auth.deleteAccount().subscribe(() => {
-                    const dSub = this.pubService
-                        .deletePublications()
-                        .pipe(mergeMap(() => this.userService.deleteUser()))
+                    const dSub = this.userService.deleteMyProfile()
                         .subscribe(() => {
                             this.alert.success('Your account has been deleted');
                             this.auth.logout();

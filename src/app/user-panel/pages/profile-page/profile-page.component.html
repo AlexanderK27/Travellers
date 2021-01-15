@@ -12,28 +12,28 @@
         <div class="information">
             <h1 class="username">{{ user.username }}</h1>
             <p class="secondary">
-                <span *ngIf="user.name">
-                    {{ user.name }}
+                <span *ngIf="user.real_name">
+                    {{ user.real_name }}
                 </span>
-                <span *ngIf="user.name && user.website">
+                <span *ngIf="user.real_name && user.contact">
                     &nbsp;&bull;&nbsp;
                 </span>
-                <span *ngIf="user.website">
-                    {{ user.website }}
+                <span *ngIf="user.contact">
+                    {{ user.contact }}
                 </span>
             </p>
             <div class="statistics">
                 <div class="statistics-item">
-                    <b>{{ user.publications || 0 }}</b>
+                    <b>{{ user.posts }}</b>
                     <span>publications</span>
                 </div>
                 <div class="statistics-item">
-                    <b>{{ user.subscribers || 0 }}</b>
+                    <b>{{ user.followers }}</b>
                     <span>followers</span>
                 </div>
                 <div class="statistics-item">
                     <b>{{
-                        user.subscriptions ? user.subscriptions.length : 0
+                        user.followings
                     }}</b>
                     <span>following</span>
                 </div>
@@ -59,13 +59,13 @@
     </nav>
     <div
         class="publications publication-cards-section"
-        *ngIf="publications.length"
+        *ngIf="posts.length"
     >
         <app-plan-card
-            *ngFor="let post of publications"
+            *ngFor="let post of posts"
             [plan]="post"
             [isAuthor]="true"
-            (onDelete)="deletePublication($event)"
+            (onDelete)="deletePost($event)"
             class="publication-card-wrapper"
         ></app-plan-card>
     </div>

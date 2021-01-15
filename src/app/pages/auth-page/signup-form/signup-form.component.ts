@@ -7,9 +7,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription, timer, Observable } from 'rxjs';
-import { UserCredentials, UserData } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
 import {
     isEmail,
     doPasswordsMatch,
@@ -18,6 +17,7 @@ import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
+import { IUserCredentials, IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
 
 @Component({
     selector: 'app-signup-form',
@@ -38,7 +38,7 @@ export class SignupFormComponent implements OnInit, OnDestroy {
     showConfirmPassValue = false;
     showStepSidebar = true;
     submitted = false;
-    userData: UserData;
+    userData: IUserProfileData;
     usernameChoosed = false;
     userSub: Subscription;
 
@@ -55,7 +55,7 @@ export class SignupFormComponent implements OnInit, OnDestroy {
         this.userSub = this.user.userData$.subscribe((data) => {
             this.userData = data;
         });
-        (this.usernameForm = new FormGroup({
+        this.usernameForm = new FormGroup({
             username: new FormControl(
                 '',
                 [
@@ -66,27 +66,27 @@ export class SignupFormComponent implements OnInit, OnDestroy {
                 ],
                 [this.usernameExists(this.user)]
             ),
-        })),
-            (this.signUpForm = new FormGroup(
-                {
-                    email: new FormControl('', [
-                        Validators.required,
-                        isEmail,
-                        Validators.maxLength(30),
-                    ]),
-                    password: new FormControl('', [
-                        Validators.required,
-                        Validators.minLength(8),
-                        Validators.maxLength(30),
-                    ]),
-                    confirmPass: new FormControl('', [
-                        Validators.required,
-                        Validators.minLength(8),
-                        Validators.maxLength(30),
-                    ]),
-                },
-                [doPasswordsMatch]
-            ));
+        });
+        this.signUpForm = new FormGroup(
+            {
+                email: new FormControl('', [
+                    Validators.required,
+                    isEmail,
+                    Validators.maxLength(30),
+                ]),
+                password: new FormControl('', [
+                    Validators.required,
+                    Validators.minLength(8),
+                    Validators.maxLength(30),
+                ]),
+                confirmPass: new FormControl('', [
+                    Validators.required,
+                    Validators.minLength(8),
+                    Validators.maxLength(30),
+                ]),
+            },
+            [doPasswordsMatch]
+        );
         this.profileDataForm = new FormGroup({
             name: new FormControl('', [Validators.maxLength(30)]),
             website: new FormControl('', [Validators.maxLength(30)]),
@@ -176,8 +176,6 @@ export class SignupFormComponent implements OnInit, OnDestroy {
     }
 
     stepElStateHandler(event: MouseEvent) {
-        console.log('click');
-        console.log(event);
         const parent = event.target['parentNode'];
         if (parent.classList.contains('closed')) {
             parent.classList.remove('closed');
@@ -193,42 +191,51 @@ export class SignupFormComponent implements OnInit, OnDestroy {
 
         this.submitted = true;
 
-        const credentials: UserCredentials = {
+        const credentials: IUserCredentials = {
             email: this.signUpForm.value.email,
             password: this.signUpForm.value.password,
+            username: this.usernameForm.value.username
         };
 
-        const username = this.usernameForm.value.username;
+        this.auth.signup(credentials).subscribe(user => {
+            this.user.userData$.next(user);
+            this.alert.success('User created');
+            this.signUpForm.reset();
+            this.submitted = false;
+            this.newUserRegistered = true;
+        }, () => {
+            this.submitted = false;
+        })
 
-        this.user.getAuthor(username).subscribe((response) => {
-            if (Object.values(response).length) {
-                this.alert.danger(
-                    `Username "${username}" has just been taken by another user :(`
-                );
-                this.usernameChoosed = false;
-                this.submitted = false;
-            } else {
-                this.auth.signup(credentials).subscribe(
-                    (response) => {
-                        const userData: UserData = {
-                            userId: response.localId,
-                            username,
-                        };
+        // this.user.getAuthor(username).subscribe((response) => {
+        //     if (Object.values(response).length) {
+        //         this.alert.danger(
+        //             `Username "${username}" has just been taken by another user :(`
+        //         );
+        //         this.usernameChoosed = false;
+        //         this.submitted = false;
+        //     } else {
+        //         this.auth.signup(credentials).subscribe(
+        //             (response) => {
+                        // const userData: UserData = {
+                        //     userId: response.localId,
+                        //     username,
+                        // };
 
-                        this.auth.createUser(userData).subscribe(() => {
-                            this.user.userData$.next(userData);
-                            this.alert.success('User created');
-                            this.signUpForm.reset();
-                            this.submitted = false;
-                            this.newUserRegistered = true;
-                        });
-                    },
-                    () => {
-                        this.submitted = false;
-                    }
-                );
-            }
-        });
+                        // this.auth.createUser(userData).subscribe(() => {
+                        //     this.user.userData$.next(userData);
+                        //     this.alert.success('User created');
+                        //     this.signUpForm.reset();
+                        //     this.submitted = false;
+                        //     this.newUserRegistered = true;
+                        // });
+                //     },
+                //     () => {
+                //         this.submitted = false;
+                //     }
+                // );
+            // }
+        // });
     }
 
     usernameExists(user: UserService): AsyncValidatorFn {

@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Subscription } from 'rxjs';
+import { skipWhile, switchMap } from 'rxjs/operators';
+import { Subscription, EMPTY } from 'rxjs';
 
-import { UserData, Publication } from 'src/app/shared/interfaces';
-import { UserService } from 'src/app/shared/services/user.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
+import { PostService } from 'src/app/shared/services/post/post.service';
+import { IPostCard } from 'src/app/shared/services/post/post.interfaces';
+import { IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
 
 @Component({
     selector: 'app-profile-page',
@@ -13,53 +15,45 @@ import { PublicationService } from 'src/app/shared/services/publication.service'
 })
 export class ProfilePageComponent implements OnInit, OnDestroy {
     loading = true;
-    publications: Array<Publication> = [];
-    user: UserData;
+    posts: IPostCard[] = [];
+    user: IUserProfileData;
     userSub: Subscription;
 
     constructor(
         private userService: UserService,
-        private pubService: PublicationService,
+        private postService: PostService,
         private title: Title
     ) {}
 
     ngOnInit(): void {
-        this.userSub = this.userService.userData$.subscribe((user) => {
-            if (user) {
-                this.user = user;
-
-                this.title.setTitle(
-                    `${user.username} | User Profile • Travellers`
-                );
-
-                this.pubService
-                    .getPublications('authorId', user.userId)
-                    .subscribe((pubs: { publication: Publication }) => {
-                        const publications = Object.values(pubs);
-
-                        publications.forEach(
-                            (p) => (p.authorAv = user.minAvatar)
-                        );
-
-                        this.publications = publications.sort((a, b) => {
-                            return (
-                                Date.parse(b.created.toString()) -
-                                Date.parse(a.created.toString())
-                            );
-                        });
-
-                        this.loading = false;
-                    });
+        this.userSub = this.userService.userData$.pipe(
+            skipWhile(user => !user),
+            switchMap(user => {
+                if (!this.user) {
+                    this.user = user;
+                    this.title.setTitle(`${user.username} | User Profile • Travellers`);
+                    return this.postService.getMyPosts();
+                } else {
+                    this.user = user;
+                    return EMPTY;
+                }
+            })
+        ).subscribe(posts => {
+            if (posts) {
+                this.posts = posts
+                this.loading = false
             }
         });
     }
 
-    deletePublication(id: string) {
-        this.userService.userData$.next({
-            ...this.user,
-            publications: this.user.publications - 1,
+    deletePost(id: number) {
+        this.postService.deleteOne(id).subscribe(_ => {
+            this.userService.userData$.next({
+                ...this.user,
+                posts: this.user.posts - 1,
+            });
+            this.posts = this.posts.filter((post) => post.post_id !== id);
         });
-        this.publications = this.publications.filter((pub) => pub.link !== id);
     }
 
     ngOnDestroy() {

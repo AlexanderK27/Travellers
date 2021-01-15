@@ -1,4 +1,4 @@
-<div *ngIf="plan.link; else demo" class="publication-card">
+<div *ngIf="plan.post_id; else demo" class="publication-card">
     <div *ngIf="showPopupMenu" class="popup-menu">
         <ul class="popup-menu-list">
             <li class="popup-menu-item" (click)="copyLink()">
@@ -18,18 +18,18 @@
         <div class="popup-menu-backdrop" (click)="handlePopupMenu()"></div>
     </div>
     <div class="header">
-        <a [routerLink]="['/author', plan.author]" class="header-author">
+        <a [routerLink]="['/author', plan.author_name]" class="header-author">
             <div class="image-wrapper">
                 <img
-                    [src]="plan.authorAv || '../../../../assets/avatar.jpg'"
+                    [src]="plan.author_avatar || '../../../../assets/avatar.jpg'"
                     alt="Author's avatar"
                 />
             </div>
-            <span>{{ plan.author }}</span>
+            <span>{{ plan.author_name }}</span>
         </a>
         <i class="material-icons" (click)="handlePopupMenu()">more_vert</i>
     </div>
-    <a class="body" [routerLink]="['/publication', plan.link]">
+    <a class="body" [routerLink]="['/publication', plan.post_id]">
         <img
             [src]="plan.poster || '../../../../assets/article_poster.jpg'"
             alt="Plan poster"
@@ -38,7 +38,7 @@
     </a>
     <div class="meta">
         <span class="date">
-            {{ plan.created | date: "MMMM d, y" }}
+            {{ plan.post_created_at | date: "MMMM d, y" }}
         </span>
         <span
             class="action"
@@ -53,7 +53,7 @@
     </div>
     <div *ngIf="isAuthor" class="buttons">
         <button
-            *ngIf="!plan.published; else hide"
+            *ngIf="plan.post_status !== 'published'; else hide"
             class="btn btn-outlined btn-secondary"
             (click)="publishArticle(true)"
         >
@@ -74,7 +74,7 @@
             Delete
         </button>
     </div>
-    <span *ngIf="markUpdated && plan.modified" class="label">Updated</span>
+    <span *ngIf="markUpdated && plan.post_modified_at" class="label">Updated</span>
 </div>
 <ng-template #demo>
     <div class="publication-card demo">
@@ -82,11 +82,11 @@
             <a class="header-author">
                 <div class="image-wrapper">
                     <img
-                        [src]="plan.authorAv || '../../../../assets/avatar.jpg'"
+                        [src]="plan.author_avatar || '../../../../assets/avatar.jpg'"
                         alt="Author's avatar"
                     />
                 </div>
-                <span>{{ plan.author }}</span>
+                <span>{{ plan.author_name }}</span>
             </a>
             <i class="material-icons">more_vert</i>
         </div>
@@ -98,7 +98,7 @@
         ></app-img-picker>
         <p title="{{ plan.title }}">{{ plan.title }}</p>
         <div class="meta">
-            <span class="date">{{ plan.created | date: "MMMM d, y" }}</span>
+            <span class="date">{{ plan.post_created_at | date: "MMMM d, y" }}</span>
             <span class="action">
                 <i class="material-icons">bookmark_border</i>
             </span>

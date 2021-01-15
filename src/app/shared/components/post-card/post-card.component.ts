@@ -1,22 +1,23 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { PlanCard, Confirmation } from '../../interfaces';
-import { PublicationService } from '../../services/publication.service';
+import { Confirmation } from '../../interfaces';
+import { PostService } from '../../services/post/post.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { take } from 'rxjs/operators';
+// import { UserService } from '../../services/user/user.service';
+// import { take } from 'rxjs/operators';
+import { IPostCard } from '../../services/post/post.interfaces';
 
 @Component({
-    selector: 'app-plan-card',
-    templateUrl: './plan-card.component.html',
-    styleUrls: ['./plan-card.component.scss'],
+    selector: 'app-post-card',
+    templateUrl: './post-card.component.html',
+    styleUrls: ['./post-card.component.scss'],
 })
-export class PlanCardComponent implements OnInit {
+export class PostCardComponent implements OnInit {
     @Input() isAuthor = false;
     @Input() markUpdated = false;
-    @Input() plan: PlanCard;
-    @Output() onDelete: EventEmitter<string> = new EventEmitter<string>();
+    @Input() post: IPostCard;
+    @Output() onDelete: EventEmitter<number> = new EventEmitter<number>();
     croppedImageSize = [{ width: 480, height: 360 }];
     croppedImageRatio = 4 / 3;
     isSaved = false;
@@ -26,17 +27,17 @@ export class PlanCardComponent implements OnInit {
     constructor(
         private alert: AlertService,
         private auth: AuthService,
-        private userService: UserService,
-        private pubService: PublicationService,
+        // private userService: UserService,
+        private postService: PostService,
         private router: Router
     ) {}
 
     ngOnInit() {
-        this.userService.userData$.pipe(take(2)).subscribe((user) => {
-            if (user) {
-                this.isSaved = (user.saved || []).includes(this.plan.link);
-            }
-        });
+        // this.userService.userData$.pipe(take(2)).subscribe((user) => {
+        //     if (user) {
+                // this.isSaved = (user.saved || []).includes(this.plan.post_id);
+            // }
+        // });
     }
 
     closeConfirmWindow() {
@@ -66,12 +67,12 @@ export class PlanCardComponent implements OnInit {
     }
 
     deleteCallback() {
-        this.pubService
-            .deletePublication(this.plan.authorId, this.plan.link)
+        this.postService
+            .deleteOne(this.post.post_id)
             .subscribe(
                 () => {
                     this.alert.success('Publication has been deleted');
-                    this.onDelete.emit(this.plan.link);
+                    this.onDelete.emit(this.post.post_id);
                 },
                 () => {
                     this.alert.danger('Something went wrong, try again later');
@@ -83,7 +84,7 @@ export class PlanCardComponent implements OnInit {
     }
 
     editArticle() {
-        this.router.navigate(['/profile', 'edit', this.plan.link]);
+        this.router.navigate(['/profile', 'edit', this.post.post_id]);
     }
 
     handlePopupMenu() {
@@ -91,33 +92,33 @@ export class PlanCardComponent implements OnInit {
     }
 
     navigateToComments() {
-        this.router.navigate(['/publication', this.plan.link], {
+        this.router.navigate(['/publication', this.post.post_id], {
             fragment: 'comments',
         });
     }
 
-    publishArticle(state: boolean) {
-        this.pubService
-            .publishPublication(this.plan.link, state)
-            .subscribe(() => {
-                this.plan.published = state;
-                if (state) {
-                    this.alert.success(
-                        'Now your post will appear in search results'
-                    );
-                } else
-                    [
-                        this.alert.success(
-                            'Your publication has been hidden from search engine'
-                        ),
-                    ];
-            });
+    publishArticle(state: string) {
+        this.postService
+            .changeStatus(this.post.post_id, state)
+            // .subscribe(() => {
+            //     this.plan.post_status = state;
+            //     if (state) {
+            //         this.alert.success(
+            //             'Now your post will appear in search results'
+            //         );
+            //     } else
+            //         [
+            //             this.alert.success(
+            //                 'Your publication has been hidden from search engine'
+            //             ),
+            //         ];
+            // });
     }
 
     saveArticle() {
         if (this.auth.isAuthenticated()) {
             this.isSaved = !this.isSaved;
-            this.pubService.savePublication(this.plan.link);
+            this.postService.saveOne(this.post.post_id);
         } else {
             this.alert.warning('Please authorize');
         }

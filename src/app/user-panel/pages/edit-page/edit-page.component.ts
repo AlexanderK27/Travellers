@@ -4,11 +4,12 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { switchMap, take } from 'rxjs/operators';
 
-import { PlanCard, Publication, Filters } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { PostService } from 'src/app/shared/services/post/post.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
+import { IPost, IPostCard } from 'src/app/shared/services/post/post.interfaces';
+import { IFilterValues, quillEditorSettings } from '../create-page/create-page.component';
 
 @Component({
     selector: 'app-edit-page',
@@ -16,36 +17,21 @@ import { ImagePickerService } from 'src/app/shared/components/img-picker/image-p
     styleUrls: ['./edit-page.component.scss'],
 })
 export class EditPageComponent implements OnInit {
-    filterValues: Filters;
+    filterValues: IFilterValues;
     form: FormGroup;
     loading = true;
-    planView: PlanCard;
+    postCard: IPostCard;
     pubId: string;
     selectedFile = null;
     submitted = false;
-    quillConfig = {
-        toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ script: 'sub' }, { script: 'super' }],
-            [
-                { list: 'ordered' },
-                { list: 'bullet' },
-                { align: [] },
-                'blockquote',
-            ],
-            [{ indent: '-1' }, { indent: '+1' }],
-            [{ header: [1, 2, 3, 4, 5, 6, false] }],
-            [{ size: ['small', false, 'large', 'huge'] }],
-            [{ color: [] }, { background: [] }, 'link', 'image'],
-        ],
-    };
-    quillStyle = { minHeight: '500px', padding: '10px 16px' };
+    quillConfig = quillEditorSettings.config;
+    quillStyle = quillEditorSettings.style;
 
     constructor(
         private avatarService: AvatarService,
         private alert: AlertService,
         public pickerService: ImagePickerService,
-        private publications: PublicationService,
+        private postService: PostService,
         private route: ActivatedRoute,
         private router: Router,
         private title: Title
@@ -58,46 +44,46 @@ export class EditPageComponent implements OnInit {
             .pipe(
                 switchMap((params: Params) => {
                     this.pubId = params.id;
-                    return this.publications.getPublication(params.id);
+                    return this.postService.getOne(+params.id);
                 })
             )
             .subscribe(
-                (publication: Publication) => {
-                    if (!publication) {
+                (post: IPost) => {
+                    if (!post) {
                         this.alert.danger('Publication not found');
                         return this.router.navigate(['/profile']);
                     }
 
                     this.form = new FormGroup({
-                        title: new FormControl(publication.title, [
+                        title: new FormControl(post.title, [
                             Validators.required,
                             Validators.maxLength(100),
                         ]),
-                        text: new FormControl(publication.text, [
+                        text: new FormControl(post.post_text, [
                             Validators.required,
                         ]),
                     });
                     this.filterValues = {
-                        amountCities: publication.filters.amountCities,
-                        amountCountries: publication.filters.amountCountries,
-                        budget: publication.filters.budget,
-                        city: publication.filters.city,
-                        continent: publication.filters.continent,
-                        country: publication.filters.country,
-                        duration: publication.filters.duration,
-                        people: publication.filters.people,
+                        amount_of_cities: post.filters.amount_of_cities,
+                        amount_of_countries: post.filters.amount_of_countries,
+                        budget: post.filters.budget,
+                        city: post.filters.city[0],
+                        continent: post.filters.continent[0],
+                        country: post.filters.country[0],
+                        amount_of_days: post.filters.amount_of_days,
+                        amount_of_people: post.filters.amount_of_people,
                     };
                     this.avatarService
-                        .getMinAvatars([publication.author])
+                        .getMinAvatars([post.author_name])
                         .pipe(take(1))
                         .subscribe((avatar) => {
-                            this.planView = {
-                                author: publication.author,
-                                authorId: publication.authorId,
-                                authorAv: avatar[0].avatar,
-                                created: publication.created,
-                                poster: publication.poster,
-                                title: publication.title,
+                            this.postCard = {
+                                author_name: post.author_name,
+                                author_avatar: avatar[0].avatar,
+                                post_id: post.post_id,
+                                post_created_at: post.post_created_at,
+                                poster: post.poster,
+                                title: post.title,
                             };
                             this.loading = false;
                         });
@@ -117,23 +103,24 @@ export class EditPageComponent implements OnInit {
         this.submitted = true;
 
         const modifications = {
-            modified: new Date(),
+            post_modified_at: new Date(),
             poster:
-                this.pickerService.croppedImagesSrc[0] || this.planView.poster,
-            title: this.planView.title,
-            text: this.form.value.text,
+                this.pickerService.croppedImagesSrc[0] || this.postCard.poster,
+            title: this.postCard.title,
+            post_text: this.form.value.text,
             filters: {
                 ...this.filterValues,
+                continent: [this.filterValues.continent[0]],
+                country: [this.filterValues.country[0]],
                 city: !this.filterValues.city
-                    ? ''
-                    : this.filterValues.city.trim().toLowerCase(),
+                    ? ['']
+                    : [this.filterValues.city.trim().toLowerCase()],
             },
         };
 
-        this.publications
-            .updatePublication(
+        this.postService
+            .updateOne(
                 modifications,
-                this.planView.authorId,
                 this.pubId
             )
             .subscribe(
@@ -148,11 +135,11 @@ export class EditPageComponent implements OnInit {
             );
     }
 
-    setFilterValues(values: Filters) {
+    setFilterValues(values: IFilterValues) {
         this.filterValues = { ...values };
     }
 
-    setPlanViewTitle() {
-        this.planView.title = this.form.value.title;
+    setPostCardTitle() {
+        this.postCard.title = this.form.value.title;
     }
 }

@@ -4,9 +4,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
-import { UserCredentials, FirebaseAuthResponse, UserData } from '../interfaces';
+import { IServerResponse } from '../interfaces';
 import { environment } from 'src/environments/environment';
 import { AlertService } from './alert.service';
+import { IUserCredentials, IUserProfileData } from './user/user.interfaces';
+
+interface IServerLoginResponse extends IServerResponse {
+    payload?: IUserProfileData
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -23,20 +28,30 @@ export class AuthService {
     ) {}
 
     get token(): string {
-        const expDate = new Date(localStorage.getItem('token-exp'));
-        if (new Date() > expDate) {
-            this.logout();
-            return null;
-        }
+        const token = localStorage.getItem('token');
+
+        if (!token) return null;
+
         this.showProfile$.next(true);
-        return localStorage.getItem('token');
+        return token;
     }
 
-    createUser(userData: UserData): Observable<any> {
-        return this.http.patch(
-            `${environment.firebaseDbUrl}/users/${userData.userId}.json`,
-            userData
-        );
+    // get token(): string {
+    //     const expDate = new Date(localStorage.getItem('token-exp'));
+    //     if (new Date() > expDate) {
+    //         this.logout();
+    //         return null;
+    //     }
+    //     this.showProfile$.next(true);
+    //     return localStorage.getItem('token');
+    // }
+
+    createUser(credentials: IUserCredentials): Observable<any> {
+        return this.http.get('/')
+        // return this.http.patch(
+        //     `${environment.firebaseDbUrl}/users/${userData.userId}.json`,
+        //     userData
+        // );
     }
 
     deleteAccount(): Observable<any> {
@@ -47,16 +62,23 @@ export class AuthService {
     }
 
     isAuthenticated(): boolean {
+        console.log('isAuthenticated triggered [token(username)]:', this.token)
         return !!this.token;
     }
 
-    login(credentials: UserCredentials): Observable<any> {
-        credentials.returnSecureToken = true;
+    // login(credentials: UserCredentials): Observable<any> {
+    //     credentials.returnSecureToken = true;
+    //     return this.http
+    //         .post(
+    //             `${this.url}:signInWithPassword?${this.keyQuery}`,
+    //             credentials
+    //         )
+    //         .pipe(tap(this.setToken), catchError(this.setError.bind(this)));
+    // }
+
+    login(credentials: IUserCredentials): Observable<IServerLoginResponse> {
         return this.http
-            .post(
-                `${this.url}:signInWithPassword?${this.keyQuery}`,
-                credentials
-            )
+            .post<IServerLoginResponse>('/api/auth/login', credentials)
             .pipe(tap(this.setToken), catchError(this.setError.bind(this)));
     }
 
@@ -64,8 +86,8 @@ export class AuthService {
         this.setToken(null);
     }
 
-    signup(credentials: UserCredentials): Observable<any> {
-        credentials.returnSecureToken = true;
+    signup(credentials: IUserCredentials): Observable<any> {
+        // credentials.returnSecureToken = true;
         return this.http
             .post(`${this.url}:signUp?${this.keyQuery}`, credentials)
             .pipe(tap(this.setToken), catchError(this.setError.bind(this)));
@@ -86,6 +108,10 @@ export class AuthService {
     }
 
     private setError(error: HttpErrorResponse) {
+        console.log('My error message:', error.error.error)
+        this.alert.danger(error.error.error)
+        return throwError(error);
+
         switch (error.error.error.message) {
             case 'INVALID_EMAIL':
                 this.alert.danger('Invalid email');
@@ -120,15 +146,26 @@ export class AuthService {
         return throwError(error);
     }
 
-    private setToken(response: FirebaseAuthResponse | null): void {
+    // private setToken(response: FirebaseAuthResponse | null): void {
+    //     if (response) {
+    //         if (response.idToken) {
+    //             const expDate = new Date(
+    //                 +response.expiresIn * 1000 + new Date().getTime()
+    //             );
+    //             localStorage.setItem('token', response.idToken);
+    //             localStorage.setItem('token-exp', expDate.toString());
+    //             localStorage.setItem('userId', response.localId);
+    //         }
+    //     } else {
+    //         localStorage.clear();
+    //         this.showProfile$.next(false);
+    //     }
+    // }
+
+    private setToken(response: IServerLoginResponse | null): void {
         if (response) {
-            if (response.idToken) {
-                const expDate = new Date(
-                    +response.expiresIn * 1000 + new Date().getTime()
-                );
-                localStorage.setItem('token', response.idToken);
-                localStorage.setItem('token-exp', expDate.toString());
-                localStorage.setItem('userId', response.localId);
+            if (response.payload) {
+                localStorage.setItem('token', response.payload.username);
             }
         } else {
             localStorage.clear();

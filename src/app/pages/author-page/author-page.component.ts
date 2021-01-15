@@ -5,11 +5,12 @@ import { Location } from '@angular/common';
 import { Subscription, throwError } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
 
-import { UserData, Publication } from 'src/app/shared/interfaces';
-import { UserService } from 'src/app/shared/services/user.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
+import { PublicationService } from 'src/app/shared/services/post/post.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
+import { IPost } from 'src/app/shared/services/post/post.interfaces';
 
 @Component({
     selector: 'app-author-page',
@@ -17,13 +18,13 @@ import { AlertService } from 'src/app/shared/services/alert.service';
     styleUrls: ['./author-page.component.scss'],
 })
 export class AuthorPageComponent implements OnInit, OnDestroy {
-    author: UserData;
+    author: IUserProfileData;
     authorNameValue = '';
     followBtnPressed = false;
     loading = true;
     notFoundAuthor = '';
-    publications: Array<Publication> = [];
-    user: UserData = { userId: '', username: '' };
+    publications: IPost[] = [];
+    user: IUserProfileData;
     userSub: Subscription;
 
     constructor(
@@ -54,7 +55,7 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
         this.userService
             .getAuthor(username)
             .pipe(
-                mergeMap((response: { user: UserData }) => {
+                mergeMap((response: { user: IUserProfileData }) => {
                     const author = (this.author = Object.values(response)[0]);
 
                     if (!author) {
@@ -62,7 +63,7 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
                     }
 
                     // fetch author's publications
-                    return this.pubService.getPublications(
+                    return this.pubService.getMany(
                         'author',
                         author.username
                     );
@@ -70,23 +71,23 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
                 // leave only published
                 // give them an avatar of the author
                 // and sort by date of creation
-                map((pubs: { publication: Publication }) => {
+                map((pubs: { publication: IPost }) => {
                     return Object.values(pubs)
-                        .filter((p) => p.published === true)
+                        // .filter((p) => p.published === true)
                         .map((p) => {
-                            p.authorAv = this.author.minAvatar;
+                            p.author_avatar = this.author.minAvatar;
                             return p;
                         })
                         .sort((a, b) => {
                             return (
-                                Date.parse(b.created.toString()) -
-                                Date.parse(a.created.toString())
+                                Date.parse(b.post_created_at.toString()) -
+                                Date.parse(a.post_created_at.toString())
                             );
                         });
                 })
             )
             .subscribe(
-                (publications: Publication[]) => {
+                (publications: IPost[]) => {
                     if (publications.length) {
                         this.publications = publications;
                     }
@@ -110,14 +111,12 @@ export class AuthorPageComponent implements OnInit, OnDestroy {
         if (this.auth.isAuthenticated()) {
             this.followBtnPressed = true;
             this.userService
-                .subscribeOnAuthor(
-                    isFollowing,
+                .follow(
                     this.author.username,
-                    this.author.userId
                 )
                 .subscribe(
                     (res) => {
-                        this.author.subscribers = res.subscribers;
+                        this.author.followers = res.followers;
                         this.followBtnPressed = false;
                     },
                     (e) => {

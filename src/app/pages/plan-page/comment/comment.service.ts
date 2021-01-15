@@ -2,15 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { UserService } from '../../../shared/services/user.service';
-import { UserData, Comment } from '../../../shared/interfaces';
+import { UserService } from '../../../shared/services/user/user.service';
+import { Comment } from '../../../shared/interfaces';
 import { environment } from 'src/environments/environment';
-import { PublicationService } from '../../../shared/services/publication.service';
+import { PublicationService } from '../../../shared/services/post/post.service';
+import { IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
 
 @Injectable()
 export class CommentService {
     urlToComments = `${environment.firebaseDbUrl}comments`;
-    user: UserData;
+    user: IUserProfileData;
 
     constructor(
         private http: HttpClient,
@@ -41,7 +42,7 @@ export class CommentService {
         );
 
         return (commentId ? saveAnswer : saveComment).pipe(
-            mergeMap(() => this.pubService.getPublication(pubId)),
+            mergeMap(() => this.pubService.getOne(+pubId)),
             mergeMap((publication) =>
                 this.http.patch(
                     `${environment.firebaseDbUrl}publications/${pubId}.json`,

@@ -9,6 +9,8 @@ import { ProfilePageComponent } from './pages/profile-page/profile-page.componen
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SharedModule } from '../shared/shared.module';
 import { FiltersComponent } from './shared/components/filters/filters.component';
+import { NewPostCardComponent } from './shared/components/new-post-card/new-post-card.component';
+import { MyPostCardComponent } from './pages/profile-page/my-post-card/my-post-card.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +19,9 @@ import { FiltersComponent } from './shared/components/filters/filters.component'
         EditPageComponent,
         ProfilePageComponent,
         SettingsPageComponent,
-        FiltersComponent
+        FiltersComponent,
+        NewPostCardComponent,
+        MyPostCardComponent
     ],
     imports: [
         CommonModule,

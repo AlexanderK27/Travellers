@@ -1,0 +1,27 @@
+<div class="post-card">
+    <div class="header">
+        <a class="header-author">
+            <div class="image-wrapper">
+                <img
+                    [src]="post.author_avatar || '../../../../assets/avatar.jpg'"
+                    alt="Author's avatar"
+                />
+            </div>
+            <span>{{ post.author_name }}</span>
+        </a>
+        <i class="material-icons">more_vert</i>
+    </div>
+    <app-img-picker
+        class="front-picture"
+        [cropperAspectRatio]="croppedImageRatio"
+        [croppedSizes]="croppedImageSize"
+        [src]="post.poster || '../../../../assets/article_poster.jpg'"
+    ></app-img-picker>
+    <p [title]="post.title">{{ post.title }}</p>
+    <div class="meta">
+        <span class="date">{{ createdAt | date: "MMMM d, y" }}</span>
+        <span class="action">
+            <i class="material-icons">bookmark_border</i>
+        </span>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+@import "../../../../../styles/variables.scss";
+
+:host {
+    width: 100%;
+}
+.step {
+    &-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 200px;
+
+        &.closed {
+            display: none;
+        }
+
+        &-footer {
+            flex: 1;
+            min-height: 16px;
+            background-color: #eee;
+
+            &.last-step {
+                background-color: #bbb;
+            }
+        }
+    }
+
+    &-item {
+        width: 100%;
+
+        &-title {
+            position: relative;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            background-color: #eee;
+            cursor: pointer;
+
+            &::after,
+            &::before {
+                position: absolute;
+                content: "";
+                top: calc(100% - 1px);
+                left: calc(50% - 7px);
+                border: 7px solid transparent;
+                border-top-color: #eee;
+                z-index: 1;
+            }
+
+            &::before {
+                top: 100%;
+                left: calc(50% - 8px);
+                border: 8px solid transparent;
+                border-top-color: #fff;
+            }
+
+            &.active {
+                background-color: #bbb;
+
+                &::after {
+                    border-top-color: #bbb;
+                }
+            }
+
+            &.done {
+                background-color: $color_secondary;
+
+                &::after {
+                    border-top-color: $color_secondary;
+                }
+            }
+        }
+
+        &-description {
+            overflow: hidden;
+            padding: 12px 12px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        &.closed {
+            .step-item-description {
+                height: 1px;
+                padding: 0px 12px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    :host {
+        width: fit-content;
+    }
+    .step-container {
+        flex: none;
+        width: 240px;
+        height: 100%;
+    }
+}

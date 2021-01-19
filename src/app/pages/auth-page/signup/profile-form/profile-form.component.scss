@@ -1,0 +1,44 @@
+@import "../../../../../styles/variables.scss";
+
+.avatar-buttons {
+    display: flex;
+    justify-content: center;
+
+    button {
+        width: 24px;
+        height: 24px;
+        margin: 6px;
+        border: none;
+        background-color: transparent;
+        text-align: center;
+
+        &:disabled {
+            color: #999;
+        }
+
+        &:focus {
+            outline: 2px groove #000;
+        }
+
+        &:not(:disabled) {
+            color: #555;
+            cursor: pointer;
+
+            &.danger {
+                color: $color_danger;
+            }
+
+            &.success {
+                color: $color_secondary;
+            }
+        }
+
+        i {
+            width: 24px;
+            font-size: 24px;
+        }
+    }
+}
+.avatar-control {
+    margin: auto;
+}

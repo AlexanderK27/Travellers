@@ -1,0 +1,47 @@
+<aside class="step-container">
+    <div class="step-item">
+        <p
+            class="step-item-title"
+            [class.active]="state.showUsernameForm"
+            [class.done]="!state.showUsernameForm"
+            (click)="stepItemStateHandler($event)"
+        >
+            Step 1
+        </p>
+        <ul class="step-item-description">
+            <li>Create username</li>
+        </ul>
+    </div>
+    <div class="step-item">
+        <p
+            class="step-item-title"
+            [class.active]="state.showSignupForm"
+            [class.done]="!state.showSignupForm && !state.showUsernameForm"
+            (click)="stepItemStateHandler($event)"
+        >
+            Step 2
+        </p>
+        <ul class="step-item-description">
+            <li>Provide email</li>
+            <li>Create password</li>
+        </ul>
+    </div>
+    <div class="step-item">
+        <p
+            class="step-item-title"
+            [class.active]="state.showProfileForm"
+            (click)="stepItemStateHandler($event)"
+        >
+            Step 3
+        </p>
+        <ul class="step-item-description">
+            <li>Upload avatar*</li>
+            <li>Write about yourself*</li>
+            <li><small>*optional</small></li>
+        </ul>
+    </div>
+    <div
+        class="step-container-footer"
+        [class.last-step]="state.showProfileForm"
+    ></div>
+</aside>

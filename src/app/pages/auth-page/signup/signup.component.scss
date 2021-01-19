@@ -1,0 +1,92 @@
+@import "../../../../styles/variables.scss";
+
+.window {
+    display: flex;
+    flex-wrap: wrap;
+    width: 94%;
+    max-width: 640px;
+    margin: 50px auto;
+    box-shadow: -1px 5px 15px rgba($color: #000000, $alpha: 0.2);
+    background-color: #fff;
+
+    &.wide {
+        max-width: 900px;
+    }
+}
+.form {
+    flex: 1;
+
+    &-container {
+        position: relative;
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        min-width: 300px;
+        box-shadow: 5px 0px 12px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    &-heading {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 12px 10px;
+        background-color: $color_primary;
+        text-align: center;
+        font-family: $font_primary;
+
+        small {
+            display: block;
+        }
+    }
+
+    &-controls-wrapper {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0 20px;
+    }
+
+    &-control.password {
+        i {
+            top: 34px;
+        }
+        &.valid i {
+            right: 34px;
+        }
+    }
+
+    &-buttons {
+        display: flex;
+        justify-content: space-around;
+        max-width: 300px;
+        margin: auto;
+        padding: 10px 20px 20px;
+
+        button {
+            margin: 0px 15px;
+        }
+    }
+
+    &-footer {
+        width: 100%;
+        padding: 8px 0px 4px;
+        font-size: 0.9rem;
+        text-align: center;
+
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+}
+.steps-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0.5;
+    font-size: 18px;
+    transition: 0.2s;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 1;
+    }
+}

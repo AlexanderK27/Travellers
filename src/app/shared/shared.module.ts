@@ -11,6 +11,7 @@ import { ConfirmWindowComponent } from './components/confirm-window/confirm-wind
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { CheckLoader } from './components/check-loader/check-loader.component';
 import { SelectComponent } from './components/select/select.component';
 import { FilterPipe } from './components/select/filter.pipe';
 
@@ -23,6 +24,7 @@ import { FilterPipe } from './components/select/filter.pipe';
         MainLayoutComponent,
         AlertComponent,
         LoaderComponent,
+        CheckLoader,
         SelectComponent,
         FilterPipe,
     ],
@@ -42,6 +44,7 @@ import { FilterPipe } from './components/select/filter.pipe';
         ImgPickerComponent,
         ConfirmWindowComponent,
         LoaderComponent,
+        CheckLoader,
         SelectComponent,
     ],
 })

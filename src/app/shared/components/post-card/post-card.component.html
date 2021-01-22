@@ -21,7 +21,7 @@
         <a [routerLink]="['/author', post.author_name]" class="header-author">
             <div class="image-wrapper">
                 <img
-                    [src]="post.author_avatar || '../../../../assets/avatar.jpg'"
+                    [src]="avatarSrc"
                     alt="Author's avatar"
                 />
             </div>
@@ -29,11 +29,13 @@
         </a>
         <i class="material-icons" (click)="handlePopupMenu()">more_vert</i>
     </div>
-    <a class="body" [routerLink]="['/publication', post.post_id]">
-        <img
-            [src]="post.poster || '../../../../assets/article_poster.jpg'"
-            alt="Plan poster"
-        />
+    <a class="body" [routerLink]="['/post', post.post_id]">
+        <div class="poster-wrapper">
+            <img
+                [src]="posterSrc"
+                alt="Post illustration"
+            />
+        </div>
         <p [title]="post.title">{{ post.title }}</p>
     </a>
     <div class="meta">
@@ -51,5 +53,7 @@
             </i>
         </span>
     </div>
-    <span *ngIf="markUpdated && plan.post_modified_at" class="label">Updated</span>
+    <span *ngIf="markUpdated && post.post_modified_at" class="label"
+        >Updated</span
+    >
 </div>

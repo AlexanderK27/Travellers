@@ -7,7 +7,7 @@ img {
     width: 100%;
 }
 p {
-    margin: 6px 10px;
+    margin: 12px 10px 6px;
     font-size: 0.9rem;
     font-weight: bold;
     overflow: hidden;
@@ -135,5 +135,16 @@ p {
         font-size: 0.7rem;
         color: #fff;
         background-color: #ac660b;
+    }
+}
+.poster-wrapper {
+    position: relative;
+    padding-top: 75%;
+    overflow: hidden;
+
+    img {
+        position: absolute;
+        top: 0;
+        width: 100%;
     }
 }

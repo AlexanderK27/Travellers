@@ -51,7 +51,7 @@
                     class="btn btn-filled btn-secondary"
                     type="submit"
                     [disabled]="!authorName.value || authorName.invalid"
-                    (click)="fetchAuhor(authorName.value)"
+                    [routerLink]="['/author', authorName.value]"
                 >
                     Try again
                 </button>
@@ -61,69 +61,51 @@
     <ng-template #profile>
         <div class="profile-data">
             <div class="user-avatar">
-                <img
-                    [src]="author.avatar || '../../../../assets/avatar.jpg'"
-                    alt="Avatar"
-                />
+                <img [src]="author.avatar" alt="Avatar" />
             </div>
             <div class="information">
                 <h1 class="username">{{ author.username }}</h1>
                 <p class="secondary">
-                    <span *ngIf="author.name">
-                        {{ author.name }}
+                    <span *ngIf="author.real_name">
+                        {{ author.real_name }}
                     </span>
-                    <span *ngIf="author.name && author.website">
+                    <span *ngIf="author.real_name && author.contact">
                         &nbsp;&bull;&nbsp;
                     </span>
-                    <span *ngIf="author.website">
-                        {{ author.website }}
+                    <span *ngIf="author.contact">
+                        {{ author.contact }}
                     </span>
                 </p>
                 <div class="statistics">
                     <div class="statistics-item">
-                        <b>{{ author.publications || 0 }}</b>
+                        <b>{{ author.posts }}</b>
                         <span>publications</span>
                     </div>
                     <div class="statistics-item">
-                        <b>{{ author.subscribers || 0 }}</b>
+                        <b>{{ author.followers }}</b>
                         <span>followers</span>
                     </div>
                     <div class="statistics-item">
-                        <b>{{
-                            author.subscriptions
-                                ? author.subscriptions.length
-                                : 0
-                        }}</b>
-                        <span>following</span>
+                        <b>{{ author.followings }}</b>
+                        <span>followings</span>
                     </div>
                 </div>
                 <p class="bio" *ngIf="author.bio">{{ author.bio }}</p>
                 <ng-container
-                    *ngIf="author.userId !== user.userId; else myProfile"
+                    *ngIf="author.username !== user_username; else myProfile"
                 >
                     <button
-                        *ngIf="
-                            !user.subscriptions ||
-                                !user.subscriptions.includes(author.username);
-                            else unsub
-                        "
                         type="button"
                         class="btn btn-filled btn-danger"
+                        [ngClass]="{
+                            'btn-danger': !author.iFollow,
+                            'btn-neutral': author.iFollow
+                        }"
                         [disabled]="followBtnPressed"
-                        (click)="followAuthor(true)"
+                        (click)="followAuthor()"
                     >
-                        Follow
+                        {{ author.iFollow ? "Unfollow" : "Follow" }}
                     </button>
-                    <ng-template #unsub>
-                        <button
-                            type="button"
-                            class="btn btn-filled btn-neutral"
-                            [disabled]="followBtnPressed"
-                            (click)="followAuthor(false)"
-                        >
-                            Unfollow
-                        </button>
-                    </ng-template>
                 </ng-container>
                 <ng-template #myProfile>
                     <button
@@ -138,13 +120,13 @@
         </div>
         <div
             class="publications publication-cards-section"
-            *ngIf="publications.length"
+            *ngIf="posts.length"
         >
-            <app-plan-card
-                *ngFor="let post of publications"
-                [plan]="post"
+            <app-post-card
+                *ngFor="let post of posts"
+                [post]="post"
                 class="publication-card-wrapper"
-            ></app-plan-card>
+            ></app-post-card>
         </div>
     </ng-template>
 </ng-template>

@@ -8,6 +8,18 @@ import { IUserBasicProfileData, IUserProfileData, IAuthorProfileData } from './u
 import { IServerResponse } from '../../interfaces';
 import { AuthService } from '../auth/auth.service';
 
+interface IFetchAuthorServerResponse extends IServerResponse {
+    payload: {
+        profile: IAuthorProfileData;
+        posts: Array<{
+            title: string;
+            poster: string;
+            post_id: number;
+            post_created_at: Date;
+        }>
+    }
+}
+
 interface IUpdateProfileServerResponse extends IServerResponse {
     payload?: string;
 }
@@ -36,15 +48,14 @@ export class UserService {
         )
     }
 
-    fetchOne(username: string): Observable<IAuthorProfileData> {
-        return this.http.get(`/api/user/author/${username}`).pipe(
-            catchError(this.handleError),
-            map((res: { payload: IAuthorProfileData }) => res.payload),
-        );
+    fetchAuthor(username: string): Observable<IFetchAuthorServerResponse> {
+        return this.http.get<IFetchAuthorServerResponse>(`/api/user/author/${username}`);
     }
 
     follow(author_username: string): Observable<string> {
-        return this.http.post<IServerResponse>('/api/user/follow', author_username).pipe(
+        const body = { username: author_username }
+
+        return this.http.post<IServerResponse>('/api/user/follow', body).pipe(
             catchError(this.handleError),
             map((res: IServerResponse) => res.message)
         )

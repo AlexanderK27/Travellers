@@ -38,14 +38,19 @@ export interface INewPost {
     title: string;
 }
 
-export interface IPost extends INewPost {
+export interface IServerPost extends INewPost {
     dislikes: number;
     likes: number;
     post_id: number;
     post_created_at: Date;
+    tags: string[];
 
-    comments?: number;
+    avatar?: string;
     post_modified_at?: Date;
+}
+
+export interface IPost extends IServerPost {
+    isSaved: boolean;
 }
 
 export interface IPostAllowedChanges {

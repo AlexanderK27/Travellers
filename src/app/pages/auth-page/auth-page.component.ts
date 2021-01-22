@@ -8,7 +8,7 @@ import { ActivatedRoute, Params } from '@angular/router';
     styleUrls: ['./auth-page.component.scss'],
 })
 export class AuthPageComponent implements OnInit {
-    formType: string;
+    isRegistration: boolean;
 
     constructor(private route: ActivatedRoute, private title: Title) {}
 
@@ -16,10 +16,10 @@ export class AuthPageComponent implements OnInit {
         this.route.queryParams.subscribe((params: Params) => {
             if (params['newMember'] === 'true') {
                 this.title.setTitle('Registration • Travellers');
-                this.formType = 'registration';
+                this.isRegistration = true;
             } else {
                 this.title.setTitle('Signing in • Travellers');
-                this.formType = 'loggingIn';
+                this.isRegistration = false;
             }
         });
     }

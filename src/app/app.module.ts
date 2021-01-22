@@ -6,11 +6,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthPageModule } from './pages/auth-page/auth-page.module';
 import { HomePageModule } from './pages/home-page/home-page.module';
-import { PlanPageModule } from './pages/plan-page/plan-page.module';
+import { PostPageModule } from './pages/post-page/post-page.module';
 import { AppComponent } from './app.component';
 import { SubsPageComponent } from './pages/subs-page/subs-page.component';
 import { SavedPageComponent } from './pages/saved-page/saved-page.component';
-import { AuthInterceptor } from './shared/services/auth.interceptor';
+import { AuthInterceptor } from './shared/services/auth/auth.interceptor';
 import { AuthorPageComponent } from './pages/author-page/author-page.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -35,7 +35,7 @@ const INTERCEPTOR_PROVIDER: Provider = {
         SharedModule,
         AuthPageModule,
         HomePageModule,
-        PlanPageModule,
+        PostPageModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
             enabled: environment.production,
         }),

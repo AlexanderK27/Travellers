@@ -3,14 +3,12 @@ export type imageSource = string | ArrayBuffer
 export interface IUserCredentials {
     email: string;
     password: string;
-    username?: string;
 }
 
 export interface IUserBasicProfileData {
     avatar: imageSource;
     bio: string;
     contact: string;
-    minAvatar: imageSource;
     real_name: string;
 }
 
@@ -22,9 +20,12 @@ export interface IUserProfileData extends IUserBasicProfileData {
     posts: number;
     saved_posts: number[];
     username: string;
-    // userId?: string
-    // subscriptions?: string[]
-    // liked?: any[],
-    // disliked?: any[],
-    // saved?: any[]
+}
+
+export interface IAuthorProfileData extends IUserBasicProfileData {
+    followers: number;
+    followings: number;
+    iFollow: boolean;
+    posts: number;
+    username: string;
 }

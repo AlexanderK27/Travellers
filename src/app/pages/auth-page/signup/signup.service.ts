@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { of } from "rxjs";
 import { delay, finalize, map, switchMap } from "rxjs/operators";
-import { AuthService } from "src/app/shared/services/auth.service";
+import { AuthService } from "src/app/shared/services/auth/auth.service";
 import { UserService } from "src/app/shared/services/user/user.service";
 import { IUserBasicProfileData, IUserCredentials } from "src/app/shared/services/user/user.interfaces";
 

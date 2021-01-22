@@ -10,10 +10,7 @@
             <button
                 type="submit"
                 class="btn btn-filled btn-secondary"
-                [disabled]="
-                    pickerService.croppedImagesSrc.length <
-                        croppedAvatarSizes.length || submitted
-                "
+                [disabled]="!pickerService.croppedImageSrc || submitted"
                 (click)="saveAvatar()"
             >
                 Save new avatar
@@ -23,7 +20,7 @@
             <div [class.user-avatar]="!pickerService.showCropper">
                 <app-img-picker
                     cropperAriaShape="rounded"
-                    [croppedSizes]="croppedAvatarSizes"
+                    type="avatar"
                     [src]="user.avatar || '../../../../assets/avatar.jpg'"
                 ></app-img-picker>
             </div>

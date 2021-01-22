@@ -9,7 +9,6 @@ import { UserService } from 'src/app/shared/services/user/user.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { PublicationService } from 'src/app/shared/services/post/post.service';
 import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
 import { Confirmation } from 'src/app/shared/interfaces';
 import {
@@ -28,10 +27,6 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
     passwordForm: FormGroup;
     profileDataForm: FormGroup;
 
-    croppedAvatarSizes = [
-        { width: 320, height: 320 },
-        { width: 36, height: 36 },
-    ];
     deleteWindow: Confirmation = null;
     profileDataChanged = false;
     showPassword = false;
@@ -45,7 +40,6 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
         private auth: AuthService,
         private avatar: AvatarService,
         public pickerService: ImagePickerService,
-        private pubService: PublicationService,
         private router: Router,
         private userService: UserService,
         private title: Title
@@ -142,55 +136,46 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
     }
 
     saveAvatar() {
-        if (
-            this.pickerService.croppedImagesSrc.length <
-            this.croppedAvatarSizes.length
-        ) {
-            return this.showAlert(
-                '',
-                'We could not get uploaded photo, please contact support'
-            );
+        const avatar = this.pickerService.getCroppedImage()
+
+        if (!avatar) {
+            return this.showAlert('', 'Image was not uploaded');
         }
 
         this.submitted = true;
 
-        const avatar = {
-            avatar: this.pickerService.croppedImagesSrc[0],
-            minAvatar: this.pickerService.croppedImagesSrc[1],
-        };
-
-        this.userService
-            .updateProfile(avatar)
-            .pipe(
-                mergeMap(() =>
-                    this.avatar.saveMinAvatar(
-                        this.user.username,
-                        avatar.minAvatar
-                    )
-                )
-            )
-            .subscribe(
-                () => {
-                    this.userService.userData$.next({
-                        ...this.user,
-                        ...avatar,
-                    });
-                    this.avatar.usersAvatars$.next([
-                        {
-                            username: this.user.username,
-                            avatar: avatar.minAvatar,
-                        },
-                    ]);
-                    this.pickerService.resetImage();
-                    this.showAlert();
-                },
-                () => {
-                    this.showAlert('', 'Something went wrong');
-                },
-                () => {
-                    this.submitted = false;
-                }
-            );
+        // this.userService
+        //     .updateProfile(avatar)
+        //     .pipe(
+        //         mergeMap(() =>
+        //             this.avatar.saveMinAvatar(
+        //                 this.user.username,
+        //                 avatar.minAvatar
+        //             )
+        //         )
+        //     )
+        //     .subscribe(
+        //         () => {
+        //             this.userService.userData$.next({
+        //                 ...this.user,
+        //                 ...avatar,
+        //             });
+        //             this.avatar.usersAvatars$.next([
+        //                 {
+        //                     username: this.user.username,
+        //                     avatar: avatar.minAvatar,
+        //                 },
+        //             ]);
+        //             this.pickerService.resetImage();
+        //             this.showAlert();
+        //         },
+        //         () => {
+        //             this.showAlert('', 'Something went wrong');
+        //         },
+        //         () => {
+        //             this.submitted = false;
+        //         }
+        //     );
     }
 
     saveEmail() {
@@ -250,21 +235,21 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
             bio: this.profileDataForm.value.bio,
         };
 
-        this.userService.updateProfile(profileData).subscribe(
-            () => {
-                this.userService.userData$.next({
-                    ...this.user,
-                    ...profileData,
-                });
-                this.showAlert();
-            },
-            () => {
-                this.showAlert('', 'Something went wrong');
-            },
-            () => {
-                this.submitted = false;
-            }
-        );
+        // this.userService.updateProfile(profileData).subscribe(
+        //     () => {
+        //         this.userService.userData$.next({
+        //             ...this.user,
+        //             ...profileData,
+        //         });
+        //         this.showAlert();
+        //     },
+        //     () => {
+        //         this.showAlert('', 'Something went wrong');
+        //     },
+        //     () => {
+        //         this.submitted = false;
+        //     }
+        // );
     }
 
     showHidePassword(

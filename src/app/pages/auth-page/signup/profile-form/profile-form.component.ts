@@ -14,12 +14,11 @@ export class ProfileFormComponent implements OnInit {
 
     form: FormGroup
     submitted = false;
-    croppedAvatarSizes = [
-        { width: 320, height: 320 },
-        { width: 36, height: 36 },
-    ];
 
-    constructor(public pickerService: ImagePickerService, private signupService: SignupService) {}
+    constructor(
+        public pickerService: ImagePickerService,
+        private signupService: SignupService
+    ) {}
 
     ngOnInit() {
         this.form = new FormGroup({
@@ -38,13 +37,11 @@ export class ProfileFormComponent implements OnInit {
 
         this.submitted = true;
 
-        const avatar = this.pickerService.croppedImagesSrc[0];
-
         const profile = {
             real_name: this.form.value.real_name,
             contact: this.form.value.contact,
             bio: this.form.value.bio,
-            avatar: avatar ? avatar.slice(23) : ''
+            avatar: this.pickerService.getCroppedImage()
         };
 
         this.signupService.saveProfileData(

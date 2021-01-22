@@ -1,15 +1,33 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export type ImageSource = string | ArrayBuffer;
+export interface ICanvasDimentions {
+    height: number;
+    width: number;
+}
+
+export type imageSource = string | ArrayBuffer;
+
+export type imageType = 'avatar' | 'poster';
+
+export const CROPPED_AVATAR_DIMENTIONS: ICanvasDimentions = {
+    height: 480,
+    width: 480
+}
+
+export const CROPPED_POSTER_DIMENTIONS: ICanvasDimentions = {
+    height: 480,
+    width: 600
+}
 
 @Injectable({ providedIn: 'root' })
 export class ImagePickerService {
     cropperWidth = 300;
-    croppedImagesSrc: ImageSource[] = [];
-    displayedCroppedImage: ImageSource;
-    onSubmitCroppedImage$: Subject<any> = new Subject<any>();
-    onUploadFile$: Subject<any> = new Subject<any>();
+    croppedImageSrc: imageSource;
+    displayedCroppedImage: imageSource;
+    onSubmitCroppedImage$: Subject<unknown> = new Subject<unknown>();
+    onResetImage$: Subject<unknown> = new Subject<unknown>();
+    onUploadFile$: Subject<unknown> = new Subject<unknown>();
     showCropper = false;
     showNewImage = false;
 
@@ -25,16 +43,21 @@ export class ImagePickerService {
         this.showCropper = true;
     }
 
-    onImageCropped(croppedImages: ImageSource[]) {
-        this.setCroppedImagesSrc(croppedImages);
-        this.displayedCroppedImage = croppedImages[0];
+    getCroppedImage() {
+        return this.croppedImageSrc ? this.croppedImageSrc.slice(23) : '';
+    }
+
+    onImageCropped(croppedImage: imageSource) {
+        this.setCroppedImageSrc(croppedImage);
+        this.displayedCroppedImage = croppedImage;
         this.displayCroppedImage();
     }
 
     resetImage() {
         this.showCropper = false;
         this.showNewImage = false;
-        this.setCroppedImagesSrc([]);
+        this.setCroppedImageSrc('');
+        this.onResetImage$.next();
     }
 
     setCropperWidth(width: number) {
@@ -43,13 +66,14 @@ export class ImagePickerService {
 
     submitCroppedImage() {
         this.onSubmitCroppedImage$.next();
+        this.onResetImage$.next();
     }
 
     triggerFileUploadInput() {
         this.onUploadFile$.next();
     }
 
-    private setCroppedImagesSrc(croppedImages: ImageSource[]) {
-        this.croppedImagesSrc = [...croppedImages];
+    private setCroppedImageSrc(croppedImage: imageSource) {
+        this.croppedImageSrc = croppedImage;
     }
 }

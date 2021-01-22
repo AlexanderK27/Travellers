@@ -13,7 +13,6 @@ export class NewPostCardComponent {
     @Input() post: INewPostCard;
 
     createdAt = new Date();
-    croppedImageSize = [{ width: 480, height: 360 }];
     croppedImageRatio = 4 / 3;
 
     constructor() {}

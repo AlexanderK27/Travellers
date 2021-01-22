@@ -9,12 +9,7 @@ import {
 } from '@angular/core';
 import Cropper from 'cropperjs';
 import { Subscription, Observable } from 'rxjs';
-import { ImagePickerService, ImageSource } from '../image-picker.service';
-
-export interface canvasParams {
-    height: number;
-    width: number;
-}
+import { ICanvasDimentions, ImagePickerService, imageSource } from '../image-picker.service';
 
 @Component({
     selector: 'app-img-cropper',
@@ -24,10 +19,10 @@ export interface canvasParams {
 export class ImgCropperComponent implements AfterViewInit, OnDestroy, OnInit {
     @Input() ariaShape = '';
     @Input() aspectRatio = 1;
-    @Input() canvasesSizes: canvasParams[];
-    @Input() originalImage$: Observable<ImageSource>;
+    @Input() canvasDimentions: ICanvasDimentions;
+    @Input() originalImage$: Observable<imageSource>;
     @ViewChild('originalImage') imageRef: ElementRef;
-    croppedImagesSrc: ImageSource[];
+    croppedImageSrc: imageSource;
     cropperHeight = 0;
     cropperWidth = 0;
     oImageSub: Subscription;
@@ -74,16 +69,14 @@ export class ImgCropperComponent implements AfterViewInit, OnDestroy, OnInit {
             scalable: false,
             aspectRatio: this.aspectRatio,
             crop: () => {
-                this.croppedImagesSrc = this.canvasesSizes.map((params) => {
-                    const canvas = this.cropper.getCroppedCanvas(params);
-                    return canvas.toDataURL('image/jpeg');
-                });
+                const canvas = this.cropper.getCroppedCanvas(this.canvasDimentions);
+                this.croppedImageSrc = canvas.toDataURL('image/jpeg');
             },
         });
     }
 
     private outputCroppedImages() {
-        this.pickerService.onImageCropped(this.croppedImagesSrc);
+        this.pickerService.onImageCropped(this.croppedImageSrc);
         this.cropper.destroy();
     }
 }

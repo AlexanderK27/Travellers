@@ -16,12 +16,6 @@ export interface Comment {
     id?: string;
 }
 
-export interface Confirmation {
-    callback: Function;
-    confirmButtonTitle: string;
-    text: string;
-}
-
 export interface MiniatureAvatar {
     username: string;
     avatar: imageSource;

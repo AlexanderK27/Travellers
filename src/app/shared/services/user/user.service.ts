@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 
 import { AlertService } from 'src/app/shared/services/alert.service';
@@ -20,9 +20,9 @@ interface IFetchAuthorServerResponse extends IServerResponse {
     }
 }
 
-interface IUpdateProfileServerResponse extends IServerResponse {
-    payload?: string;
-}
+export type updateProfileParams = {
+    [P in keyof IUserBasicProfileData]?: IUserBasicProfileData[P]
+};
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -38,13 +38,24 @@ export class UserService {
         }
     }
 
-    deleteMyProfile(): Observable<string> {
-        return this.http.delete('/api/user/account').pipe(
+    changeEmail(email: string): Observable<IServerResponse> {
+        return this.http.patch<IServerResponse>('/api/auth/email', {email}).pipe(
             catchError(this.handleError),
-            map((res: IServerResponse) => {
-                this.alert.success(res.message)
-                return res.message;
-            })
+            tap(this.alertSuccess)
+        )
+    }
+
+    changePassword(password: string): Observable<IServerResponse> {
+        return this.http.patch<IServerResponse>('/api/auth/password', {password}).pipe(
+            catchError(this.handleError),
+            tap(this.alertSuccess)
+        )
+    }
+
+    deleteMyProfile(): Observable<IServerResponse> {
+        return this.http.delete<IServerResponse>('/api/user/account').pipe(
+            catchError(this.handleError),
+            tap(this.alertSuccess)
         )
     }
 
@@ -70,15 +81,16 @@ export class UserService {
         );
     }
 
-    updateProfile(updates: IUserBasicProfileData): Observable<string> {
-        return this.http.patch('/api/user/profile', updates)
-            .pipe(
-                map((res: IUpdateProfileServerResponse) => {
-                    this.alert.success(res.message);
-                    return res.payload
-                }),
-                catchError(this.handleError.bind(this))
-            )
+    updateProfile(updates: updateProfileParams): Observable<string> {
+        return this.http.patch('/api/user/profile', updates).pipe(
+            catchError(this.handleError),
+            tap(this.alertSuccess),
+            map((res: { payload: string }) => res.payload)
+        )
+    }
+
+    private alertSuccess = (res: IServerResponse) => {
+        this.alert.success(res.message)
     }
 
     private handleError = (error: HttpErrorResponse): Observable<never> => {

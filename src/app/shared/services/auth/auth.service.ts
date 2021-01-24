@@ -8,7 +8,7 @@ import { AlertService } from '../alert.service';
 import { IUserCredentials, IUserProfileData } from '../user/user.interfaces';
 
 interface IAuthServerResponse extends IServerResponse {
-    payload?: IUserProfileData
+    payload: IUserProfileData
 }
 
 interface ISignupCredentials extends IUserCredentials {
@@ -36,30 +36,18 @@ export class AuthService {
         return token;
     }
 
-    deleteAccount(): Observable<any> {
-        return this.http.post(`/`, '')
-        // const token = { idToken: this.token };
-        // return this.http
-        //     .post(`/`, token)
-        //     .pipe(catchError(this.setError.bind(this)));
-    }
-
     isAuthenticated(): boolean {
         return !!this.token;
     }
 
     isUsernameTaken(username: string): Observable<boolean> {
-        return this.http.get(`/api/auth/check/${username}`)
-            .pipe(
-                map((res: IServerResponse) => {
-                    console.log(res, res.message)
-                    return res.message !== 'Free'
-                }),
-                catchError(error => {
-                    this.alert.danger(error.error.error);
-                    return of(true);
-                })
-            )
+        return this.http.get(`/api/auth/check/${username}`).pipe(
+            catchError(error => {
+                this.alert.danger(error.error.error);
+                return of(true);
+            }),
+            map((res: IServerResponse) => res.message !== 'Free')
+        )
     }
 
     login(credentials: IUserCredentials): Observable<IAuthServerResponse> {
@@ -68,7 +56,7 @@ export class AuthService {
             .pipe(catchError(this.setError), tap(this.setToken));
     }
 
-    logout(): void {
+    logout() {
         this.setToken(null);
     }
 
@@ -84,21 +72,7 @@ export class AuthService {
             )
     }
 
-    updateEmailOrPassword(newValue: { email: string } | { password: string }): Observable<any> {
-        return this.http.post(`/`, '')
-        // const body = {
-        //     idToken: this.token,
-        //     returnSecureToken: true,
-        //     ...newValue,
-        // };
-
-        // return this.http
-        //     .post(`/`, body)
-        //     .pipe(catchError(this.setError.bind(this)), tap(this.setToken));
-    }
-
-
-    private setError = (error: HttpErrorResponse) => {
+    private setError = (error: HttpErrorResponse): Observable<never> => {
         this.alert.danger(error.error.error)
         return throwError(error);
     }

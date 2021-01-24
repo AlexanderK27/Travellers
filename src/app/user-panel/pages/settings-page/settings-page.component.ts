@@ -1,20 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
-import { mergeMap } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-
+import { skipWhile } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
 import { UserService } from 'src/app/shared/services/user/user.service';
-import { AvatarService } from 'src/app/shared/services/avatar.service';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { ImagePickerService } from 'src/app/shared/components/img-picker/image-picker.service';
-import { Confirmation } from 'src/app/shared/interfaces';
-import {
-    isEmail,
-    doPasswordsMatch,
-} from 'src/app/shared/services/input.validators';
+import { SettingsPageService, windowSettings } from './settings-page.service';
 import { IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
 
 @Component({
@@ -23,253 +12,34 @@ import { IUserProfileData } from 'src/app/shared/services/user/user.interfaces';
     styleUrls: ['./settings-page.component.scss'],
 })
 export class SettingsPageComponent implements OnInit, OnDestroy {
-    emailForm: FormGroup;
-    passwordForm: FormGroup;
-    profileDataForm: FormGroup;
-
-    deleteWindow: Confirmation = null;
-    profileDataChanged = false;
-    showPassword = false;
-    showConfirmPassword = false;
-    submitted = false;
+    confirmWindow$: Observable<windowSettings>
     user: IUserProfileData;
     userSub: Subscription;
 
     constructor(
-        private alert: AlertService,
-        private auth: AuthService,
-        private avatar: AvatarService,
-        public pickerService: ImagePickerService,
-        private router: Router,
         private userService: UserService,
+        private settingsService: SettingsPageService,
         private title: Title
     ) {}
 
     ngOnInit() {
-        this.userSub = this.userService.userData$.subscribe((user) => {
-            if (user) {
+        this.userSub = this.userService.userData$
+            .pipe(skipWhile(user => !user)).subscribe(user => {
+
+                if (!this.user || this.user.username !== user.username) {
+                    this.title.setTitle(`${user.username} | Settings • Travellers`);
+                }
+
                 this.user = user;
-
-                this.title.setTitle(`${user.username} | Settings • Travellers`);
-
-                this.profileDataForm = new FormGroup({
-                    name: new FormControl(user.real_name || '', [
-                        Validators.maxLength(30),
-                    ]),
-                    website: new FormControl(user.contact || '', [
-                        Validators.maxLength(30),
-                    ]),
-                    bio: new FormControl(user.bio || '', [
-                        Validators.maxLength(150),
-                    ]),
-                });
-
-                this.profileDataForm.valueChanges.subscribe((value) => {
-                    if (
-                        value.name !== this.user.real_name ||
-                        value.website !== this.user.contact ||
-                        value.bio !== this.user.bio
-                    ) {
-                        if (this.profileDataChanged === false) {
-                            this.profileDataChanged = true;
-                        }
-                    } else {
-                        this.profileDataChanged = false;
-                    }
-                });
-            }
         });
-        this.emailForm = new FormGroup({
-            email: new FormControl('', [
-                Validators.required,
-                isEmail,
-                Validators.maxLength(30),
-            ]),
-        });
-        this.passwordForm = new FormGroup(
-            {
-                password: new FormControl('', [
-                    Validators.required,
-                    Validators.minLength(8),
-                    Validators.maxLength(30),
-                ]),
-                confirmPass: new FormControl('', [
-                    Validators.required,
-                    Validators.minLength(8),
-                    Validators.maxLength(30),
-                ]),
-            },
-            [doPasswordsMatch]
-        );
+        this.confirmWindow$ = this.settingsService.confirmWindow$
     }
 
-    deleteAccount() {
-        this.deleteWindow = {
-            confirmButtonTitle: 'Delete Account',
-            text:
-                'Are you sure you want to delete account?\nThere is no way back.\nAll your publications will be deleted!',
-            callback: () => {
-                this.auth.deleteAccount().subscribe(() => {
-                    const dSub = this.userService.deleteMyProfile()
-                        .subscribe(() => {
-                            this.alert.success('Your account has been deleted');
-                            this.auth.logout();
-                            this.router.navigate(['/authentication']);
-                            dSub.unsubscribe();
-                        });
-                });
-            },
-        };
+    closeConfirmWindow() {
+        this.settingsService.confirmWindow$.next(null)
     }
 
-    closeDeleteWindow() {
-        this.deleteWindow = null;
-    }
-
-    onMinLengthError(controlName: string): string {
-        const requiredLength = this.passwordForm.get(controlName).errors
-            .minlength.requiredLength;
-        const actualLength = this.passwordForm.get(controlName).errors.minlength
-            .actualLength;
-        return `Password must contain at least ${requiredLength} characters.
-            ${requiredLength - actualLength} left`;
-    }
-
-    saveAvatar() {
-        const avatar = this.pickerService.getCroppedImage()
-
-        if (!avatar) {
-            return this.showAlert('', 'Image was not uploaded');
-        }
-
-        this.submitted = true;
-
-        // this.userService
-        //     .updateProfile(avatar)
-        //     .pipe(
-        //         mergeMap(() =>
-        //             this.avatar.saveMinAvatar(
-        //                 this.user.username,
-        //                 avatar.minAvatar
-        //             )
-        //         )
-        //     )
-        //     .subscribe(
-        //         () => {
-        //             this.userService.userData$.next({
-        //                 ...this.user,
-        //                 ...avatar,
-        //             });
-        //             this.avatar.usersAvatars$.next([
-        //                 {
-        //                     username: this.user.username,
-        //                     avatar: avatar.minAvatar,
-        //                 },
-        //             ]);
-        //             this.pickerService.resetImage();
-        //             this.showAlert();
-        //         },
-        //         () => {
-        //             this.showAlert('', 'Something went wrong');
-        //         },
-        //         () => {
-        //             this.submitted = false;
-        //         }
-        //     );
-    }
-
-    saveEmail() {
-        if (this.emailForm.invalid) {
-            return;
-        }
-
-        this.submitted = true;
-
-        this.auth
-            .updateEmailOrPassword({ email: this.emailForm.value.email })
-            .subscribe(
-                () => {
-                    this.emailForm.reset();
-                    this.showAlert('Email has been changed');
-                    this.submitted = false;
-                },
-                () => {
-                    this.submitted = false;
-                }
-            );
-    }
-
-    savePassword() {
-        if (this.passwordForm.invalid) {
-            return;
-        }
-
-        this.submitted = true;
-
-        this.auth
-            .updateEmailOrPassword({
-                password: this.passwordForm.value.password,
-            })
-            .subscribe(
-                () => {
-                    this.passwordForm.reset();
-                    this.showAlert('Password has been changed');
-                    this.submitted = false;
-                },
-                () => {
-                    this.submitted = false;
-                }
-            );
-    }
-
-    saveProfileData() {
-        if (this.profileDataForm.invalid) {
-            return;
-        }
-
-        this.submitted = true;
-
-        const profileData = {
-            name: this.profileDataForm.value.name,
-            website: this.profileDataForm.value.website,
-            bio: this.profileDataForm.value.bio,
-        };
-
-        // this.userService.updateProfile(profileData).subscribe(
-        //     () => {
-        //         this.userService.userData$.next({
-        //             ...this.user,
-        //             ...profileData,
-        //         });
-        //         this.showAlert();
-        //     },
-        //     () => {
-        //         this.showAlert('', 'Something went wrong');
-        //     },
-        //     () => {
-        //         this.submitted = false;
-        //     }
-        // );
-    }
-
-    showHidePassword(
-        passwordStateName: 'showPassword' | 'showConfirmPassword'
-    ): boolean {
-        return (this[passwordStateName] = !this[passwordStateName]);
-    }
-
-    private showAlert(
-        message: string = 'Changes have been saved',
-        error?: string
-    ) {
-        if (error) {
-            this.alert.danger(error);
-        } else {
-            this.alert.success(message);
-        }
-    }
-
-    ngOnDestroy(): void {
+    ngOnDestroy() {
         this.userSub.unsubscribe();
     }
 }

@@ -1,0 +1,19 @@
+.block {
+    .buttons {
+        display: flex;
+        justify-content: center;
+
+        button {
+            min-width: 80px;
+            margin: 6px;
+
+            &:disabled {
+                opacity: 0.2;
+            }
+        }
+    }
+    .picker-wrapper {
+        margin: auto;
+        overflow: hidden;
+    }
+}

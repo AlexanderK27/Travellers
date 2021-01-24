@@ -1,9 +1,7 @@
 <div class="window-backdrop" (click)="cancel()">
     <div class="window">
-        <i class="window-close-icon material-icons" (click)="cancel()"
-            >close</i
-        >
-        <p class="window-message">{{ settings.text }}</p>
+        <i class="window-close-icon material-icons" (click)="cancel()">close</i>
+        <p class="window-message">{{ settings.message }}</p>
         <div class="window-buttons">
             <button
                 class="btn btn-filled btn-neutral"
@@ -17,7 +15,7 @@
                 type="button"
                 (click)="confirm()"
             >
-                {{ settings.confirmButtonTitle }}
+                {{ settings.confirmBtnText }}
             </button>
         </div>
     </div>

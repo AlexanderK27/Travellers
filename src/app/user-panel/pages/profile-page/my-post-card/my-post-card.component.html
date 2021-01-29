@@ -1,0 +1,82 @@
+<div class="post-card"></div>
+    <div *ngIf="showPopupMenu" class="popup-menu">
+        <ul class="popup-menu-list">
+            <li class="popup-menu-item" (click)="copyLink()">
+                <i class="material-icons popup-menu-item-link-icon md-18"
+                    >link</i
+                >
+                <span class="popup-menu-item-title">Copy link</span>
+            </li>
+            <li class="popup-menu-item" (click)="navigateToComments()">
+                <i
+                    class="material-icons material-icons-outlined popup-menu-item-comment-icon md-18"
+                    >mode_comment</i
+                >
+                <span class="popup-menu-item-title">Read comments</span>
+            </li>
+        </ul>
+        <div class="popup-menu-backdrop" (click)="handlePopupMenu()"></div>
+    </div>
+    <div class="header">
+        <a [routerLink]="['/author', post.author_name]" class="header-author">
+            <div class="image-wrapper">
+                <img
+                    [src]="post.author_avatar || '../../../../assets/avatar.jpg'"
+                    alt="Author's avatar"
+                />
+            </div>
+            <span>{{ post.author_name }}</span>
+        </a>
+        <i class="material-icons" (click)="handlePopupMenu()">more_vert</i>
+    </div>
+    <a class="body" [routerLink]="['/publication', post.post_id]">
+        <img
+            [src]="post.poster || '../../../../assets/article_poster.jpg'"
+            alt="Plan poster"
+        />
+        <p [title]="post.title">{{ post.title }}</p>
+    </a>
+    <div class="meta">
+        <span class="date">
+            {{ post.post_created_at | date: "MMMM d, y" }}
+        </span>
+        <span
+            class="action"
+            tabindex="0"
+            (click)="savePost()"
+            (keyup.enter)="savePost()"
+        >
+            <i class="material-icons">
+                {{ post.isSaved ? "bookmark" : "bookmark_border" }}
+            </i>
+        </span>
+    </div>
+    <div class="buttons">
+        <button
+            *ngIf="post.post_status !== 'published'; else hide"
+            class="btn btn-outlined btn-secondary"
+            (click)="publishPost(true)"
+        >
+            Publish
+        </button>
+        <ng-template #hide>
+            <button
+                class="btn btn-outlined btn-neutral"
+                (click)="publishPost(false)"
+            >
+                Hide
+            </button>
+        </ng-template>
+        <button class="btn btn-outlined btn-neutral" (click)="editPost()">
+            Edit
+        </button>
+        <button class="btn btn-outlined btn-danger" (click)="deletePost()">
+            Delete
+        </button>
+    </div>
+</div>
+<app-confirm-window
+    *ngIf="window"
+    [settings]="window"
+    (onClose)="closeConfirmWindow()"
+></app-confirm-window>

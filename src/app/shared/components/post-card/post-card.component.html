@@ -1,0 +1,59 @@
+<div class="post-card">
+    <div *ngIf="showPopupMenu" class="popup-menu">
+        <ul class="popup-menu-list">
+            <li class="popup-menu-item" (click)="copyLink()">
+                <i class="material-icons popup-menu-item-link-icon md-18"
+                    >link</i
+                >
+                <span class="popup-menu-item-title">Copy link</span>
+            </li>
+            <li class="popup-menu-item" (click)="navigateToComments()">
+                <i
+                    class="material-icons material-icons-outlined popup-menu-item-comment-icon md-18"
+                    >mode_comment</i
+                >
+                <span class="popup-menu-item-title">Read comments</span>
+            </li>
+        </ul>
+        <div class="popup-menu-backdrop" (click)="handlePopupMenu()"></div>
+    </div>
+    <div class="header">
+        <a [routerLink]="['/author', post.author_name]" class="header-author">
+            <div class="image-wrapper">
+                <img
+                    [src]="avatarSrc"
+                    alt="Author's avatar"
+                />
+            </div>
+            <span>{{ post.author_name }}</span>
+        </a>
+        <i class="material-icons" (click)="handlePopupMenu()">more_vert</i>
+    </div>
+    <a class="body" [routerLink]="['/post', post.post_id]">
+        <div class="poster-wrapper">
+            <img
+                [src]="posterSrc"
+                alt="Post illustration"
+            />
+        </div>
+        <p [title]="post.title">{{ post.title }}</p>
+    </a>
+    <div class="meta">
+        <span class="date">
+            {{ post.post_created_at | date: "MMMM d, y" }}
+        </span>
+        <span
+            class="action"
+            tabindex="0"
+            (click)="savePost()"
+            (keyup.enter)="savePost()"
+        >
+            <i class="material-icons">
+                {{ post.isSaved ? "bookmark" : "bookmark_border" }}
+            </i>
+        </span>
+    </div>
+    <span *ngIf="markUpdated && post.post_modified_at" class="label"
+        >Updated</span
+    >
+</div>

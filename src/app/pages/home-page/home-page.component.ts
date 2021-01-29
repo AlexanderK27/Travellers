@@ -4,47 +4,48 @@ import { Subscription, forkJoin } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { AvatarService } from 'src/app/shared/services/avatar.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { PublicationService } from 'src/app/shared/services/post/post.service';
 import { SearchQueryParams } from './search/search.component';
-import { Publication, MiniatureAvatar } from 'src/app/shared/interfaces';
+import { MiniatureAvatar } from 'src/app/shared/interfaces';
+import { IPost } from 'src/app/shared/services/post/post.interfaces';
 
-interface PublicationList {
+interface IPostList {
     params?: SearchQueryParams;
     heading: string;
-    publications: Array<Publication>;
+    posts: IPost[];
     ready: boolean;
 }
 
 // users will be able to modify categories in next updates
-const categories: PublicationList[] = [
+const categories: IPostList[] = [
     {
         params: { filterBy: `filters/continent`, equalTo: 'Europe' },
         heading: 'Travel around Europe',
-        publications: [],
+        posts: [],
         ready: false,
     },
     {
         params: { filterBy: `filters/duration`, equalTo: '2-3' },
         heading: 'Weekend trip',
-        publications: [],
+        posts: [],
         ready: false,
     },
     {
         params: { filterBy: `filters/people`, equalTo: '2' },
         heading: 'For couples',
-        publications: [],
+        posts: [],
         ready: false,
     },
     {
         params: { filterBy: `filters/country`, equalTo: 'Poland' },
         heading: 'Explore Poland',
-        publications: [],
+        posts: [],
         ready: false,
     },
     {
         params: { filterBy: `filters/amountCities`, equalTo: '4-5' },
         heading: 'Visit as many places as you can',
-        publications: [],
+        posts: [],
         ready: false,
     },
 ];
@@ -57,7 +58,7 @@ const categories: PublicationList[] = [
 export class HomePageComponent implements OnInit, OnDestroy {
     avatars: MiniatureAvatar[];
     aSub: Subscription;
-    categories: PublicationList[] = [...categories];
+    categories: IPostList[] = [...categories];
 
     constructor(
         private avatarService: AvatarService,
@@ -73,26 +74,26 @@ export class HomePageComponent implements OnInit, OnDestroy {
         let requests = [];
         for (const category of this.categories) {
             requests.push(
-                this.pubService.getPublications(
+                this.pubService.getMany(
                     category.params.filterBy,
                     category.params.equalTo
                 )
             );
         }
 
-        forkJoin<{ key: Publication }>(requests)
+        forkJoin<{ key: IPost }>(requests)
             .pipe(
                 map((pubsList) => {
                     return pubsList.map((obj) =>
-                        Object.values(obj).filter((p) => p.published)
+                        Object.values(obj).filter((post) => post)
                     );
                 })
             )
-            .subscribe((pubsListArray: Publication[][]) => {
+            .subscribe((pubsListArray: IPost[][]) => {
                 pubsListArray.forEach((pubsList, idx) => {
                     // get usernames of publications' authors
                     const usernames = pubsList.map(
-                        (publication) => publication.author
+                        (publication) => publication.author_name
                     );
 
                     // fetch small avatars
@@ -102,13 +103,13 @@ export class HomePageComponent implements OnInit, OnDestroy {
                         .subscribe((avatars) => {
                             // insert avatar to each publication object
                             pubsList.forEach((publication) => {
-                                publication.authorAv = avatars.find(
-                                    (a) => a.username === publication.author
+                                publication.author_avatar = avatars.find(
+                                    (a) => a.username === publication.author_name
                                 ).avatar;
                             });
 
                             // pass publications to categories
-                            this.categories[idx].publications = [...pubsList];
+                            this.categories[idx].posts = [...pubsList];
                             this.categories[idx].ready = true;
                         });
                 });
@@ -120,7 +121,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
         const searchCategoryHeading = 'Search results';
         const emptySearchCategory = {
             heading: `Please wait...`,
-            publications: [],
+            posts: [],
             ready: false,
         };
 
@@ -131,30 +132,30 @@ export class HomePageComponent implements OnInit, OnDestroy {
         }
 
         this.pubService
-            .getPublications(filterBy, equalTo)
-            .subscribe((publications: { key: Publication }) => {
+            .getMany(filterBy, equalTo)
+            .subscribe((publications: { key: IPost }) => {
                 const pubs = Object.values(publications)
-                    .filter((p) => p.published === true)
+                    .filter((post) => post)
                     .sort((a, b) => {
                         return (
                             (b.likes ? b.likes : 0) - (a.likes ? a.likes : 0)
                         );
                     });
-                const usernames = pubs.map((publication) => publication.author);
+                const usernames = pubs.map((post) => post.author_name);
 
                 this.aSub = this.avatarService
                     .getMinAvatars(usernames)
                     .subscribe((avatars) => {
                         pubs.forEach((publication) => {
-                            publication.authorAv = avatars.find(
-                                (a) => a.username === publication.author
+                            publication.author_avatar = avatars.find(
+                                (a) => a.username === publication.author_name
                             ).avatar;
                         });
 
                         this.categories[0] = {
                             ...this.categories[0],
                             heading: searchCategoryHeading,
-                            publications: [...pubs],
+                            posts: [...pubs],
                             ready: true,
                         };
 

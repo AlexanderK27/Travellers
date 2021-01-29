@@ -1,5 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Confirmation } from '../../interfaces';
+
+export interface IConfirmWindow {
+    confirmBtnText: string;
+    doOnConfirm: () => void;
+    message: string;
+
+    cancelBtnText?: string;
+}
 
 @Component({
     selector: 'app-confirm-window',
@@ -7,13 +14,13 @@ import { Confirmation } from '../../interfaces';
     styleUrls: ['./confirm-window.component.scss'],
 })
 export class ConfirmWindowComponent {
-    @Input() settings: Confirmation;
-    @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
+    @Input() settings: IConfirmWindow;
+    @Output() close: EventEmitter<true> = new EventEmitter<true>();
 
     cancel() {
-        this.onClose.emit();
+        this.close.emit(true);
     }
     confirm() {
-        this.settings.callback();
+        this.settings.doOnConfirm();
     }
 }

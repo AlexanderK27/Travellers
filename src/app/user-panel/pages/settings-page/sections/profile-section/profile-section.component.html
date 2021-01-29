@@ -1,0 +1,51 @@
+<section class="section">
+    <div class="block">
+        <h3>Write about yourself</h3>
+        <p class="block-description">
+            Let people know who you are and what you do. If you would like to
+            live a contact to you - there is a place for it. Note, these are
+            just recommendations, don't hold back your creativity.
+        </p>
+        <button
+            class="btn btn-filled btn-secondary"
+            type="submit"
+            [disabled]="!dataChanged || form.invalid || submitted"
+            (click)="saveChanges()"
+        >
+            Save changes
+        </button>
+    </div>
+    <form [formGroup]="form" class="block">
+        <div class="form-control">
+            <label for="real_name">Name</label>
+            <input
+                id="real_name"
+                type="text"
+                autocomplete="off"
+                formControlName="real_name"
+            />
+        </div>
+        <div class="form-control">
+            <label for="contact">Contact</label>
+            <input
+                id="contact"
+                type="text"
+                autocomplete="off"
+                formControlName="contact"
+            />
+        </div>
+        <div class="form-control">
+            <label for="bio">Short bio</label>
+            <textarea
+                id="bio"
+                class="bio"
+                autocomplete="off"
+                formControlName="bio"
+                >{{ form.get("bio").value }}</textarea
+            >
+            <small class="hint characters-left">
+                {{ 150 - form.get("bio").value.length }}
+            </small>
+        </div>
+    </form>
+</section>

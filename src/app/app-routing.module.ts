@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from './shared/services/auth.guard';
+import { AuthGuard } from './shared/services/auth/auth.guard';
 import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { SubsPageComponent } from './pages/subs-page/subs-page.component';
 import { SavedPageComponent } from './pages/saved-page/saved-page.component';
-import { PlanPageComponent } from './pages/plan-page/plan-page.component';
+import { PostPageComponent } from './pages/post-page/post-page.component';
 import { AuthorPageComponent } from './pages/author-page/author-page.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 
@@ -26,7 +26,7 @@ const routes: Routes = [
                 component: SavedPageComponent,
                 canActivate: [AuthGuard],
             },
-            { path: 'publication/:title', component: PlanPageComponent },
+            { path: 'post/:title', component: PostPageComponent },
             { path: 'author/:username', component: AuthorPageComponent },
             {
                 path: 'authentication',

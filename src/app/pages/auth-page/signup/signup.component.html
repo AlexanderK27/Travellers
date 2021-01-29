@@ -1,0 +1,34 @@
+<div class="window" [class.wide]="formsState.showProfileForm">
+    <div class="form-container">
+        <app-username-form
+            *ngIf="formsState.showUsernameForm"
+            (usernameSelected)="displaySignupForm()"
+        ></app-username-form>
+        <app-signup-form
+            *ngIf="formsState.showSignupForm"
+            (goBack)="displayUsernameForm()"
+            (userRegistered)="displayProfileForm()"
+        ></app-signup-form>
+        <app-profile-form
+            *ngIf="formsState.showProfileForm"
+            (profileUpdated)="navigateToProfilePage()"
+            (skip)="navigateToProfilePage()"
+        ></app-profile-form>
+
+        <div class="form-footer">
+            Have an account?
+            <a [routerLink]="['/authentication']">Sign in</a>
+        </div>
+
+        <i
+            class="steps-toggle material-icons md-18"
+            (click)="toggleStepsSidebar()"
+        >
+            {{ showStepsSidebar ? "fullscreen" : "fullscreen_exit" }}
+        </i>
+    </div>
+    <app-signup-steps
+        *ngIf="showStepsSidebar"
+        [state]="formsState"
+    ></app-signup-steps>
+</div>

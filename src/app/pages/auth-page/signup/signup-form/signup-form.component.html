@@ -1,0 +1,141 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <div class="form-heading">
+        <h3>Registrate an account</h3>
+        <small>do not use a real password</small>
+    </div>
+
+    <div class="form-controls">
+        <div
+            class="form-control"
+            [ngClass]="{
+                invalid: form.get('email').touched && form.get('email').invalid
+            }"
+        >
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+                <input id="email" type="email" formControlName="email" />
+                <app-check-loader
+                    *ngIf="form.get('email').valid"
+                    [complete]="form.get('email').valid"
+                ></app-check-loader>
+            </div>
+            <div
+                *ngIf="form.get('email').touched && form.get('email').invalid"
+                class="validation"
+            >
+                <small *ngIf="form.get('email').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('email').errors.isEmail">
+                    Invalid email
+                </small>
+            </div>
+        </div>
+
+        <div
+            class="form-control password"
+            [ngClass]="{
+                invalid:
+                    form.get('password').touched &&
+                    form.get('password').invalid,
+                valid: form.get('password').valid
+            }"
+        >
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <input
+                    id="password"
+                    [type]="showPasswordValue ? 'text' : 'password'"
+                    formControlName="password"
+                />
+                <app-check-loader
+                    *ngIf="form.get('password').valid"
+                    [complete]="form.get('password').valid"
+                ></app-check-loader>
+            </div>
+            <i
+                class="material-icons-outlined"
+                (click)="showHidePassword('showPasswordValue')"
+            >
+                {{ showPasswordValue ? "visibility_off" : "visibility" }}
+            </i>
+            <div
+                *ngIf="
+                    form.get('password').touched && form.get('password').invalid
+                "
+                class="validation"
+            >
+                <small *ngIf="form.get('password').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('password').errors.minlength">
+                    {{ onMinLengthError("password") }}
+                </small>
+            </div>
+        </div>
+
+        <div
+            class="form-control password"
+            [ngClass]="{
+                invalid:
+                    form.get('confirmPass').touched &&
+                    form.get('confirmPass').invalid,
+                valid: form.get('confirmPass').valid
+            }"
+        >
+            <label for="confirmPass">Repeat password</label>
+            <div class="input-wrapper">
+                <input
+                    id="confirmPass"
+                    [type]="showCPasswordValue ? 'text' : 'password'"
+                    formControlName="confirmPass"
+                />
+                <app-check-loader
+                    *ngIf="form.get('confirmPass').valid"
+                    [complete]="form.get('confirmPass').valid"
+                ></app-check-loader>
+            </div>
+            <i
+                class="material-icons-outlined"
+                (click)="showHidePassword('showCPasswordValue')"
+            >
+                {{ showCPasswordValue ? "visibility_off" : "visibility" }}
+            </i>
+            <div
+                *ngIf="
+                    form.get('confirmPass').touched &&
+                    form.get('confirmPass').invalid
+                "
+                class="validation"
+            >
+                <small *ngIf="form.get('confirmPass').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('confirmPass').errors.minlength">
+                    {{ onMinLengthError("confirmPass") }}
+                </small>
+            </div>
+        </div>
+        <div *ngIf="form.errors" class="validation">
+            <small *ngIf="form.errors.mismatch"> Passwords do not match </small>
+        </div>
+    </div>
+
+    <div class="form-buttons">
+        <button
+            class="btn btn-filled btn-neutral"
+            type="button"
+            [disabled]="submitted"
+            (click)="backToUsername()"
+        >
+            Step back
+        </button>
+        <button
+            class="btn btn-filled btn-primary"
+            type="submit"
+            [disabled]="form.invalid || submitted"
+        >
+            Registrate
+        </button>
+    </div>
+</form>

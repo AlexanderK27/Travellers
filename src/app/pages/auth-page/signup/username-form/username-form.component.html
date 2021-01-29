@@ -1,0 +1,57 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(username.value)" class="form">
+    <div class="form-heading">
+        <h3>Come up with a username</h3>
+        <small>sometimes first name is enough</small>
+    </div>
+    <div class="form-controls">
+        <div
+            class="form-control"
+            [ngClass]="{
+                invalid:
+                    form.get('username').touched && form.get('username').invalid
+            }"
+        >
+            <div class="input-wrapper">
+                <input
+                    #username
+                    id="username"
+                    type="text"
+                    autocomplete="off"
+                    formControlName="username"
+                />
+                <app-check-loader
+                    *ngIf="form.pending || form.valid"
+                    [complete]="!form.pending && form.valid"
+                ></app-check-loader>
+            </div>
+            <div
+                *ngIf="
+                    form.get('username').touched && form.get('username').invalid
+                "
+                class="validation"
+            >
+                <small *ngIf="form.get('username').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('username').errors.minlength">
+                    This username is too short
+                </small>
+                <small *ngIf="form.get('username').errors.pattern">
+                    Only latin letters, numbers and underscores are allowed
+                </small>
+                <small *ngIf="form.get('username').errors.usernameTaken">
+                    username {{ form.get("username").value }} is taken
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="form-buttons">
+        <button
+            class="btn btn-filled btn-primary"
+            type="submit"
+            [disabled]="form.pending || form.invalid || submitted"
+        >
+            Submit
+        </button>
+    </div>
+</form>

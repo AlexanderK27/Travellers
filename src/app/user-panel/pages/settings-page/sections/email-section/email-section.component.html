@@ -1,0 +1,44 @@
+<section class="section">
+    <div class="block">
+        <h3>Change email</h3>
+        <p class="block-description">
+            This email is not public, you will use it to sign in. Simple
+            yourname@kolomiichuk.info would be a great, neutral choice.
+        </p>
+        <button
+            type="submit"
+            class="btn btn-filled btn-secondary"
+            [disabled]="form.invalid || submitted"
+            (click)="saveEmail()"
+        >
+            Save new email
+        </button>
+    </div>
+    <form [formGroup]="form" class="block">
+        <div
+            class="form-control"
+            [ngClass]="{
+                invalid: form.get('email').touched && form.get('email').invalid
+            }"
+        >
+            <label for="email">Email</label>
+            <input
+                id="email"
+                type="email"
+                maxlength="30"
+                formControlName="email"
+            />
+            <div
+                *ngIf="form.get('email').touched && form.get('email').invalid"
+                class="validation"
+            >
+                <small *ngIf="form.get('email').errors.required">
+                    Field is required
+                </small>
+                <small *ngIf="form.get('email').errors.isEmail">
+                    Invalid email
+                </small>
+            </div>
+        </div>
+    </form>
+</section>

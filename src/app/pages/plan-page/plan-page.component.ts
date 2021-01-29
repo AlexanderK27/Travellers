@@ -4,12 +4,12 @@ import { Title } from '@angular/platform-browser';
 import { switchMap, take } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
-import { PublicationService } from 'src/app/shared/services/publication.service';
+import { PublicationService } from 'src/app/shared/services/post/post.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Comment, Publication } from 'src/app/shared/interfaces';
 import { CommentService } from 'src/app/pages/plan-page/comment/comment.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 
 interface ArticleActions {
@@ -301,7 +301,7 @@ export class PlanPageComponent implements OnInit {
     saveArticle() {
         if (this.isAuthenticated) {
             this.publicationState.saved = !this.publicationState.saved;
-            this.pubService.savePublication(this.publication.link, false);
+            this.pubService.savePublication(this.publication.post_id, false);
         } else {
             this.alert.warning('Please sign in');
         }
@@ -312,7 +312,7 @@ export class PlanPageComponent implements OnInit {
             this.submitted = true;
             this.commentService
                 .commentPublication(
-                    this.publication.link,
+                    this.publication.post_id,
                     this.commentText.trim()
                 )
                 .subscribe(

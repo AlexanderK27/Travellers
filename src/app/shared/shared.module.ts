@@ -4,25 +4,27 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
 import { RouterModule } from '@angular/router';
 
-import { PlanCardComponent } from './components/plan-card/plan-card.component';
+import { PostCardComponent } from './components/post-card/post-card.component';
 import { ImgCropperComponent } from './components/img-picker/img-cropper/img-cropper.component';
 import { ImgPickerComponent } from './components/img-picker/img-picker.component';
 import { ConfirmWindowComponent } from './components/confirm-window/confirm-window.component';
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { CheckLoader } from './components/check-loader/check-loader.component';
 import { SelectComponent } from './components/select/select.component';
 import { FilterPipe } from './components/select/filter.pipe';
 
 @NgModule({
     declarations: [
-        PlanCardComponent,
+        PostCardComponent,
         ImgCropperComponent,
         ImgPickerComponent,
         ConfirmWindowComponent,
         MainLayoutComponent,
         AlertComponent,
         LoaderComponent,
+        CheckLoader,
         SelectComponent,
         FilterPipe,
     ],
@@ -37,11 +39,12 @@ import { FilterPipe } from './components/select/filter.pipe';
         FormsModule,
         ReactiveFormsModule,
         QuillModule,
-        PlanCardComponent,
+        PostCardComponent,
         ImgCropperComponent,
         ImgPickerComponent,
         ConfirmWindowComponent,
         LoaderComponent,
+        CheckLoader,
         SelectComponent,
     ],
 })

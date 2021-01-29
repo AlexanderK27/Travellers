@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserCredentials } from 'src/app/shared/interfaces';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { isEmail } from 'src/app/shared/services/input.validators';
-import { UserService } from 'src/app/shared/services/user.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
+
+interface LoginCredentials {
+    email: string;
+    password: string;
+}
 
 @Component({
     selector: 'app-login-form',
@@ -57,22 +61,26 @@ export class LoginFormComponent implements OnInit {
 
         this.submitted = true;
 
-        const credentials: UserCredentials = {
+        const credentials: LoginCredentials = {
             email: this.form.value.email,
             password: this.form.value.password,
         };
 
         this.auth.login(credentials).subscribe(
-            (response) => {
-                this.userService.fetchUser(response.localId).subscribe(
-                    (user) => {
-                        this.userService.userData$.next(user);
-                        this.form.reset();
-                        this.router.navigate(['/profile']);
-                        this.submitted = false;
-                    },
-                    (e) => {}
-                );
+            ({ payload }) => {
+                this.userService.userData$.next(payload)
+                // this.userService.fetchUser(response.localId).subscribe(
+                //     (user) => {
+                //         this.userService.userData$.next(user);
+                //         this.form.reset();
+                //         this.router.navigate(['/profile']);
+                //         this.submitted = false;
+                //     },
+                //     (e) => {}
+                // );
+                this.form.reset();
+                this.submitted = false;
+                this.router.navigate(['/profile']);
             },
             () => {
                 this.submitted = false;

@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { ImageSource } from '../img-picker/image-picker.service';
 
 type FooterType = 'large' | 'small';

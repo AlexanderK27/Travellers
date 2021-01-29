@@ -3,10 +3,10 @@ import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 
-import { Publication } from 'src/app/shared/interfaces';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
-import { PublicationService } from 'src/app/shared/services/publication.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { IPost } from 'src/app/shared/services/post/post.interfaces';
+import { PublicationService } from 'src/app/shared/services/post/post.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
 
 @Component({
     selector: 'app-saved-page',
@@ -15,7 +15,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 })
 export class SavedPageComponent implements OnInit, OnDestroy {
     loading = true;
-    publications: Array<Publication> = [];
+    publications: IPost[] = [];
     uSub: Subscription;
 
     constructor(
@@ -33,11 +33,11 @@ export class SavedPageComponent implements OnInit, OnDestroy {
             .subscribe((user) => {
                 if (user) {
                     // check if user has saved publications and then stop loading
-                    if (user.saved && user.saved.length) {
+                    if (user.saved_posts && user.saved_posts.length) {
                         let publications = [];
 
                         this.pubService
-                            .getSavedPublications(user.saved)
+                            .getSaved(user.saved_posts)
                             .pipe(
                                 // the array includes null if any publication has been deleted
                                 // filter to avoid it
@@ -46,7 +46,7 @@ export class SavedPageComponent implements OnInit, OnDestroy {
                                     publications = [...pubs];
 
                                     // get avatars of each author
-                                    const usernames = pubs.map((p) => p.author);
+                                    const usernames = pubs.map((p) => p.author_name);
                                     return this.avatarService.getMinAvatars(
                                         usernames
                                     );

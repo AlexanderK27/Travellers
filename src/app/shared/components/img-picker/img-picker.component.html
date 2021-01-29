@@ -1,9 +1,9 @@
-<div #container>
+<div #container class="container">
     <app-img-cropper
         *ngIf="pickerService.showCropper; else userImage"
         [ariaShape]="cropperAriaShape"
         [aspectRatio]="cropperAspectRatio"
-        [canvasesSizes]="croppedSizes"
+        [canvasDimentions]="croppedImageDimentions"
         [originalImage$]="uploadedImageSrc$"
     ></app-img-cropper>
     <ng-template #userImage>

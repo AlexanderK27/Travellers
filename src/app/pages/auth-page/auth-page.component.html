@@ -1,9 +1,7 @@
 <section>
-    <app-signup-form
-        *ngIf="formType === 'registration'; else login"
+    <app-signup *ngIf="isRegistration" class="form-component"></app-signup>
+    <app-login-form
+        *ngIf="!isRegistration"
         class="form-component"
-    ></app-signup-form>
-    <ng-template #login>
-        <app-login-form class="form-component"></app-login-form>
-    </ng-template>
+    ></app-login-form>
 </section>

@@ -3,17 +3,17 @@ import { Title } from '@angular/platform-browser';
 import { take, switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
-import { Publication } from 'src/app/shared/interfaces';
-import { PublicationService } from 'src/app/shared/services/publication.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { PublicationService } from 'src/app/shared/services/post/post.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
 import { AvatarService } from 'src/app/shared/services/avatar.service';
+import { IPost } from 'src/app/shared/services/post/post.interfaces';
 
 interface publicationsSortedByDate {
-    today: Array<Publication>;
-    yesterday: Array<Publication>;
-    week: Array<Publication>;
-    month: Array<Publication>;
-    earlier: Array<Publication>;
+    today: IPost[];
+    yesterday: IPost[];
+    week: IPost[];
+    month: IPost[];
+    earlier: IPost[];
 }
 
 @Component({
@@ -50,18 +50,18 @@ export class SubsPageComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-                if (user.subscriptions && user.subscriptions.length) {
-                    let publications: Publication[] = [];
+                if (user.followings) {
+                    let publications: IPost[] = [];
 
                     // fetch publications
                     this.pubService
-                        .getPublicationsFromSubs(user.subscriptions)
+                        .getManyFromFollowings()
                         .pipe(
                             switchMap((pubs) => {
                                 publications = pubs;
 
                                 // fetch avatars
-                                const usernames = pubs.map((p) => p.author);
+                                const usernames = pubs.map((p) => p.author_name);
                                 return this.avatarService.getMinAvatars(
                                     usernames
                                 );
@@ -71,8 +71,8 @@ export class SubsPageComponent implements OnInit, OnDestroy {
                         .subscribe((avatars) => {
                             // assing avatars
                             publications.forEach((pub) => {
-                                pub.authorAv = avatars.find(
-                                    (a) => a.username === pub.author
+                                pub.author_avatar = avatars.find(
+                                    (a) => a.username === pub.author_name
                                 ).avatar;
                             });
 
@@ -95,24 +95,24 @@ export class SubsPageComponent implements OnInit, OnDestroy {
         this.uSub.unsubscribe();
     }
 
-    private sortByDate(publications: Publication[]): Publication[] {
+    private sortByDate(publications: IPost[]): IPost[] {
         return publications.sort(
             (a, b) =>
-                Date.parse(b.created.toString()) -
-                Date.parse(a.created.toString())
+                Date.parse(b.post_created_at.toString()) -
+                Date.parse(a.post_created_at.toString())
         );
     }
 
     private sortToGroupsByDate(
-        publications: Publication[]
+        publications: IPost[]
     ): publicationsSortedByDate {
         const pSorted = [[], [], [], [], []];
         const now = new Date().getTime();
 
         for (let p of publications) {
-            const published = p.modified
-                ? new Date(p.modified).getTime()
-                : new Date(p.created).getTime();
+            const published = p.post_modified_at
+                ? new Date(p.post_modified_at).getTime()
+                : new Date(p.post_created_at).getTime();
             const timePassed = now - published;
             if (timePassed <= 24 * 3600000) {
                 pSorted[0].unshift(p);

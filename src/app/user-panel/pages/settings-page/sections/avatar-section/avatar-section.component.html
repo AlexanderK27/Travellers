@@ -1,0 +1,56 @@
+<section>
+    <div class="block">
+        <h3>Update avatar</h3>
+        <p class="block-description">
+            You can upload your photo or any other image you like. It will help
+            distinguish you from other users, by appearing near all your
+            publications and comments.
+        </p>
+        <button
+            type="submit"
+            class="btn btn-filled btn-secondary"
+            [disabled]="!picker.croppedImageSrc || submitted"
+            (click)="saveAvatar()"
+        >
+            Save new avatar
+        </button>
+    </div>
+    <div class="block">
+        <div class="picker-wrapper" [class.user-avatar]="!picker.showCropper">
+            <app-img-picker
+                cropperAriaShape="rounded"
+                type="avatar"
+                [src]="
+                    avatar
+                        ? '/api/image/avatar/' + avatar
+                        : '../../../../assets/avatar.jpg'
+                "
+            ></app-img-picker>
+        </div>
+        <div class="buttons">
+            <button
+                class="btn btn-filled btn-danger"
+                type="button"
+                [disabled]="!picker.showCropper && !picker.showNewImage"
+                (click)="picker.resetImage()"
+            >
+                Cancel
+            </button>
+            <button
+                class="btn btn-filled btn-neutral"
+                type="button"
+                (click)="picker.triggerFileUploadInput()"
+            >
+                Upload
+            </button>
+            <button
+                class="btn btn-filled btn-secondary"
+                type="button"
+                [disabled]="!picker.showCropper"
+                (click)="picker.submitCroppedImage()"
+            >
+                Submit
+            </button>
+        </div>
+    </div>
+</section>

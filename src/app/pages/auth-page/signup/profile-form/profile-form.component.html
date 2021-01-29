@@ -1,0 +1,96 @@
+<div class="form">
+    <div class="form-heading">
+        <h3>Complete your profile</h3>
+        <small>you are able to do it later</small>
+    </div>
+    <div class="form-controls-wrapper">
+        <div class="form-controls-avatar">
+            <div
+                class="avatar-control"
+                [class.user-avatar]="!pickerService.showCropper"
+            >
+                <app-img-picker
+                    cropperAriaShape="rounded"
+                    src="../../../../../assets/avatar.jpg"
+                    type="avatar"
+                ></app-img-picker>
+            </div>
+            <div class="avatar-buttons">
+                <button
+                    class="danger"
+                    type="button"
+                    [disabled]="
+                        !pickerService.showCropper &&
+                        !pickerService.showNewImage
+                    "
+                    (click)="pickerService.resetImage()"
+                >
+                    <i class="material-icons">clear</i>
+                </button>
+                <button
+                    type="button"
+                    (click)="pickerService.triggerFileUploadInput()"
+                >
+                    <i class="material-icons">publish</i>
+                </button>
+                <button
+                    class="success"
+                    type="button"
+                    [disabled]="!pickerService.showCropper"
+                    (click)="pickerService.submitCroppedImage()"
+                >
+                    <i class="material-icons">checkmark</i>
+                </button>
+            </div>
+        </div>
+        <form [formGroup]="form" class="form-controls">
+            <div class="form-control">
+                <label for="real_name">Name</label>
+                <input
+                    id="real_name"
+                    type="text"
+                    autocomplete="off"
+                    formControlName="real_name"
+                />
+            </div>
+            <div class="form-control">
+                <label for="contact">Contact</label>
+                <input
+                    id="contact"
+                    type="text"
+                    autocomplete="off"
+                    formControlName="contact"
+                />
+            </div>
+            <div class="form-control">
+                <label for="bio">Short bio</label>
+                <textarea
+                    id="bio"
+                    type="text"
+                    autocomplete="off"
+                    formControlName="bio"
+                ></textarea>
+                <small class="hint characters-left">
+                    {{ 150 - form.get("bio").value.length }}
+                </small>
+            </div>
+        </form>
+    </div>
+    <div class="form-buttons">
+        <button
+            class="btn btn-neutral btn-filled"
+            type="button"
+            (click)="skipEnteringProfileData()"
+        >
+            Skip
+        </button>
+        <button
+            class="btn btn-primary btn-filled"
+            type="button"
+            [disabled]="form.invalid || submitted"
+            (click)="saveProfileData()"
+        >
+            Save
+        </button>
+    </div>
+</div>
